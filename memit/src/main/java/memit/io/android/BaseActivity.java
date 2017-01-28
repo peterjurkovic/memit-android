@@ -10,18 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-public class HomeActivity extends AppCompatActivity {
+import memit.io.android.dao.DatabaseOpenHelper;
+
+public class BaseActivity extends AppCompatActivity {
 
     private static final int PROFILE_SETTING = 100000;
     private AccountHeader headerResult = null;
@@ -34,6 +34,8 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DatabaseOpenHelper.getInstance(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
         final IProfile profile = new ProfileDrawerItem()
                                     .withName("Mike Penz")
                                     .withEmail("mikepenz@gmail.com")
@@ -51,19 +54,11 @@ public class HomeActivity extends AppCompatActivity {
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
+                .withOnlyMainProfileImageVisible(true)
                 .withTranslucentStatusBar(true)
                 .withHeaderBackground(R.drawable.header)
-                .addProfiles(
-                        profile,
-                        new ProfileSettingDrawerItem()
-                                .withName("Add Account")
-                                .withDescription("Add new GitHub Account").
-                                withIcon(new IconicsDrawable(this, FontAwesome.Icon.faw_adjust)
-                                            .actionBar()
-                                            .paddingDp(5)
-                                            .colorRes(R.color.material_drawer_primary_text))
-
-                )
+                .withAlternativeProfileHeaderSwitching(false)
+                .addProfiles( profile )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
@@ -71,17 +66,17 @@ public class HomeActivity extends AppCompatActivity {
                         //if the clicked item has the identifier 1 add a new profile ;)
                         Snackbar.make(view, "onProfileChanged", Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();
-                        if (profile instanceof IDrawerItem && profile.getIdentifier() == PROFILE_SETTING) {
-                            int count = 100 + headerResult.getProfiles().size() + 1;
-                            IProfile newProfile = new ProfileDrawerItem().withNameShown(true)
-                                    .withName("Batman" + count).withEmail("batman" + count + "@gmail.com");
-                            if (headerResult.getProfiles() != null) {
-                                //we know that there are 2 setting elements. set the new profile above them ;)
-                                headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
-                            } else {
-                                headerResult.addProfiles(newProfile);
-                            }
-                        }
+                        // if (profile instanceof IDrawerItem && profile.getIdentifier() == PROFILE_SETTING) {
+                        //     int count = 100 + headerResult.getProfiles().size() + 1;
+                        //     IProfile newProfile = new ProfileDrawerItem().withNameShown(true)
+                        //             .withName("Batman" + count).withEmail("batman" + count + "@gmail.com");
+                        //     if (headerResult.getProfiles() != null) {
+                        //         //we know that there are 2 setting elements. set the new profile above them ;)
+                        //         headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
+                        //     } else {
+                        //         headerResult.addProfiles(newProfile);
+                        //     }
+                        // }
 
                         //false if you have not consumed the event and it should close the drawer
                         return false;
@@ -95,19 +90,26 @@ public class HomeActivity extends AppCompatActivity {
         new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(true)
+                .withHasStableIds(true)
+                .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_item_home).withIcon(FontAwesome.Icon.faw_home),
-                        new PrimaryDrawerItem().withName(R.string.menu_item_books).withIcon(FontAwesome.Icon.faw_gamepad)
+                        new PrimaryDrawerItem().withName(R.string.menu_item_drill).withIcon(FontAwesome.Icon.faw_play),
+                        new PrimaryDrawerItem().withName(R.string.menu_item_books).withIcon(FontAwesome.Icon.faw_book),
+                        new PrimaryDrawerItem().withName(R.string.menu_item_repository).withIcon(FontAwesome.Icon.faw_cloud_download),
+                        new PrimaryDrawerItem().withName(R.string.menu_item_setting).withIcon(FontAwesome.Icon.faw_cog),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withName(R.string.menu_item_help)
                 )
                 .withSavedInstance(savedInstanceState)
+                .withShowDrawerOnFirstLaunch(true)
                 .build();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        //getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -116,12 +118,12 @@ public class HomeActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        // int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        // if (id == R.id.action_settings) {
+        //    return true;
+        // }
 
         return super.onOptionsItemSelected(item);
     }

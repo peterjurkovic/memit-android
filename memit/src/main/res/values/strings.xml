@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MemIt</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_item_drill">Play</string>
+    <string name="menu_item_books">My books</string>
+    <string name="menu_item_repository">Online repository</string>
+    <string name="menu_item_setting">Settings</string>
+    <string name="menu_item_help">Help</string>
+</resources>
