@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="memit.io.android">
+    package="io.memit.android">
+
+    <permission
+        android:name="io.memit.provider.READ_DEVICES"
+        android:description="@string/permission_description_read_devices" />
+
+    <permission
+        android:name="io.memit.provider.WRITE_DEVICES"
+        android:description="@string/permission_description_write_devices" />
 
     <application
         android:allowBackup="true"
@@ -8,16 +16,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name=".provider.BookProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:readPermission="io.memit.provider.READ_DEVICES"
+            android:writePermission="io.memit.provider.WRITE_DEVICES" />
+
         <activity
-            android:name="memit.io.android.BaseActivity"
+            android:name=".BaseActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.BookListActivity"
+                android:parentActivityName=".BaseActivity"
+            />
+
     </application>
+
 
 </manifest>

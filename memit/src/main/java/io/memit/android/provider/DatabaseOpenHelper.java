@@ -1,4 +1,4 @@
-package memit.io.android.dao;
+package io.memit.android.provider;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import io.memit.android.BuildConfig;
+
 /**
  * Created by peter on 1/28/17.
  */
@@ -24,6 +26,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "memit.db";
 
     private final Context context;
+    private static Object lock = new Object();
     private static DatabaseOpenHelper instance;
 
     private DatabaseOpenHelper(Context context) {
@@ -38,9 +41,13 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static synchronized DatabaseOpenHelper getInstance(Context context){
-        if (instance == null) {
-            instance = new DatabaseOpenHelper(context.getApplicationContext());
+    public static DatabaseOpenHelper getInstance(Context context){
+        if(instance == null){
+            synchronized (lock){
+                if (instance == null) {
+                    instance = new DatabaseOpenHelper(context.getApplicationContext());
+                }
+            }
         }
         return instance;
     }
@@ -71,9 +78,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
             final StringBuilder statement = new StringBuilder();
 
             for (String line; (line = reader.readLine()) != null;) {
-                // if (BuildConfig.DEBUG) {
-                //    Log.d(TAG, "Reading line -> " + line);
-                //}
+                 if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Reading line -> " + line);
+                }
 
                 // Ignore empty lines
                 if (!TextUtils.isEmpty(line) && !line.startsWith("--")) {
@@ -81,9 +88,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 }
 
                 if (line.endsWith(";")) {
-                    //if (BuildConfig.DEBUG) {
-                     //   Log.d(TAG, "Running statement " + statement);
-                    //}
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "Running statement " + statement);
+                    }
                     Log.d(TAG, "Running statement " + statement);
                     db.execSQL(statement.toString());
                     statement.setLength(0);
@@ -109,5 +116,11 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         super.onConfigure(db);
         setWriteAheadLoggingEnabled(true);
         db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    public interface Tables {
+        String BOOK = "book";
+        String LECTURE = "lecture";
+        String WORD = "word";
     }
 }

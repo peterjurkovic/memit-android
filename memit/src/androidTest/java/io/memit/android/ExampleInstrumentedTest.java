@@ -1,4 +1,4 @@
-package memit.io.android;
+package io.memit.android;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

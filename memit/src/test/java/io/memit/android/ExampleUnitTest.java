@@ -1,4 +1,4 @@
-package memit.io.android;
+package io.memit.android;
 
 import org.junit.Test;
 

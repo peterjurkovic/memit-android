@@ -1,12 +1,10 @@
-package memit.io.android;
+package io.memit.android.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -19,38 +17,25 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import memit.io.android.dao.DatabaseOpenHelper;
+import io.memit.android.R;
 
-public class BaseActivity extends AppCompatActivity {
+/**
+ * Created by peter on 1/31/17.
+ */
 
-    private static final int PROFILE_SETTING = 100000;
-    private AccountHeader headerResult = null;
-    private Drawer result = null;
+public abstract class AbstractActivity extends AppCompatActivity{
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DatabaseOpenHelper.getInstance(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    protected static final int PROFILE_SETTING = 100000;
+    protected AccountHeader headerResult = null;
+    protected Drawer result = null;
 
 
+    protected void initDrawer(Toolbar toolbar, @Nullable Bundle savedInstanceState) {
         final IProfile profile = new ProfileDrawerItem()
-                                    .withName("Mike Penz")
-                                    .withEmail("mikepenz@gmail.com")
-                                    .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460")
-                                    .withIdentifier(100);
+                .withName("Mike Penz")
+                .withEmail("mikepenz@gmail.com")
+                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460")
+                .withIdentifier(100);
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -61,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
                 .addProfiles( profile )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                    public boolean onProfileChanged(View view, com.mikepenz.materialdrawer.model.interfaces.IProfile profile, boolean current) {
                         //sample usage of the onProfileChanged listener
                         //if the clicked item has the identifier 1 add a new profile ;)
                         Snackbar.make(view, "onProfileChanged", Snackbar.LENGTH_SHORT)
@@ -106,25 +91,4 @@ public class BaseActivity extends AppCompatActivity {
                 .build();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        // int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        // if (id == R.id.action_settings) {
-        //    return true;
-        // }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

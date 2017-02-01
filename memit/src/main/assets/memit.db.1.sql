@@ -1,9 +1,35 @@
-CREATE TABLE data_table (column1 TEXT NOT NULL,
-column2 TEXT NOT NULL,
-column3 TEXT NOT NULL);
-INSERT INTO data_table
-VALUES ('row1_column1', 'row1_column2', 'row1_column3');
-INSERT INTO data_table
-VALUES ('row2_column1', 'row2_column2', 'row2_column3');
-INSERT INTO data_table
-VALUES ('row3_column1', 'row3_column2', 'row3_column3');
+CREATE TABLE "book"
+  (
+     "_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+     "sid" INTEGER UNIQUE ,
+     "name"          TEXT,
+     "lang_question" TEXT,
+     "lang_answer"   TEXT,
+     "changed"       DATETIME DEFAULT CURRENT_TIMESTAMP,
+     "created"       DATETIME DEFAULT CURRENT_TIMESTAMP,
+     "published"     BOOL DEFAULT false
+  );
+
+
+CREATE  TABLE "lecture" (
+	"_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+	"sid" INTEGER UNIQUE ,
+	"book_id" INTEGER,
+	"lang_question" TEXT,
+	"lang_answer" TEXT,
+	"created" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+	"changed" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE  TABLE "word" (
+	"_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+	"sid"  UNIQUE ,
+	"question" TEXT,
+	"answer" TEXT,
+	"lecture_id" INTEGER NOT NULL ,
+	"created" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+	"changed" DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX book_fk_idx ON lecture (book_id);
+CREATE INDEX lecture_fk_idx ON word (lecture_id);
