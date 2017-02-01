@@ -34,7 +34,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.BookListActivity"
-                android:parentActivityName=".BaseActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".BaseActivity"
             />
 
     </application>
