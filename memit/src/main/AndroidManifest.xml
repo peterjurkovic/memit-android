@@ -38,6 +38,11 @@
             android:parentActivityName=".BaseActivity"
             />
 
+        <activity android:name=".activity.AddBookActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.BookListActivity"
+            />
+
     </application>
 
 

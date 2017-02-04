@@ -1,5 +1,6 @@
 package io.memit.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import io.memit.android.R;
@@ -79,15 +81,40 @@ public abstract class AbstractActivity extends AppCompatActivity{
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.menu_item_drill).withIcon(FontAwesome.Icon.faw_play),
-                        new PrimaryDrawerItem().withName(R.string.menu_item_books).withIcon(FontAwesome.Icon.faw_book),
-                        new PrimaryDrawerItem().withName(R.string.menu_item_repository).withIcon(FontAwesome.Icon.faw_cloud_download),
-                        new PrimaryDrawerItem().withName(R.string.menu_item_setting).withIcon(FontAwesome.Icon.faw_cog),
+                        new PrimaryDrawerItem().withIdentifier(0L).withName("Home").withIcon(FontAwesome.Icon.faw_home),
+                        new PrimaryDrawerItem().withIdentifier(1L).withName(R.string.menu_item_drill).withIcon(FontAwesome.Icon.faw_play),
+                        new PrimaryDrawerItem().withIdentifier(2L).withName(R.string.menu_item_books).withIcon(FontAwesome.Icon.faw_book),
+                        new PrimaryDrawerItem().withIdentifier(3L).withName(R.string.menu_item_repository).withIcon(FontAwesome.Icon.faw_cloud_download),
+                        new PrimaryDrawerItem().withIdentifier(4L).withName(R.string.menu_item_setting).withIcon(FontAwesome.Icon.faw_cog),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.menu_item_help)
                 )
                 .withSavedInstance(savedInstanceState)
                 .withShowDrawerOnFirstLaunch(true)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 1) {
+
+                            } else if (drawerItem.getIdentifier() == 2) {
+                                intent = new Intent(getApplicationContext(), BookListActivity.class);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                // intent = new Intent(DrawerActivity.this, MultiDrawerActivity.class);
+                            } else if (drawerItem.getIdentifier() == 4) {
+
+                            } else if (drawerItem.getIdentifier() == 5) {
+
+                            }
+                            if(intent != null){
+                                startActivity(intent);
+                            }
+                        }
+
+                        return false;
+                    }
+                })
                 .build();
     }
 

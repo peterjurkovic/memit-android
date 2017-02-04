@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -40,7 +41,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book);
+        setContentView(R.layout.activity_book_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,6 +56,15 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         Account account = new Account("SyncAccount", "stubAuthenticator");
 
         AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+
+        FloatingActionButton addBookBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        addBookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), AddBookActivity.class);
+                startActivity(i);
+            }
+        });
 
         initDrawer(toolbar,savedInstanceState);
         if(BuildConfig.DEBUG) Log.d(TAG, "created");
@@ -115,8 +125,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         @Override
         public void onBindViewHolder(BookViewHolder holder, int position) {
-            if (bookCursor != null
-                    && bookCursor.moveToPosition(position)) {
+            if (bookCursor != null && bookCursor.moveToPosition(position)) {
                 String name = bookCursor
                         .getString(bookCursor.getColumnIndexOrThrow(BookContract.Book.NAME));
 
@@ -133,12 +142,12 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
             return 0;
         }
 
-        public void swapCursor(Cursor newDeviceCursor) {
+        public void swapCursor(Cursor newBookListCursor) {
             if (bookCursor != null) {
                 bookCursor.close();
             }
 
-            bookCursor = newDeviceCursor;
+            bookCursor = newBookListCursor;
 
             notifyDataSetChanged();
         }

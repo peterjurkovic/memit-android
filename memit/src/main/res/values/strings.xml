@@ -10,4 +10,40 @@
 
     <string name="permission_description_read_devices">Allows apps to read device information</string>
     <string name="permission_description_write_devices">Allows apps to write device information</string>
+
+
+    <!-- LANGUAGES -->
+
+    <string name="lang_BG">Bulgarian</string>
+    <string name="lang_HR">Croatian</string>
+    <string name="lang_CS">Czech</string>
+    <string name="lang_DA">Danish</string>
+    <string name="lang_NL">Dutch</string>
+    <string name="lang_EO">Esperanto</string>
+    <string name="lang_FR">French</string>
+    <string name="lang_DE">German</string>
+    <string name="lang_EL">Greek</string>
+    <string name="lang_HU">Hungarian</string>
+    <string name="lang_ID">Indonesian</string>
+    <string name="lang_IT">Italian</string>
+    <string name="lang_NB">Norwegian</string>
+    <string name="lang_PL">Polish</string>
+    <string name="lang_PT">Protugese</string>
+    <string name="lang_RO">Romanian</string>
+    <string name="lang_RU">Russian</string>
+    <string name="lang_SK">Slovakian</string>
+    <string name="lang_SL">Slovenian</string>
+    <string name="lang_ES">Spanish</string>
+    <string name="lang_SV">Swedish</string>
+    <string name="lang_TR">Turkish</string>
+
+    <!-- LEVELS  -->
+
+    <string name="level_A1">Beginner / Elementary</string>
+    <string name="level_A2">Pre-Intermediate</string>
+    <string name="level_B1">Intermediate</string>
+    <string name="level_B2">Upper-intermediate</string>
+    <string name="level_C1">Advanced</string>
+    <string name="level_C2">Proficient</string>
+
 </resources>

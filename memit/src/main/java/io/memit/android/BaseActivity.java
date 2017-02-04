@@ -25,16 +25,7 @@ public class BaseActivity extends AbstractActivity {
 
         DatabaseOpenHelper.getInstance(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                Intent i = new Intent(getApplicationContext(), BookListActivity.class);
-                startActivity(i);
-            }
-        });
+
 
         initDrawer(toolbar, savedInstanceState);
     }
