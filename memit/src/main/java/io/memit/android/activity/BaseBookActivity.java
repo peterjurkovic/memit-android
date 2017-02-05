@@ -7,9 +7,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.List;
+
 import io.memit.android.R;
-import io.memit.android.adapter.LangAdapter;
+import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.model.Lang;
+import io.memit.android.model.Level;
+import io.memit.android.model.SpinnerState;
 
 /**
  * Created by peter on 2/4/17.
@@ -31,10 +35,10 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
     protected void prepareSpinners(){
         initForm();
-        // ArrayAdapter<State> adapter = Utils.toArrayAdapter(getApplicationContext(), Lang.values());
-        questionSpinner.setAdapter(new LangAdapter(getApplicationContext()));
-        answerSpinner.setAdapter(new LangAdapter(getApplicationContext()));
-       // levelSpinner.setAdapter(Utils.toArrayAdapter(getApplicationContext(), Level.values()));
+        List<SpinnerState> langs = Lang.toList();
+        questionSpinner.setAdapter(new SpinnerAdapter(getApplicationContext(), langs));
+        answerSpinner.setAdapter(new SpinnerAdapter(getApplicationContext(), langs));
+       levelSpinner.setAdapter(new SpinnerAdapter(getApplicationContext(), Level.toList()));
     }
 
     protected void initForm(){

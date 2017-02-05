@@ -13,11 +13,8 @@
     tools:context="io.memit.android.activity.AddBookActivity"
     tools:showIn="@layout/activity_book_add">
 
-
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/bookNameInputWrapper"
-        android:layout_below="@id/addBookHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,48 +39,29 @@
         />
 
     <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/bookLangQuestionSpinner"
         android:layout_below="@id/bookLangQuestionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
         />
 
     <!-- LANG QUESTION -->
 
-    <TextView
-        android:id="@+id/bookLangAnswerLabel"
-        android:layout_below="@id/bookLangQuestionSpinner"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Language of answer"
-        />
-
     <Spinner
-        android:layout_below="@id/bookLangAnswerLabel"
+        android:id="@+id/bookLangAnswerSpinner"
+        android:layout_below="@id/bookLangQuestionSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bookLangAnswerSpinner"
         />
 
     <!-- Level -->
 
-    <TextView
-        android:id="@+id/bookLevelLabel"
-        android:layout_below="@id/bookLangAnswerSpinner"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Level"
-        />
-
     <Spinner
-        android:layout_below="@id/bookLevelLabel"
+        android:id="@+id/bookLevelSpinner"
+        android:layout_below="@id/bookLangAnswerSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bookLevelSpinner"
         />
 
     <LinearLayout
@@ -98,7 +76,7 @@
             android:layout_weight=".5"
             android:layout_height="wrap_content"
             android:layout_width="0dip"
-            style="@style/Widget.AppCompat.Button"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:text="Cancel"
             />
 

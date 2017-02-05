@@ -11,15 +11,22 @@
     <string name="permission_description_read_devices">Allows apps to read device information</string>
     <string name="permission_description_write_devices">Allows apps to write device information</string>
 
+    <!-- BOOK FORM -->
+
+    <string name="book_add_new">Add new textbook</string>
+    <string name="book_form_name">Name of the textbook</string>
+
 
     <!-- LANGUAGES -->
 
     <string name="lang_BG">Bulgarian</string>
+    <string name="lang_ZH">Chinese</string>
     <string name="lang_HR">Croatian</string>
     <string name="lang_CS">Czech</string>
     <string name="lang_DA">Danish</string>
     <string name="lang_NL">Dutch</string>
     <string name="lang_EO">Esperanto</string>
+    <string name="lang_FI">Finnish</string>
     <string name="lang_FR">French</string>
     <string name="lang_DE">German</string>
     <string name="lang_EL">Greek</string>

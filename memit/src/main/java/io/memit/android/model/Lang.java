@@ -1,5 +1,8 @@
 package io.memit.android.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.memit.android.R;
 
 /**
@@ -8,11 +11,13 @@ import io.memit.android.R;
 
 public enum Lang implements SpinnerState {
     BG(R.string.lang_BG),
+    ZH(R.string.lang_HR),
     HR(R.string.lang_HR),
     CS(R.string.lang_CS),
     DA(R.string.lang_DA),
-    NL(R.string.lang_NL),
     EO(R.string.lang_EO),
+    FI(R.string.lang_FI),
+    NL(R.string.lang_NL),
     FR(R.string.lang_FR),
     DE(R.string.lang_DE),
     EL(R.string.lang_EL),
@@ -43,4 +48,13 @@ public enum Lang implements SpinnerState {
     public int getResource() {
         return resource;
     }
+
+    public static List<SpinnerState> toList(){
+        ArrayList<SpinnerState> list = new ArrayList<>(values().length);
+        for(SpinnerState state : values()){
+            list.add(state);
+        }
+        return list;
+    }
+
 }

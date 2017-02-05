@@ -1,5 +1,8 @@
 package io.memit.android.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.memit.android.R;
 
 /**
@@ -29,5 +32,11 @@ public enum Level implements SpinnerState{
         return this.toString();
     }
 
-
+    public static List<SpinnerState> toList(){
+        ArrayList<SpinnerState> list = new ArrayList<>(values().length);
+        for(SpinnerState state : values()){
+            list.add(state);
+        }
+        return list;
+    }
 }

@@ -27,7 +27,8 @@ public class AddBookActivity extends BaseBookActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_add);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dynamic);
+        toolbar.setTitle(R.string.book_add_new);
         setSupportActionBar(toolbar);
         prepareSpinners();
         initDrawer(toolbar,savedInstanceState);
