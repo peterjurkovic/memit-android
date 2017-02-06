@@ -62,6 +62,10 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
         return ((Lang) answerSpinner.getSelectedItem()).getId();
     }
 
+    protected String getLevel(){
+        return ((Level) levelSpinner.getSelectedItem()).getId();
+    }
+
 
     protected String getBookName(){
         Editable text = bookNameEditText.getEditableText();

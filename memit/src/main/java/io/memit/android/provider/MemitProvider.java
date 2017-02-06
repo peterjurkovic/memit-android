@@ -20,9 +20,9 @@ import io.memit.android.BuildConfig;
  * Created by peter on 1/29/17.
  */
 
-public class BookProvider extends ContentProvider{
+public class MemitProvider extends ContentProvider{
 
-    private static final String TAG = BookProvider.class.getSimpleName();
+    private static final String TAG = MemitProvider.class.getSimpleName();
 
     private DatabaseOpenHelper dbHelper;
 
@@ -70,6 +70,7 @@ public class BookProvider extends ContentProvider{
         sortOrder = (sortOrder == null ? BaseColumns._ID : sortOrder);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         final int code = URI_MATCHER.match(uri);
+        Log.d(TAG, "code: " + code);
         switch (code) {
             case CODE_ALL_BOOK:
                 cursor = database.query(URI_CODE_TABLE_MAP.get(code),
@@ -83,18 +84,34 @@ public class BookProvider extends ContentProvider{
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        return null;
+        return cursor;
     }
 
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        Log.d(TAG, "[getType] uri: " + uri);
+        final int code = URI_MATCHER.match(uri);
+        switch (code) {
+            case CODE_ALL_BOOK:
+                return String.format("%s/vnd.%s.%s",
+                        ContentResolver.CURSOR_DIR_BASE_TYPE,
+                        BookContract.AUTHORITY,
+                        BookContract.Book.PATH);
+            case CODE_BOOK_ID:
+                return String.format("%s/vnd.%s.%s",
+                        ContentResolver.CURSOR_ITEM_BASE_TYPE,
+                        BookContract.AUTHORITY,
+                        BookContract.Book.PATH);
+            default:
+                return null;
+        }
     }
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         long id;
+        Log.d(TAG, "Creating [uri="+uri+"] values: " + values);
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case CODE_ALL_BOOK:

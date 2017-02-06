@@ -15,6 +15,8 @@
 
     <string name="book_add_new">Add new textbook</string>
     <string name="book_form_name">Name of the textbook</string>
+    <string name="book_form_name_short_error">Must have at least 5 characters</string>
+    <string name="book_form_name_exists_error">The book with given name already exists</string>
     <string name="book_level">Language level</string>
     <string name="language_of_questions">Language of questions</string>
     <string name="language_of_answers">Language of answers</string>

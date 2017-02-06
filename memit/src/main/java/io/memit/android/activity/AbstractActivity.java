@@ -90,7 +90,6 @@ public abstract class AbstractActivity extends AppCompatActivity{
                         new PrimaryDrawerItem().withName(R.string.menu_item_help)
                 )
                 .withSavedInstance(savedInstanceState)
-                .withShowDrawerOnFirstLaunch(true)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {

@@ -34,6 +34,7 @@ public class BookContract {
             public static final String NAME = "name";
             public static final String LANG_QUESTION = "lang_question";
             public static final String LANG_ANSWER = "lang_answer";
+            public static final String LEVEL = "level";
             public static final String PUBLISHED = "pulished";
 
             public static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);

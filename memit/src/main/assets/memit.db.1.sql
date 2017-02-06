@@ -5,6 +5,7 @@ CREATE TABLE "book"
      "name"          TEXT,
      "lang_question" TEXT,
      "lang_answer"   TEXT,
+     "level"         TEXT,
      "changed"       DATETIME DEFAULT CURRENT_TIMESTAMP,
      "created"       DATETIME DEFAULT CURRENT_TIMESTAMP,
      "published"     BOOL DEFAULT false

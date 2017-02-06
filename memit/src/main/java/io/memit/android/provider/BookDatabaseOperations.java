@@ -1,5 +1,6 @@
 package io.memit.android.provider;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -26,6 +27,10 @@ public class BookDatabaseOperations extends  BaseDatabaseOperations{
         super(helper);
     }
 
+    public static BookDatabaseOperations getInstance(Context context){
+        return getInstance(DatabaseOpenHelper.getInstance(context));
+    }
+
     public static BookDatabaseOperations getInstance(final DatabaseOpenHelper helper){
         if(operations == null){
             synchronized (lock){
@@ -36,6 +41,26 @@ public class BookDatabaseOperations extends  BaseDatabaseOperations{
         }
         return operations;
     }
+
+    public boolean exists(String name, long id){
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Checking whether book with [name=" + name+ "] [id=" + id + "] exists");
+
+        String selection =  "name=? AND _id<>?";
+        String[] selectionArgs = { String.valueOf(name), String.valueOf(id) };
+        Cursor cursor = null;
+        try {
+            cursor = helper.getWritableDatabase()
+                    .query(Tables.BOOK, new String[]{BaseColumns._ID}, selection, selectionArgs, null, null, null);
+            return cursor.moveToNext();
+        }finally {
+            if(cursor != null){
+                cursor.close();
+            }
+        }
+
+    }
+
 
     public int removeBook(String id){
         if (BuildConfig.DEBUG)

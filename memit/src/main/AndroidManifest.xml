@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
 
         <provider
-            android:name=".provider.BookProvider"
+            android:name=".provider.MemitProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:readPermission="io.memit.provider.READ_DEVICES"

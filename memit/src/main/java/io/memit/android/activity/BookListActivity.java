@@ -94,6 +94,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "onLoadFinished, count: " + data.getCount());
         if (data == null || data.getCount() == 0) {
             empty.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -117,6 +118,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         @Override
         public BookViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Log.d(TAG, "[onCreateViewHolder] viewType" + viewType);
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_book_item, parent, false);
 
@@ -133,13 +135,14 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
                         .getInt(bookCursor.getColumnIndexOrThrow(BookContract.Book._ID));
 
                 holder.name.setText(name);
+                Log.d(TAG, holder.toString());
                 holder.uri = ContentUris.withAppendedId(BookContract.CONTENT_URI,  id);
             }
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return (bookCursor == null ? 0 : bookCursor.getCount());
         }
 
         public void swapCursor(Cursor newBookListCursor) {
@@ -170,6 +173,14 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
             //detailIntent.putExtra(DeviceDetailActivity.EXTRA_DEVICE_URI, uri);
             // startActivity(detailIntent);
+        }
+
+        @Override
+        public String toString() {
+            return "BookViewHolder{" +
+                    "name=" + name +
+                    ", uri=" + uri +
+                    '}';
         }
     }
 
