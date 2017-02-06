@@ -10,5 +10,5 @@ public interface SpinnerState {
 
     int getResource();
 
-    //int getDrawable();
+    int getDrawable();
 }

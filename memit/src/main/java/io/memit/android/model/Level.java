@@ -32,6 +32,11 @@ public enum Level implements SpinnerState{
         return this.toString();
     }
 
+    public int getDrawable(){
+        return -1;
+    }
+
+
     public static List<SpinnerState> toList(){
         ArrayList<SpinnerState> list = new ArrayList<>(values().length);
         for(SpinnerState state : values()){
@@ -39,4 +44,5 @@ public enum Level implements SpinnerState{
         }
         return list;
     }
+
 }

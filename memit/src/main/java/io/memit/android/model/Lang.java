@@ -10,35 +10,35 @@ import io.memit.android.R;
  */
 
 public enum Lang implements SpinnerState {
-    BG(R.string.lang_BG),
-    ZH(R.string.lang_HR),
-    HR(R.string.lang_HR),
-    CS(R.string.lang_CS),
-    DA(R.string.lang_DA),
-    EO(R.string.lang_EO),
-    FI(R.string.lang_FI),
-    NL(R.string.lang_NL),
-    FR(R.string.lang_FR),
-    DE(R.string.lang_DE),
-    EL(R.string.lang_EL),
-    HU(R.string.lang_HU),
-    ID(R.string.lang_ID),
-    IT(R.string.lang_IT),
-    NB(R.string.lang_NB),
-    PL(R.string.lang_PL),
-    PT(R.string.lang_PT),
-    RO(R.string.lang_RO),
-    RU(R.string.lang_RU),
-    SK(R.string.lang_SK),
-    SL(R.string.lang_SL),
-    ES(R.string.lang_ES),
-    SV(R.string.lang_SV),
-    TR(R.string.lang_TR);
+    BG(R.string.lang_BG, R.drawable.flag_bg),
+    ZH(R.string.lang_ZH, R.drawable.flag_hz),
+    HR(R.string.lang_HR, R.drawable.flag_hr),
+    CS(R.string.lang_CS, R.drawable.flag_cs),
+    DA(R.string.lang_DA, R.drawable.flag_da),
+    FI(R.string.lang_FI, R.drawable.flag_fi),
+    NL(R.string.lang_NL, R.drawable.flag_nl),
+    FR(R.string.lang_FR, R.drawable.flag_fr),
+    DE(R.string.lang_DE, R.drawable.flag_de),
+    EL(R.string.lang_EL, R.drawable.flag_el),
+    HU(R.string.lang_HU, R.drawable.flag_hu),
+    IT(R.string.lang_IT, R.drawable.flag_it),
+    NB(R.string.lang_NB, R.drawable.flag_nb),
+    PL(R.string.lang_PL, R.drawable.flag_pl),
+    PT(R.string.lang_PT, R.drawable.flag_pt),
+    RO(R.string.lang_RO, R.drawable.flag_ro),
+    RU(R.string.lang_RU, R.drawable.flag_ru),
+    SK(R.string.lang_SK, R.drawable.flag_sk),
+    SL(R.string.lang_SL, R.drawable.flag_sl),
+    ES(R.string.lang_ES, R.drawable.flag_es),
+    SV(R.string.lang_SV, R.drawable.flag_sv),
+    TR(R.string.lang_TR, R.drawable.flag_tr);
 
     private final int resource;
+    private final int drawable;
 
-    private Lang(int resource) {
+    private Lang(int resource, int drawable) {
         this.resource = resource;
+        this.drawable = drawable;
     }
 
     public String getId() {
@@ -49,6 +49,10 @@ public enum Lang implements SpinnerState {
         return resource;
     }
 
+    public int getDrawable(){
+        return drawable;
+    }
+
     public static List<SpinnerState> toList(){
         ArrayList<SpinnerState> list = new ArrayList<>(values().length);
         for(SpinnerState state : values()){
@@ -56,5 +60,6 @@ public enum Lang implements SpinnerState {
         }
         return list;
     }
+
 
 }

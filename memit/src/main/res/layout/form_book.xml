@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="Name"/>
+            android:hint="@string/book_form_name"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -31,12 +31,9 @@
     <TextView
         android:id="@+id/bookLangQuestionLabel"
         android:layout_below="@id/bookNameInputWrapper"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Language of question"
-        />
+        style="@style/inputLabel"
+        android:text="@string/language_of_questions"
+    />
 
     <Spinner
         android:id="@+id/bookLangQuestionSpinner"
@@ -44,28 +41,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
+
         />
 
     <!-- LANG QUESTION -->
+    <TextView
+        android:id="@+id/bookLangAnswerLabel"
+        android:layout_below="@id/bookLangQuestionSpinner"
+        style="@style/inputLabel"
+        android:text="@string/language_of_answers"
+        />
+
 
     <Spinner
         android:id="@+id/bookLangAnswerSpinner"
-        android:layout_below="@id/bookLangQuestionSpinner"
+        android:layout_below="@id/bookLangAnswerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <!-- Level -->
 
+    <TextView
+        android:id="@+id/bookLevelSpinnerLabel"
+        android:layout_below="@id/bookLangAnswerSpinner"
+        style="@style/inputLabel"
+        android:text="@string/book_level"
+        />
+
     <Spinner
         android:id="@+id/bookLevelSpinner"
-        android:layout_below="@id/bookLangAnswerSpinner"
+        android:layout_below="@id/bookLevelSpinnerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <LinearLayout
         android:layout_below="@id/bookLevelSpinner"
+        android:layout_marginTop="15dp"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:orientation="horizontal"
@@ -73,22 +86,14 @@
 
         <Button
             android:id="@+id/bookCancelBtn"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
-            android:layout_width="0dip"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/cancelBtn"
             android:text="Cancel"
             />
 
         <Button
             android:id="@+id/bookSaveBtn"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
-            android:layout_width="0dip"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/saveBtn"
             android:text="Save"
             />
-
-        
     </LinearLayout>
 </RelativeLayout>

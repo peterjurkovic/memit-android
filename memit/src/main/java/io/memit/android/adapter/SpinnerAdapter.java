@@ -26,11 +26,10 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerState> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView label = (TextView) super.getView(position, convertView, parent);
-
         SpinnerState element = getItem(position);
         label.setText(element.getResource());
-        // label.setCompoundDrawablesWithIntrinsicBounds(0, 0, element.getResource(), 0);
-
+        if(element.getDrawable() != -1)
+            label.setCompoundDrawablesWithIntrinsicBounds(element.getDrawable(), 0, 0, 0);
         return label;
     }
 
@@ -40,7 +39,8 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerState> {
 
         SpinnerState element = getItem(position);
         label.setText(element.getResource());
-        //label.setCompoundDrawablesWithIntrinsicBounds(0, 0, element.get. getImageResourceId(), 0);
+        if(element.getDrawable() != -1)
+            label.setCompoundDrawablesWithIntrinsicBounds(element.getDrawable(), 0, 0, 0);
 
         return label;
     }

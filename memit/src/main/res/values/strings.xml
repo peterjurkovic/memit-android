@@ -15,6 +15,10 @@
 
     <string name="book_add_new">Add new textbook</string>
     <string name="book_form_name">Name of the textbook</string>
+    <string name="book_level">Language level</string>
+    <string name="language_of_questions">Language of questions</string>
+    <string name="language_of_answers">Language of answers</string>
+
 
 
     <!-- LANGUAGES -->
@@ -25,13 +29,11 @@
     <string name="lang_CS">Czech</string>
     <string name="lang_DA">Danish</string>
     <string name="lang_NL">Dutch</string>
-    <string name="lang_EO">Esperanto</string>
     <string name="lang_FI">Finnish</string>
     <string name="lang_FR">French</string>
     <string name="lang_DE">German</string>
     <string name="lang_EL">Greek</string>
     <string name="lang_HU">Hungarian</string>
-    <string name="lang_ID">Indonesian</string>
     <string name="lang_IT">Italian</string>
     <string name="lang_NB">Norwegian</string>
     <string name="lang_PL">Polish</string>

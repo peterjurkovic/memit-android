@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:textColor="@color/colorPrimaryDark"
+    android:layout_margin="5dp"
+    android:padding="10dp"
+    android:textSize="18sp"
+    android:textColor="@color/colorPrimaryText"
+    tools:showIn="@layout/form_book"
+    tools:context=".activity.AddBookActivity"
+    android:drawablePadding="10dp"
     />

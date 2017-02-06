@@ -30,9 +30,6 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
     protected Button cancelButton;
 
 
-
-
-
     protected void prepareSpinners(){
         initForm();
         List<SpinnerState> langs = Lang.toList();
