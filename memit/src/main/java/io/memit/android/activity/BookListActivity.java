@@ -194,8 +194,6 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            Log.d(TAG, "onCreateContextMenu");
-
             MenuItem editMenu = menu.add(0,EDIT_ITEM,1,R.string.book_edit);
             MenuItem removeMenu = menu.add(0,REMOVE_ITEM,2,R.string.book_remove);
             removeMenu.setOnMenuItemClickListener(this);
@@ -204,28 +202,27 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            Log.d(TAG, "onMenuItemClick " + item);
             switch (item.getItemId()){
                 case EDIT_ITEM:
+                    editBook();
                     break;
                 case REMOVE_ITEM:
-                    remove();
+                    removeBook();
                     break;
             }
-            /*
-            Intent detailIntent = new Intent(  BookListActivity.class);
-            detailIntent.putExtra(DeviceDetailActivity.EXTRA_DEVICE_URI, uri);
-            startActivity(detailIntent);
-            */
             return false;
         }
 
+        private void editBook(){
+            Intent intent = new Intent(context, EditBookActivity.class);
+            intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, uri);
+            startActivity(intent);
+        }
 
-        private void remove(){
+
+        private void removeBook(){
             Log.i(TAG, "Removing: " + this + " as post: " + getAdapterPosition());
-            // recyclerView.getAdapter().notifyItemRemoved(getAdapterPosition());
-            // recyclerView.getAdapter().notifyDataSetChanged();
-            removeBookHandler.startDelete(-1, name, uri,null,null);
+            removeBookHandler.startDelete(-1, name, uri, null, null);
         }
 
     }
@@ -244,9 +241,9 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
          @Override
          protected void onDeleteComplete(int position, Object cookie, int result) {
-             Log.d(TAG, "onDeleteComplete " + cookie);
+             Log.i(TAG, "onDeleteComplete " + cookie);
              getLoaderManager().restartLoader(LOADER_ID_BOOK, null, context);
-             Snackbar.make(root, "Book has been removed", Snackbar.LENGTH_SHORT).show();
+             Snackbar.make(root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
          }
      }
 

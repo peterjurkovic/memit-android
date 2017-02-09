@@ -39,8 +39,20 @@ public class BookContract {
 
             public static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
 
+
+
     }
 
+    public static String[] allColumns(){
+        return new String[]{
+                Book._ID,
+                Book.SID,
+                Book.NAME,
+                Book.LANG_ANSWER,
+                Book.LANG_QUESTION,
+                Book.LEVEL
+        };
+    }
 
 
 

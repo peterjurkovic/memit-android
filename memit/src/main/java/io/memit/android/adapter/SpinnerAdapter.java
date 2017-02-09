@@ -1,6 +1,7 @@
 package io.memit.android.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -44,4 +45,16 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerState> {
 
         return label;
     }
+
+    public int positionOf(String id){
+        for(int i = 0; i < getCount(); i++){
+            SpinnerState item = getItem(i);
+            Log.d("Spinner", item + " is at pos " + i);
+            if(item != null && item.getId().equalsIgnoreCase(id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

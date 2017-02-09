@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root"
     android:fitsSystemWindows="true"
-    tools:context="io.memit.android.BaseActivity">
+    tools:context="io.memit.android.activity.AddBookActivity">
 
     <include layout="@layout/toolbar_dynamic" />
 

@@ -44,6 +44,11 @@
             android:parentActivityName=".activity.BookListActivity"
             />
 
+        <activity android:name=".activity.EditBookActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.BookListActivity"
+            />
+
     </application>
 
 

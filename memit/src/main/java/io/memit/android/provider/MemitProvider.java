@@ -81,6 +81,23 @@ public class MemitProvider extends ContentProvider{
                         null,
                         sortOrder);
                 break;
+            case CODE_BOOK_ID:
+                if (selection == null) {
+                    selection = BaseColumns._ID
+                            + " = "
+                            + uri.getLastPathSegment();
+                } else {
+                    throw new IllegalArgumentException("Selection must " +
+                            "be null when specifying ID as part of uri.");
+                }
+                cursor = database.query(URI_CODE_TABLE_MAP.get(code),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -149,7 +166,36 @@ public class MemitProvider extends ContentProvider{
 
 
      public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+         int rowCount;
+
+         final int code = URI_MATCHER.match(uri);
+         switch (code) {
+
+             case CODE_BOOK_ID:
+                 if (selection == null
+                         && selectionArgs == null) {
+                     selection = BaseColumns._ID + " = ?";
+
+                     selectionArgs = new String[] {
+                             uri.getLastPathSegment()
+                     };
+                 } else {
+                     throw new IllegalArgumentException("Selection must be " +
+                             "null when specifying ID as part of uri.");
+                 }
+                 rowCount = dbHelper
+                         .getWritableDatabase()
+                         .update(URI_CODE_TABLE_MAP.get(code),
+                                 values,
+                                 selection,
+                                 selectionArgs);
+                 break;
+             default:
+                 throw new IllegalArgumentException("Invalid Uri: " + uri);
+         }
+
+         notifyUris(uri);
+         return rowCount;
     }
 
     private void notifyUris(Uri affectedUri) {

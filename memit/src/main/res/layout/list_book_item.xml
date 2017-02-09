@@ -8,8 +8,9 @@
     android:layout_marginStart="6dp"
     android:layout_marginEnd="6dp"
     android:layout_marginTop="3dp"
+    android:fontFamily="sans-serif-light"
     android:layout_marginBottom="3dp"
-    app:cardCornerRadius="10dp"
+
     tools:context=".activity.BookListActivity">
 
     <RelativeLayout
@@ -27,9 +28,11 @@
 
             <ImageView
                 android:id="@+id/book_ico"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="@drawable/ic_book_black_24px"
+                android:layout_width="30dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_library_books_black_24px"
 
                 />
 
@@ -42,9 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/thumbnail"
             android:layout_toRightOf="@+id/thumbnail"
-            android:text="Rihanna Love the way lie"
-            android:textSize="15dip"
-            android:textStyle="bold"/>
+            android:maxLines="1"
+            android:layout_marginRight="15dp"
+            android:textSize="15dip"/>
 
         <TextView
             android:id="@+id/artist"
