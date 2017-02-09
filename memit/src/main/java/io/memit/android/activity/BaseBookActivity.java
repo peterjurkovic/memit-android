@@ -1,6 +1,7 @@
 package io.memit.android.activity;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.text.Editable;
 import android.widget.Button;
@@ -20,6 +21,8 @@ import io.memit.android.model.SpinnerState;
  */
 
 public abstract class BaseBookActivity extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    protected final Context context = this;
 
     protected EditText bookNameEditText;
     protected Spinner questionSpinner;

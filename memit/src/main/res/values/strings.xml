@@ -18,6 +18,9 @@
     <string name="book_form_name_short_error">Must have at least 5 characters</string>
     <string name="book_form_name_exists_error">The book with given name already exists</string>
     <string name="book_level">Language level</string>
+    <string name="book_edit_existing">Edit textbook</string>
+    <string name="book_edit">Edit</string>
+    <string name="book_remove">Remove</string>
     <string name="language_of_questions">Language of questions</string>
     <string name="language_of_answers">Language of answers</string>
 
@@ -31,6 +34,7 @@
     <string name="lang_CS">Czech</string>
     <string name="lang_DA">Danish</string>
     <string name="lang_NL">Dutch</string>
+    <string name="lang_EN">English</string>
     <string name="lang_FI">Finnish</string>
     <string name="lang_FR">French</string>
     <string name="lang_DE">German</string>
@@ -56,5 +60,7 @@
     <string name="level_B2">Upper-intermediate</string>
     <string name="level_C1">Advanced</string>
     <string name="level_C2">Proficient</string>
+
+    <string name="fa_icon_book" translatable="false">&#xf02d;</string>
 
 </resources>

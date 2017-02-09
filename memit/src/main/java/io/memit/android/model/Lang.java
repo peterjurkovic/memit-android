@@ -17,6 +17,7 @@ public enum Lang implements SpinnerState {
     DA(R.string.lang_DA, R.drawable.flag_da),
     FI(R.string.lang_FI, R.drawable.flag_fi),
     NL(R.string.lang_NL, R.drawable.flag_nl),
+    EN(R.string.lang_EN, R.drawable.flag_en),
     FR(R.string.lang_FR, R.drawable.flag_fr),
     DE(R.string.lang_DE, R.drawable.flag_de),
     EL(R.string.lang_EL, R.drawable.flag_el),

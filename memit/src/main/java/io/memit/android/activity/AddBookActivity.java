@@ -1,7 +1,6 @@
 package io.memit.android.activity;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -24,7 +23,6 @@ public class AddBookActivity extends BaseBookActivity {
 
     private static final String TAG =  AddBookActivity.class.getSimpleName();
 
-    final Context context = this;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

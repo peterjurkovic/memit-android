@@ -132,29 +132,19 @@ public class MemitProvider extends ContentProvider{
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int rowCount;
         final int code = URI_MATCHER.match(uri);
+        Uri rootUri;
         switch (code) {
-            /*
-            case CODE_ALL_DEVICES:
-            case CODE_ALL_MANUFACTURERS:
-                rowCount = helper
-                        .getWritableDatabase()
-                        .delete(URI_CODE_TABLE_MAP.get(code),
-                                selection,
-                                selectionArgs);
-                break;
-            */
             case CODE_BOOK_ID:
-                if (selection == null && selectionArgs == null) {
-                    return BookDatabaseOperations
+                    rowCount = BookDatabaseOperations
                             .getInstance(dbHelper)
                             .removeBook(uri.getLastPathSegment());
-                } else {
-                    throw new IllegalArgumentException("Selection must be " +
-                            "null when specifying ID as part of uri.");
-                }
+                rootUri = BookContract.CONTENT_URI;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        notifyUris(uri, rootUri);
+        return rowCount;
     }
 
 
@@ -163,10 +153,17 @@ public class MemitProvider extends ContentProvider{
     }
 
     private void notifyUris(Uri affectedUri) {
+        notifyUris(affectedUri, null);
+    }
+
+    private void notifyUris(Uri affectedUri, Uri rootUri) {
+        Log.i(TAG, "notifyUris");
         final ContentResolver contentResolver = getContext().getContentResolver();
         if (contentResolver != null) {
+            Log.i(TAG, "nofifyUris: " + affectedUri + " root:" + rootUri);
             contentResolver.notifyChange(affectedUri, null);
-//            contentResolver.notifyChange(DevicesContract.DeviceManufacturer.CONTENT_URI, null);
+            if(rootUri != null)
+                contentResolver.notifyChange(rootUri, null);
         }
     }
 }
