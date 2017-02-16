@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context=".activity.BookListActivity">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar_dynamic" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

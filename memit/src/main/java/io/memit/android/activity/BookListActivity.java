@@ -46,13 +46,14 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
     private TextView empty;
     private CoordinatorLayout root;
     private RemoveBookHandler removeBookHandler;
-    // private BookListActivity context = this;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_book_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dynamic);
+        toolbar.setTitle(R.string.book_list);
         setSupportActionBar(toolbar);
         root = (CoordinatorLayout) findViewById(R.id.root);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
