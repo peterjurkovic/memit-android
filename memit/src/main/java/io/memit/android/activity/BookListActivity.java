@@ -26,9 +26,12 @@ import android.widget.TextView;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import java.lang.ref.WeakReference;
+
 import io.memit.android.BuildConfig;
 import io.memit.android.R;
 import io.memit.android.provider.BookContract;
+import io.memit.android.provider.BookContract.Book;
 
 /**
  * Created by peter on 1/31/17.
@@ -43,7 +46,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
     private TextView empty;
     private CoordinatorLayout root;
     private RemoveBookHandler removeBookHandler;
-    private BookListActivity context = this;
+    // private BookListActivity context = this;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +60,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new BookListCursorAdapter());
-        removeBookHandler = new RemoveBookHandler();
+        removeBookHandler = new RemoveBookHandler(this);
         getLoaderManager().initLoader(LOADER_ID_BOOK, null, this);
 
         // Account account = new Account("SyncAccount", "stubAuthenticator");
@@ -83,8 +86,8 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Loader<Cursor> loader = null;
         String[] projection = {
-                BookContract.Book._ID,
-                BookContract.Book.NAME
+                Book._ID,
+                Book.NAME
         };
         Log.d(TAG, "onCreateLoader id:" + id + " budle:" + args);
         switch (id) {
@@ -94,7 +97,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
                         projection,
                         null,
                         null,
-                        BookContract.Book.NAME);
+                        Book.NAME);
                 break;
         }
 
@@ -138,12 +141,23 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         public void onBindViewHolder(BookViewHolder holder, int position) {
             if (bookCursor != null && bookCursor.moveToPosition(position)) {
                 String name = bookCursor
-                        .getString(bookCursor.getColumnIndexOrThrow(BookContract.Book.NAME));
+                        .getString(bookCursor.getColumnIndexOrThrow(Book.NAME));
 
                 int id = bookCursor
-                        .getInt(bookCursor.getColumnIndexOrThrow(BookContract.Book._ID));
+                        .getInt(bookCursor.getColumnIndexOrThrow(Book._ID));
+
+                int lectureCount = bookCursor
+                        .getInt(bookCursor.getColumnIndexOrThrow(Book.LECTURE_COUNT));
+
+                int wordCount = bookCursor
+                        .getInt(bookCursor.getColumnIndexOrThrow(Book.WORD_COUNT));
+
+                int activeWordCount = bookCursor
+                        .getInt(bookCursor.getColumnIndexOrThrow(Book.ACTIVE_WORD_COUNT));
 
                 holder.name.setText(name);
+                holder.info.setText(getString(
+                        R.string.book_item_info,lectureCount, wordCount, activeWordCount));
                 holder.id = id;
                 Log.d(TAG, holder.toString());
                 holder.uri = ContentUris.withAppendedId(BookContract.CONTENT_URI,  id);
@@ -174,8 +188,9 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         private final static byte EDIT_ITEM = 1;
         private final static byte REMOVE_ITEM = 2;
 
-        public TextView name;
-        public Uri uri;
+        private TextView name;
+        private TextView info;
+        private Uri uri;
         private int id;
 
         public BookViewHolder(View itemView) {
@@ -184,6 +199,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
             name = (TextView) itemView.findViewById(R.id.book_title);
+            info = (TextView) itemView.findViewById(R.id.book_info);
         }
 
         @Override
@@ -214,7 +230,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         }
 
         private void editBook(){
-            Intent intent = new Intent(context, EditBookActivity.class);
+            Intent intent = new Intent(BookListActivity.this, EditBookActivity.class);
             intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, uri);
             startActivity(intent);
         }
@@ -228,10 +244,12 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
     }
 
 
-     private class RemoveBookHandler extends AsyncQueryHandler{
+     private static class RemoveBookHandler extends AsyncQueryHandler{
+         private final WeakReference<BookListActivity> weekActivity;
 
-         public RemoveBookHandler() {
-             super(getContentResolver());
+         public RemoveBookHandler(BookListActivity activity) {
+             super(activity.getContentResolver());
+             this.weekActivity = new WeakReference<>(activity);
          }
 
          @Override
@@ -241,9 +259,12 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
          @Override
          protected void onDeleteComplete(int position, Object cookie, int result) {
-             Log.i(TAG, "onDeleteComplete " + cookie);
-             getLoaderManager().restartLoader(LOADER_ID_BOOK, null, context);
-             Snackbar.make(root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
+             BookListActivity activity = weekActivity.get();
+             if(activity == null || activity.isFinishing()){
+                 return;
+             }
+             activity.getLoaderManager().restartLoader(LOADER_ID_BOOK, null, activity);
+             Snackbar.make(activity.root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
          }
      }
 

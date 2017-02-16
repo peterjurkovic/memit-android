@@ -14,10 +14,10 @@ CREATE  TABLE "lecture" (
 	"_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
 	"sid" INTEGER UNIQUE ,
 	"book_id" INTEGER,
+	"name" TEXT,
 	"lang_question" TEXT,
 	"lang_answer" TEXT,
-	"changed" DATETIME NOT NULL  DEFAULT (datetime('now')),
-	"word_count" INTEGER NOT NULL DEFAULT 0
+	"changed" DATETIME NOT NULL  DEFAULT (datetime('now'))
 );
 
 CREATE  TABLE "word" (
@@ -59,38 +59,6 @@ CREATE TABLE "deleted_rows" (
  		deleted TIMESTAMP NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TRIGGER _sync_delete_book
-     AFTER DELETE ON book
-     FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN
-     INSERT INTO deleted_rows(tableName, sid)
-     VALUES('book', OLD.sid);
-END;
-
-
-CREATE TRIGGER _sync_delete_lecture
-     AFTER DELETE ON lecture
-     FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN
-     INSERT INTO deleted_rows(tableName, sid)
-     VALUES('lecture', OLD.sid);
-END;
-
-CREATE TRIGGER _sync_delete_word
-     AFTER DELETE ON word
-     FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN
-     INSERT INTO deleted_rows(tableName, sid)
-     VALUES('word', OLD.sid);
-END;
-
-CREATE TRIGGER deactivate_word_on_update
-     AFTER UPDATE ON session_word
-     FOR EACH ROW WHEN NEW.last_rating = 1 BEGIN
-     UPDATE word SET active = 0, changed = datetime('now') WHERE _id = NEW.word_id;
-END;
-
-
-CREATE TRIGGER deactivate_word_on_insert
-     AFTER INSERT ON session_word
-     FOR EACH ROW WHEN NEW.last_rating = 1 BEGIN
-     UPDATE word SET active = 0, changed = datetime('now') WHERE _id = NEW.word_id;
-END;
-
+CREATE TRIGGER _sync_delete_book AFTER DELETE ON book FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN INSERT INTO deleted_rows(tableName, sid) VALUES('book', OLD.sid); END;
+CREATE TRIGGER _sync_delete_lecture AFTER DELETE ON lecture FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN INSERT INTO deleted_rows(tableName, sid) VALUES ('lecture', OLD.sid); END;
+CREATE TRIGGER _sync_delete_word AFTER DELETE ON word FOR EACH ROW WHEN OLD.sid IS NOT NULL BEGIN INSERT INTO deleted_rows(tableName, sid) VALUES('word', OLD.sid); END;

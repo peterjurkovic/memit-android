@@ -61,6 +61,20 @@ public class BookDatabaseOperations extends  BaseDatabaseOperations{
 
     }
 
+    public Cursor getAllBooks(){
+        StringBuilder query = new StringBuilder()
+                .append("SELECT b._id, b.name, ")
+                .append("   COUNT(DISTINCT l._id) as lecture_count, " )
+                .append("   IFNULL(COUNT(DISTINCT w._id),0) as word_count, " )
+                .append("   IFNULL(SUM( w.active),0)as active_word_count " )
+                .append("FROM book b " )
+                .append("   LEFT JOIN lecture l ON l.book_id = b._id ")
+                .append("   LEFT JOIN word w ON w.lecture_id = l._id ")
+                .append("GROUP BY b._id ")
+                .append("ORDER BY b.name");
+        SQLiteDatabase db = helper.getWritableDatabase();
+        return db.rawQuery(query.toString(), null );
+    }
 
     public int removeBook(String id){
         if (BuildConfig.DEBUG)

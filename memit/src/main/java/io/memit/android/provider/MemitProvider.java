@@ -73,13 +73,9 @@ public class MemitProvider extends ContentProvider{
         Log.d(TAG, "code: " + code);
         switch (code) {
             case CODE_ALL_BOOK:
-                cursor = database.query(URI_CODE_TABLE_MAP.get(code),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
+                cursor = BookDatabaseOperations
+                            .getInstance(getContext())
+                            .getAllBooks();
                 break;
             case CODE_BOOK_ID:
                 if (selection == null) {

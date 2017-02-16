@@ -23,6 +23,7 @@
     <string name="book_remove">Remove</string>
     <string name="book_removed">The book has been removed</string>
     <string name="book_saved">Saved</string>
+    <string name="book_item_info">Lectures: %1$d Cards: %2$d Activated %3$d</string>
     <string name="language_of_questions">Language of questions</string>
     <string name="language_of_answers">Language of answers</string>
 

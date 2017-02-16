@@ -37,6 +37,9 @@ public class BookContract {
             public static final String LEVEL = "level";
             public static final String PUBLISHED = "pulished";
 
+            public static final String LECTURE_COUNT = "lecture_count";
+            public static final String WORD_COUNT = "word_count";
+            public static final String ACTIVE_WORD_COUNT = "active_word_count";
             public static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
 
 
