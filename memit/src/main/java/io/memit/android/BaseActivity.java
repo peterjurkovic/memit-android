@@ -2,12 +2,9 @@ package io.memit.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.BookListActivity;
@@ -28,6 +25,8 @@ public class BaseActivity extends AbstractActivity {
 
 
         initDrawer(toolbar, savedInstanceState);
+        Intent i = new Intent(this, BookListActivity.class);
+        startActivity(i);
     }
 
     @Override

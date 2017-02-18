@@ -22,7 +22,7 @@ import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.model.Lang;
 import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
-import io.memit.android.provider.BookContract;
+import io.memit.android.provider.Contract;
 import io.memit.android.provider.BookDatabaseOperations;
 
 /**
@@ -111,10 +111,10 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
         String langOfQuestion = getLangOfQuestion().toLowerCase();
         String langOfAnswer = getLangOfAnswer().toLowerCase();
         final ContentValues contentValues = new ContentValues();
-        contentValues.put(BookContract.Book.NAME, bookName);
-        contentValues.put(BookContract.Book.LANG_QUESTION, langOfQuestion);
-        contentValues.put(BookContract.Book.LANG_ANSWER, langOfAnswer);
-        contentValues.put(BookContract.Book.LEVEL, getLevel());
+        contentValues.put(Contract.Book.NAME, bookName);
+        contentValues.put(Contract.Book.LANG_QUESTION, langOfQuestion);
+        contentValues.put(Contract.Book.LANG_ANSWER, langOfAnswer);
+        contentValues.put(Contract.Book.LEVEL, getLevel());
         return contentValues;
     }
 
@@ -141,7 +141,7 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
 
     protected boolean isBookValid(ContentValues cv){
-        String bookName = cv.getAsString(BookContract.Book.NAME);
+        String bookName = cv.getAsString(Contract.Book.NAME);
         if(bookName.length() < MIN_BOOK_NAME_LENGTH){
             bookNameEditText.setError( getString(R.string.book_form_name_short_error, MIN_BOOK_NAME_LENGTH ));
             return false;

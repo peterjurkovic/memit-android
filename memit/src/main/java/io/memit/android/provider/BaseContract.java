@@ -10,9 +10,13 @@ public class BaseContract {
 
 
     public interface SyncColumns extends BaseColumns {
-        public static final String SID = "sid";
-        public static final String CHANGED = "changed";
-        public static final String CREATED = "created";
+        static final String SID = "sid";
+        static final String CHANGED = "changed";
+        static final String CREATED = "created";
+
+        static final String LECTURE_COUNT = "lecture_count";
+        static final String WORD_COUNT = "word_count";
+        static final String ACTIVE_WORD_COUNT = "active_word_count";
     }
 
 }

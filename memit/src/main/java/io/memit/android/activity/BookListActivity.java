@@ -23,25 +23,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.iconics.IconicsDrawable;
-
 import java.lang.ref.WeakReference;
 
-import io.memit.android.BuildConfig;
 import io.memit.android.R;
-import io.memit.android.provider.BookContract;
-import io.memit.android.provider.BookContract.Book;
+import io.memit.android.activity.lecture.LectureListActivity;
+import io.memit.android.provider.Contract.Book;
 
 /**
  * Created by peter on 1/31/17.
  */
 
-public class BookListActivity extends AbstractActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
+public class BookListActivity extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG =  BookListActivity.class.getSimpleName();
+    private static final byte LOADER_ID_BOOK = 1;
+    public final static String LECTURE_EXTRA_URI = "lectureUri";
 
-    private static final int LOADER_ID_BOOK = 1;
     private RecyclerView recyclerView;
     private TextView empty;
     private CoordinatorLayout root;
@@ -64,8 +61,6 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         removeBookHandler = new RemoveBookHandler(this);
         getLoaderManager().initLoader(LOADER_ID_BOOK, null, this);
 
-        // Account account = new Account("SyncAccount", "stubAuthenticator");
-        // AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
 
         FloatingActionButton addBookBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
         addBookBtn.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +70,8 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
                 startActivity(i);
             }
         });
-        new IconicsDrawable(this)
-                .icon(FontAwesome.Icon.faw_book)
-                .sizeDp(24);
 
         initDrawer(toolbar,savedInstanceState);
-        if(BuildConfig.DEBUG) Log.d(TAG, "created");
     }
 
     @Override
@@ -94,7 +85,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         switch (id) {
             case LOADER_ID_BOOK:
                 loader = new CursorLoader(this,
-                        BookContract.CONTENT_URI,
+                        Book.CONTENT_URI,
                         projection,
                         null,
                         null,
@@ -160,8 +151,9 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
                 holder.info.setText(getString(
                         R.string.book_item_info,lectureCount, wordCount, activeWordCount));
                 holder.id = id;
+                holder.title = name;
                 Log.d(TAG, holder.toString());
-                holder.uri = ContentUris.withAppendedId(BookContract.CONTENT_URI,  id);
+                holder.uri = ContentUris.withAppendedId(Book.CONTENT_URI,  id);
             }
         }
 
@@ -178,7 +170,6 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
             }
 
             bookCursor = newBookListCursor;
-
             notifyDataSetChanged();
         }
     }
@@ -193,6 +184,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
         private TextView info;
         private Uri uri;
         private int id;
+        private String title;
 
         public BookViewHolder(View itemView) {
             super(itemView);
@@ -205,7 +197,10 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
         @Override
         public void onClick(View view) {
-
+            Intent intent = new Intent(BookListActivity.this, LectureListActivity.class);
+            intent.putExtra(LectureListActivity.BOOK_ID_EXTRA, id);
+            startActivity(intent);
+            // overridePendingTransitionEnter();
         }
 
 
@@ -246,6 +241,7 @@ public class BookListActivity extends AbstractActivity implements  LoaderManager
 
 
      private static class RemoveBookHandler extends AsyncQueryHandler{
+
          private final WeakReference<BookListActivity> weekActivity;
 
          public RemoveBookHandler(BookListActivity activity) {

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
 import io.memit.android.R;
-import io.memit.android.provider.BookContract;
+import io.memit.android.provider.Contract;
 
 /**
  * Created by peter on 2/1/17.
@@ -28,7 +28,7 @@ public class AddBookActivity extends BaseBookActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
-            Uri uri = getContentResolver().insert(BookContract.Book.CONTENT_URI, cv);
+            Uri uri = getContentResolver().insert(Contract.Book.CONTENT_URI, cv);
             Snackbar.make(root, getString(R.string.book_saved), Snackbar.LENGTH_SHORT).show();
         }
     }

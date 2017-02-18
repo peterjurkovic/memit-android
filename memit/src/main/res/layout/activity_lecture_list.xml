@@ -7,9 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activity.BookListActivity">
+    tools:context=".activity.lecture.LectureListActivity">
 
-    <include layout="@layout/toolbar_dynamic" />
+    <include layout="@layout/toolbar_lecture_detail" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -23,14 +23,14 @@
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/book_list_empty"
+        android:text="@string/lecutre_list_empty"
         android:gravity="center"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addBookBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
+
         android:src="@drawable/ic_add_black_24dp"
         android:layout_gravity="bottom|end" />
 

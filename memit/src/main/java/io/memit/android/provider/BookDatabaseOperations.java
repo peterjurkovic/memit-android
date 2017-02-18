@@ -16,11 +16,11 @@ import io.memit.android.provider.DatabaseOpenHelper.Tables;
  * Created by peter on 1/30/17.
  */
 
-public class BookDatabaseOperations extends  BaseDatabaseOperations{
+public class BookDatabaseOperations extends BaseDatabaseOperations{
 
     private final static String TAG = BookDatabaseOperations.class.getSimpleName();
-    private static final Object lock = new Object();
-    private static BookDatabaseOperations operations;
+    private static final Object LOCK = new Object();
+    private static BookDatabaseOperations OPERATIONS;
 
 
     private BookDatabaseOperations(DatabaseOpenHelper helper){
@@ -32,14 +32,14 @@ public class BookDatabaseOperations extends  BaseDatabaseOperations{
     }
 
     public static BookDatabaseOperations getInstance(final DatabaseOpenHelper helper){
-        if(operations == null){
-            synchronized (lock){
-                if(operations == null){
-                    operations = new BookDatabaseOperations(helper);
+        if(OPERATIONS == null){
+            synchronized (LOCK){
+                if(OPERATIONS == null){
+                    OPERATIONS = new BookDatabaseOperations(helper);
                 }
             }
         }
-        return operations;
+        return OPERATIONS;
     }
 
     public boolean exists(String name, long id){

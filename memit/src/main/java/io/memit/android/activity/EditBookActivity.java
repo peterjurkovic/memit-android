@@ -15,7 +15,7 @@ import android.widget.Spinner;
 
 import io.memit.android.R;
 import io.memit.android.adapter.SpinnerAdapter;
-import io.memit.android.provider.BookContract;
+import io.memit.android.provider.Contract;
 
 /**
  * Created by peter on 2/8/17.
@@ -46,7 +46,7 @@ public class EditBookActivity extends BaseBookActivity {
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
                 bookUri,
-                BookContract.allColumns(),
+                Contract.allBookColumns(),
                 null,
                 null,
                 null);
@@ -56,15 +56,15 @@ public class EditBookActivity extends BaseBookActivity {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
             bookNameEditText.setText(data.getString(data
-                    .getColumnIndexOrThrow(BookContract.Book.NAME)));
+                    .getColumnIndexOrThrow(Contract.Book.NAME)));
             String langQuestion = data.getString(data
-                    .getColumnIndexOrThrow(BookContract.Book.LANG_QUESTION));
+                    .getColumnIndexOrThrow(Contract.Book.LANG_QUESTION));
             preSelect(questionSpinner, langQuestion);
             String langAnswer = data.getString(data
-                    .getColumnIndexOrThrow(BookContract.Book.LANG_ANSWER));
+                    .getColumnIndexOrThrow(Contract.Book.LANG_ANSWER));
             preSelect(answerSpinner, langAnswer);
             String level = data.getString(data
-                    .getColumnIndexOrThrow(BookContract.Book.LEVEL));
+                    .getColumnIndexOrThrow(Contract.Book.LEVEL));
             preSelect(levelSpinner, level);
 
         }else{

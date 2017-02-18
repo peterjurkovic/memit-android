@@ -11,7 +11,7 @@ CREATE TABLE "book" (
 );
 
 CREATE  TABLE "lecture" (
-	"_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+	"_id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,
 	"sid" INTEGER UNIQUE ,
 	"book_id" INTEGER,
 	"name" TEXT,
@@ -21,8 +21,8 @@ CREATE  TABLE "lecture" (
 );
 
 CREATE  TABLE "word" (
-	"_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
-	"sid"  UNIQUE ,
+	"_id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,
+	"sid" INTEGER UNIQUE ,
 	"question" TEXT,
 	"answer" TEXT,
 	"lecture_id" INTEGER NOT NULL,
