@@ -8,7 +8,6 @@ import android.view.MenuItem;
 
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.BookListActivity;
-import io.memit.android.provider.DatabaseOpenHelper;
 
 public class BaseActivity extends AbstractActivity {
 
@@ -19,10 +18,6 @@ public class BaseActivity extends AbstractActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        DatabaseOpenHelper.getInstance(this);
-
-
 
         initDrawer(toolbar, savedInstanceState);
         Intent i = new Intent(this, BookListActivity.class);

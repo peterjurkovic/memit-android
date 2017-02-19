@@ -42,4 +42,45 @@
     <style name="expandedTest" parent="@android:style/TextAppearance">
         <item name="android:textSize">28sp</item>
     </style>
+
+    <style name="GenericProgressIndicator" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+    
+    <style name="lectureListItemLang">
+        <item name="android:layout_width">15dp</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginRight">3dp</item>
+    </style>
+
+    <style name="font" >
+    </style>
+
+    <style name="listItemTitle" parent="font">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/listItemTitleTextColor</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+    </style>
+
+    <style name="listItemInfo" parent="font">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:textColor">@color/listItemInfoTextColor</item>
+    </style>
+
+    <style name="listItemNextIco">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/ic_navigate_next_black_24px</item>
+    </style>
 </resources>

@@ -53,6 +53,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activity.BookListActivity"
             />
+
+        <activity android:name=".activity.lecture.AddLectureActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.lecture.LectureListActivity"
+            />
     </application>
 
 

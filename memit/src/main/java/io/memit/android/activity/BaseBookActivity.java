@@ -2,7 +2,6 @@ package io.memit.android.activity;
 
 import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,8 +21,8 @@ import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.model.Lang;
 import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
-import io.memit.android.provider.Contract;
 import io.memit.android.provider.BookDatabaseOperations;
+import io.memit.android.provider.Contract;
 
 /**
  * Created by peter on 2/4/17.
@@ -33,7 +32,6 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
     protected static final byte MIN_BOOK_NAME_LENGTH = 5;
 
-    protected final Context context = this;
     protected final int layout;
     protected final int title;
 
@@ -143,7 +141,7 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
     protected boolean isBookValid(ContentValues cv){
         String bookName = cv.getAsString(Contract.Book.NAME);
         if(bookName.length() < MIN_BOOK_NAME_LENGTH){
-            bookNameEditText.setError( getString(R.string.book_form_name_short_error, MIN_BOOK_NAME_LENGTH ));
+            bookNameEditText.setError( getString(R.string.error_string_short, MIN_BOOK_NAME_LENGTH ));
             return false;
         }
         boolean bookAlreadyExists = BookDatabaseOperations

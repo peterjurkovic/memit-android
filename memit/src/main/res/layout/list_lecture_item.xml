@@ -11,7 +11,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginBottom="3dp"
 
-    tools:context=".activity.BookListActivity">
+    tools:context=".activity.lecture.LectureListActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,28 +27,30 @@
             android:layout_marginRight="5dip">
 
             <ImageView
-                android:id="@+id/book_ico"
-                android:layout_width="30dp"
+                android:id="@+id/lecture_ico"
+                android:layout_width="40dp"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_library_books_black_24px"
+                android:background="@drawable/ic_view_module_black_24px"
                 />
 
         </LinearLayout>
 
 
         <TextView
-            android:id="@+id/book_title"
+            android:id="@+id/lecture_title"
             android:layout_alignTop="@+id/thumbnail"
             android:layout_toRightOf="@+id/thumbnail"
-            style="@style/listItemTitle"/>
+            style="@style/listItemTitle"
+            />
 
         <TextView
-            android:id="@+id/book_info"
-            android:layout_below="@id/book_title"
-            android:layout_toRightOf="@+id/thumbnail"
-            style="@style/listItemInfo"/>
+            android:id="@+id/lecture_info"
+            android:layout_below="@id/lecture_title"
+            android:layout_toRightOf="@id/thumbnail"
+            style="@style/listItemInfo"
+             />
 
         <ImageView style="@style/listItemNextIco"/>
 

@@ -28,6 +28,7 @@ public class MemitProvider extends ContentProvider{
 
     private static final byte CODE_ALL_BOOKS = 100;
     private static final byte CODE_BOOK_ID = 101;
+    private static final byte CODE_ALL_LECTURES= 103;
     private static final byte CODE_LECTURE_ID = 102;
 
     private static final SparseArray<String> URI_CODE_TABLE_MAP =  new SparseArray<>();
@@ -39,11 +40,13 @@ public class MemitProvider extends ContentProvider{
         URI_CODE_TABLE_MAP.put(CODE_ALL_BOOKS, DatabaseOpenHelper.Tables.BOOK);
         URI_CODE_TABLE_MAP.put(CODE_BOOK_ID,  DatabaseOpenHelper.Tables.BOOK);
         URI_CODE_TABLE_MAP.put(CODE_LECTURE_ID, DatabaseOpenHelper.Tables.LECTURE);
+        URI_CODE_TABLE_MAP.put(CODE_ALL_LECTURES, DatabaseOpenHelper.Tables.LECTURE);
 
 
         URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Book.PATH, CODE_ALL_BOOKS);
         URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Book.PATH + "/#", CODE_BOOK_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Lecture.PATH + "/#" , CODE_LECTURE_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Lecture.PATH, CODE_ALL_LECTURES);
     }
 
     @Override
@@ -130,6 +133,11 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case CODE_ALL_BOOKS:
+                id = dbHelper
+                        .getWritableDatabase()
+                        .insertOrThrow(URI_CODE_TABLE_MAP.get(code), null, values);
+                break;
+            case CODE_ALL_LECTURES:
                 id = dbHelper
                         .getWritableDatabase()
                         .insertOrThrow(URI_CODE_TABLE_MAP.get(code), null, values);

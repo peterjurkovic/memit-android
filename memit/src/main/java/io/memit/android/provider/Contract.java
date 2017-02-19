@@ -39,6 +39,7 @@ public class Contract {
         static final String NAME = "name";
         static final String LANG_QUESTION = "lang_question";
         static final String LANG_ANSWER = "lang_answer";
+        static final String BOOK_ID = "book_id";
         static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
     }
 

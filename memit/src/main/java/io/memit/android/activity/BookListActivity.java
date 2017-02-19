@@ -147,11 +147,11 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
                 int activeWordCount = bookCursor
                         .getInt(bookCursor.getColumnIndexOrThrow(Book.ACTIVE_WORD_COUNT));
 
-                holder.name.setText(name);
-                holder.info.setText(getString(
+                holder.viewName.setText(name);
+                holder.viewInfo.setText(getString(
                         R.string.book_item_info,lectureCount, wordCount, activeWordCount));
-                holder.id = id;
-                holder.title = name;
+                holder.bookId = id;
+                holder.bookName = name;
                 Log.d(TAG, holder.toString());
                 holder.uri = ContentUris.withAppendedId(Book.CONTENT_URI,  id);
             }
@@ -180,27 +180,27 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         private final static byte EDIT_ITEM = 1;
         private final static byte REMOVE_ITEM = 2;
 
-        private TextView name;
-        private TextView info;
+        private TextView viewName;
+        private TextView viewInfo;
         private Uri uri;
-        private int id;
-        private String title;
+        private long bookId;
+        private String bookName;
 
         public BookViewHolder(View itemView) {
             super(itemView);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
-            name = (TextView) itemView.findViewById(R.id.book_title);
-            info = (TextView) itemView.findViewById(R.id.book_info);
+            viewName = (TextView) itemView.findViewById(R.id.book_title);
+            viewInfo = (TextView) itemView.findViewById(R.id.book_info);
         }
 
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(BookListActivity.this, LectureListActivity.class);
-            intent.putExtra(LectureListActivity.BOOK_ID_EXTRA, id);
+            intent.putExtra(LectureListActivity.BOOK_ID_EXTRA, bookId);
+            intent.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
             startActivity(intent);
-            // overridePendingTransitionEnter();
         }
 
 
@@ -234,7 +234,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
 
         private void removeBook(){
             Log.i(TAG, "Removing: " + this + " as post: " + getAdapterPosition());
-            removeBookHandler.startDelete(-1, name, uri, null, null);
+            removeBookHandler.startDelete(-1, viewName, uri, null, null);
         }
 
     }

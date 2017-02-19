@@ -9,8 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
-import io.memit.android.activity.AddBookActivity;
 import io.memit.android.provider.Contract.Lecture;
 
 /**
@@ -37,14 +34,13 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     private static final String TAG =  LectureListActivity.class.getSimpleName();
     private static final byte LECTURE_LOADER = 1;
-    public final static String BOOK_ID_EXTRA = "lectureUri";
-    public final static String BOOK_NAME_EXTRA = "lectureName";
+
+    public final static String BOOK_ID_EXTRA = "bookIdExtra";
+    public final static String BOOK_NAME_EXTRA = "bookNameExtra";
 
     private RecyclerView recyclerView;
     private TextView empty;
-    private CoordinatorLayout root;
-    private int lectureId;
-    private String bookName;
+    private long bookdId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,17 +48,14 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         setContentView(R.layout.activity_lecture_list);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.lecture_toolbar);
-        final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        toolbar.setTitle("Němčina pro jazykové školy 2 ");
+        bookdId = getIntent().getExtras().getLong(BOOK_ID_EXTRA);
+        String bookName = getIntent().getExtras().getString(BOOK_NAME_EXTRA);
+        toolbar.setTitle(bookName);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
 
         setSupportActionBar(toolbar);
-        root = (CoordinatorLayout) findViewById(R.id.root);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         empty = (TextView) findViewById(R.id.empty);
-
-        lectureId = getIntent().getExtras().getInt(BOOK_ID_EXTRA);
-        bookName = getIntent().getExtras().getString(BOOK_NAME_EXTRA);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new LectureListCursorAdapter());
@@ -75,7 +68,8 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         addBookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), AddBookActivity.class);
+                Intent i = new Intent(LectureListActivity.this, AddLectureActivity.class);
+                i.putExtra(BOOK_ID_EXTRA, bookdId);
                 startActivity(i);
             }
         });
@@ -85,32 +79,34 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Loader<Cursor> loader = null;
         switch (id) {
             case LECTURE_LOADER:
-                loader = new CursorLoader(this,
-                        ContentUris.withAppendedId(Lecture.CONTENT_URI, lectureId),
+                return new CursorLoader(this,
+                        ContentUris.withAppendedId(Lecture.CONTENT_URI, bookdId),
                         null,
                         null,
                         null,
                         Lecture.NAME);
-                break;
         }
 
-        return loader;
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished, count: " + data.getCount());
-        if (data == null || data.getCount() == 0) {
-            empty.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            empty.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            ((LectureListCursorAdapter) recyclerView.getAdapter()).swapCursor(data);
+        if(loader.getId() == LECTURE_LOADER){
+
+            if (data == null || data.getCount() == 0) {
+                empty.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                empty.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                ((LectureListCursorAdapter) recyclerView.getAdapter()).swapCursor(data);
+            }
+
         }
+
     }
 
     @Override
@@ -127,7 +123,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         @Override
         public LectureListActivity.LectureViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_book_item, parent, false);
+                    .inflate(R.layout.list_lecture_item, parent, false);
             return new LectureListActivity.LectureViewHolder(view);
         }
 
@@ -142,17 +138,12 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
                         .getInt(cursor.getColumnIndexOrThrow(Lecture.WORD_COUNT));
                 int activeWordCount = cursor
                         .getInt(cursor.getColumnIndexOrThrow(Lecture.ACTIVE_WORD_COUNT));
-                String langQuestion = cursor
-                        .getString(cursor.getColumnIndexOrThrow(Lecture.LANG_QUESTION));
-                String langAnswer = cursor
-                        .getString(cursor.getColumnIndexOrThrow(Lecture.LANG_ANSWER));
                 holder.name.setText(name);
                 holder.info.setText(getString(R.string.lecutre_item_info, wordCount, activeWordCount));
+
                 holder.id = id;
             }
         }
-
-
 
         @Override
         public int getItemCount() {
@@ -186,8 +177,8 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
-            name = (TextView) itemView.findViewById(R.id.book_title);
-            info = (TextView) itemView.findViewById(R.id.book_info);
+            name = (TextView) itemView.findViewById(R.id.lecture_title);
+            info = (TextView) itemView.findViewById(R.id.lecture_info);
         }
 
         @Override

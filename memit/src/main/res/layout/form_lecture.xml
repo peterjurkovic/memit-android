@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_lecture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="io.memit.android.activity.lecture.AddLectureActivity"
+    tools:showIn="@layout/activity_lecture_add">
+
+    <RelativeLayout
+        android:id="@+id/lectureBookNameHolder"
+        android:layout_width="match_parent"
+        android:background="#EEEEEE"
+        android:padding="8dp"
+        android:layout_marginBottom="5dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/lectureBookIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/ic_library_books_black_24px"/>
+
+        <TextView
+            android:layout_toRightOf="@id/lectureBookIcon"
+            android:id="@+id/lectureBookName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            android:text="@string/loading"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/lectureBookNameHolder"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:id="@+id/form"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/lectureNameInputWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/lectureNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="@string/lecture_form_name"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- LANG QUESTION -->
+        <TextView
+            android:id="@+id/lectureLangQuestionLabel"
+            android:layout_below="@id/lectureNameInputWrapper"
+            style="@style/inputLabel"
+            android:text="@string/language_of_questions"
+            />
+
+        <Spinner
+            android:id="@+id/lectureLangQuestionSpinner"
+            android:layout_below="@id/lectureLangQuestionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <!-- LANG QUESTION -->
+        <TextView
+            android:id="@+id/lectureLangAnswerLabel"
+            android:layout_below="@id/lectureLangQuestionSpinner"
+            style="@style/inputLabel"
+            android:text="@string/language_of_answers"
+            />
+
+
+        <Spinner
+            android:id="@+id/lectureLangAnswerSpinner"
+            android:layout_below="@id/lectureLangAnswerLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+        <LinearLayout
+            android:layout_below="@id/lectureLangAnswerSpinner"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:weightSum="1.0" >
+
+            <Button
+                android:id="@+id/lectureCancelBtn"
+                style="@style/cancelBtn"
+                android:text="@string/cancel"
+                />
+
+            <Button
+                android:id="@+id/lectureSaveBtn"
+                style="@style/saveBtn"
+                android:text="@string/save"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
+</RelativeLayout>
+

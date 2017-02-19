@@ -11,11 +11,15 @@
     <string name="permission_description_read_devices">Allows apps to read device information</string>
     <string name="permission_description_write_devices">Allows apps to write device information</string>
 
+    <string name="save">Save</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="loading">Loading..</string>
+
     <!-- BOOK FORM -->
 
-    <string name="book_add_new">Add new textbook</string>
-    <string name="book_form_name">Name of the textbook</string>
-    <string name="book_form_name_short_error">Must have at least %1$d characters</string>
+    <string name="book_add_new">Add a new textbook</string>
+    <string name="book_form_name">Name of your textbook</string>
     <string name="book_form_name_exists_error">The book with given name already exists</string>
     <string name="book_level">Language level</string>
     <string name="book_edit_existing">Edit textbook</string>
@@ -29,9 +33,17 @@
     <string name="language_of_questions">Language of questions</string>
     <string name="language_of_answers">Language of answers</string>
 
+    <!-- LECTURE FORM -->
+
     <string name="lecture_list">Lectures</string>
+    <string name="lecture_add_new">Add a new lecture</string>
     <string name="lecutre_item_info">Cards: %1$d Activated %2$d</string>
     <string name="lecutre_list_empty">The textbook does not contain any lecture</string>
+    <string name="lecture_form_name">Name of the lecture</string>
+
+
+    <!-- VALIDATION -->
+    <string name="error_string_short">Must have at least %1$d characters</string>
 
     <!-- LANGUAGES -->
 

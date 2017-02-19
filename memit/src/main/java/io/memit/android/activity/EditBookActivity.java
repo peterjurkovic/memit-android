@@ -83,7 +83,7 @@ public class EditBookActivity extends BaseBookActivity {
         if( isBookValid(cv) ){
             getContentResolver().update(bookUri, cv, null, null);
             Snackbar.make(root, getString(R.string.book_saved), Snackbar.LENGTH_SHORT).show();
-            Intent i = new Intent(context, BookListActivity.class);
+            Intent i = new Intent(this, BookListActivity.class);
             startActivity(i);
         }
     }

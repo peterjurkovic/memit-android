@@ -87,13 +87,13 @@
         <Button
             android:id="@+id/bookCancelBtn"
             style="@style/cancelBtn"
-            android:text="Cancel"
+            android:text="@string/cancel"
             />
 
         <Button
             android:id="@+id/bookSaveBtn"
             style="@style/saveBtn"
-            android:text="Save"
+            android:text="@string/save"
             />
     </LinearLayout>
 </RelativeLayout>
