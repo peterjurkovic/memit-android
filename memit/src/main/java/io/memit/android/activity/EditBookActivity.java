@@ -9,11 +9,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Spinner;
 
 import io.memit.android.R;
+import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.provider.Contract;
 
@@ -27,7 +27,9 @@ public class EditBookActivity extends BaseBookActivity {
 
     private final static int ID_BOOK = 2;
     public final static String BOOK_EXTRA_URI = "bookUri";
+    public final static String REFERER_EXTRA = "referer";
     private Uri bookUri;
+    private String referer;
 
 
     public EditBookActivity(){
@@ -39,6 +41,8 @@ public class EditBookActivity extends BaseBookActivity {
         super.onCreate(savedInstanceState);
 
         bookUri = getIntent().getExtras().getParcelable(BOOK_EXTRA_URI);
+        referer = getIntent().getExtras().getString(REFERER_EXTRA);
+
         getLoaderManager().initLoader(ID_BOOK, null, this);
     }
 
@@ -82,11 +86,22 @@ public class EditBookActivity extends BaseBookActivity {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
             getContentResolver().update(bookUri, cv, null, null);
-            Snackbar.make(root, getString(R.string.book_saved), Snackbar.LENGTH_SHORT).show();
-            Intent i = new Intent(this, BookListActivity.class);
-            startActivity(i);
+
+            if(shouldGoToBookDetail()){
+                goToBookDetail(bookId(), cv.getAsString(Contract.Book.NAME));
+            }else{
+                Intent i = new Intent(this, BookListActivity.class);
+                i.putExtra(SHOW_SAVED_EXTRA, true );
+                startActivity(i);
+            }
+
         }
     }
+
+    private boolean shouldGoToBookDetail(){
+        return referer != null && referer.equals(LectureListActivity.class.getName());
+    }
+
 
     private void preSelect(Spinner spinner, String id){
         int pos = ((SpinnerAdapter) spinner.getAdapter()).positionOf(id);

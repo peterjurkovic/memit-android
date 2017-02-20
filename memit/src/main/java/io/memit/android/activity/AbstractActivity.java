@@ -27,6 +27,7 @@ import io.memit.android.R;
 
 public abstract class AbstractActivity extends AppCompatActivity{
 
+    public static final String SHOW_SAVED_EXTRA = "savedExtra";
     protected static final int PROFILE_SETTING = 100000;
     protected AccountHeader headerResult = null;
     protected Drawer result = null;
@@ -116,6 +117,17 @@ public abstract class AbstractActivity extends AppCompatActivity{
                 })
                 .build();
     }
+
+
+    public void showSuccessfulySavedMessage(View view){
+        if(view != null){
+            boolean wasSaved = getIntent().getBooleanExtra(SHOW_SAVED_EXTRA, false);
+            if(wasSaved){
+                Snackbar.make(view, getString(R.string.book_saved), Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
 
 

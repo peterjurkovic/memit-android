@@ -5,7 +5,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 
 import io.memit.android.R;
 import io.memit.android.provider.Contract;
@@ -29,7 +28,7 @@ public class AddBookActivity extends BaseBookActivity {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
             Uri uri = getContentResolver().insert(Contract.Book.CONTENT_URI, cv);
-            Snackbar.make(root, getString(R.string.book_saved), Snackbar.LENGTH_SHORT).show();
+            goToBookDetail(Long.valueOf(uri.getLastPathSegment()), cv.getAsString(Contract.Book.NAME));
         }
     }
 

@@ -72,6 +72,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         });
 
         initDrawer(toolbar,savedInstanceState);
+        showSuccessfulySavedMessage(root);
     }
 
     @Override

@@ -17,12 +17,13 @@ import android.widget.Spinner;
 import java.util.List;
 
 import io.memit.android.R;
+import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.model.Lang;
 import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
 import io.memit.android.provider.BookDatabaseOperations;
-import io.memit.android.provider.Contract;
+import io.memit.android.provider.Contract.Book;
 
 /**
  * Created by peter on 2/4/17.
@@ -109,10 +110,10 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
         String langOfQuestion = getLangOfQuestion().toLowerCase();
         String langOfAnswer = getLangOfAnswer().toLowerCase();
         final ContentValues contentValues = new ContentValues();
-        contentValues.put(Contract.Book.NAME, bookName);
-        contentValues.put(Contract.Book.LANG_QUESTION, langOfQuestion);
-        contentValues.put(Contract.Book.LANG_ANSWER, langOfAnswer);
-        contentValues.put(Contract.Book.LEVEL, getLevel());
+        contentValues.put(Book.NAME, bookName);
+        contentValues.put(Book.LANG_QUESTION, langOfQuestion);
+        contentValues.put(Book.LANG_ANSWER, langOfAnswer);
+        contentValues.put(Book.LEVEL, getLevel());
         return contentValues;
     }
 
@@ -139,7 +140,7 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
 
     protected boolean isBookValid(ContentValues cv){
-        String bookName = cv.getAsString(Contract.Book.NAME);
+        String bookName = cv.getAsString(Book.NAME);
         if(bookName.length() < MIN_BOOK_NAME_LENGTH){
             bookNameEditText.setError( getString(R.string.error_string_short, MIN_BOOK_NAME_LENGTH ));
             return false;
@@ -156,4 +157,11 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
     protected abstract long bookId();
 
+    protected void goToBookDetail(long bookId, String bookName){
+        Intent i = new Intent(this, LectureListActivity.class);
+        i.putExtra(LectureListActivity.BOOK_ID_EXTRA, bookId());
+        i.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
+        i.putExtra(SHOW_SAVED_EXTRA, true );
+        startActivity(i);
+    }
 }

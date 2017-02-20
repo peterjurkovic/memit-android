@@ -1,7 +1,6 @@
 package io.memit.android.activity.lecture;
 
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -24,7 +23,11 @@ import android.widget.TextView;
 
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
+import io.memit.android.activity.EditBookActivity;
+import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
+
+import static android.content.ContentUris.withAppendedId;
 
 /**
  * Created by peter on 2/16/17.
@@ -75,6 +78,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         });
 
         initDrawer(toolbar,savedInstanceState);
+        showSuccessfulySavedMessage(findViewById(R.id.root));
     }
 
     @Override
@@ -82,7 +86,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         switch (id) {
             case LECTURE_LOADER:
                 return new CursorLoader(this,
-                        ContentUris.withAppendedId(Lecture.CONTENT_URI, bookdId),
+                        withAppendedId(Lecture.CONTENT_URI, bookdId),
                         null,
                         null,
                         null,
@@ -210,7 +214,9 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         super.onOptionsItemSelected(item);
         switch (item.getItemId()){
             case R.id.lectureBookEdit :
-
+                Intent intent = new Intent(this, EditBookActivity.class);
+                intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, withAppendedId(Book.CONTENT_URI, bookdId));
+                startActivity(intent);
                 break;
         }
 
