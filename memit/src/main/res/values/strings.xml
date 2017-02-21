@@ -37,6 +37,7 @@
 
     <string name="lecture_list">Lectures</string>
     <string name="lecture_add_new">Add a new lecture</string>
+    <string name="lecture_edit">Edit lecture</string>
     <string name="lecutre_item_info">Cards: %1$d Activated %2$d</string>
     <string name="lecutre_list_empty">The textbook does not contain any lecture</string>
     <string name="lecture_form_name">Name of the lecture</string>

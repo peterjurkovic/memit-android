@@ -37,7 +37,6 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
 
     private static final String TAG =  BookListActivity.class.getSimpleName();
     private static final byte LOADER_ID_BOOK = 1;
-    public final static String LECTURE_EXTRA_URI = "lectureUri";
 
     private RecyclerView recyclerView;
     private TextView empty;
@@ -77,24 +76,17 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Loader<Cursor> loader = null;
-        String[] projection = {
-                Book._ID,
-                Book.NAME
-        };
-        Log.d(TAG, "onCreateLoader id:" + id + " budle:" + args);
         switch (id) {
             case LOADER_ID_BOOK:
-                loader = new CursorLoader(this,
+                return new CursorLoader(this,
                         Book.CONTENT_URI,
-                        projection,
+                        null,
                         null,
                         null,
                         Book.NAME);
-                break;
         }
 
-        return loader;
+        return null;
     }
 
     @Override
@@ -151,7 +143,6 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
                 holder.viewName.setText(name);
                 holder.viewInfo.setText(getString(
                         R.string.book_item_info,lectureCount, wordCount, activeWordCount));
-                holder.bookId = id;
                 holder.bookName = name;
                 Log.d(TAG, holder.toString());
                 holder.uri = ContentUris.withAppendedId(Book.CONTENT_URI,  id);
@@ -184,7 +175,6 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         private TextView viewName;
         private TextView viewInfo;
         private Uri uri;
-        private long bookId;
         private String bookName;
 
         public BookViewHolder(View itemView) {
@@ -199,7 +189,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(BookListActivity.this, LectureListActivity.class);
-            intent.putExtra(LectureListActivity.BOOK_ID_EXTRA, bookId);
+            intent.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, uri.withAppendedPath(uri, "lectures"));
             intent.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
             startActivity(intent);
         }

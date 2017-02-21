@@ -22,7 +22,9 @@ public class Contract {
 
 
     public interface Book extends BaseContract.SyncColumns {
-        static final String PATH = "book";
+        static final String TABLE = "book";
+        static final String PATH = "books";
+
         static final String NAME = "name";
         static final String LANG_QUESTION = "lang_question";
         static final String LANG_ANSWER = "lang_answer";
@@ -35,13 +37,20 @@ public class Contract {
     }
 
     public interface Lecture extends BaseContract.SyncColumns{
-        static final String PATH = "lecture";
+        static final String TABLE = "lecture";
+        static final String PATH = "lectures";
+
         static final String NAME = "name";
         static final String LANG_QUESTION = "lang_question";
         static final String LANG_ANSWER = "lang_answer";
         static final String BOOK_ID = "book_id";
-        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
+        // static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
     }
+
+    public interface Word extends BaseContract.SyncColumns{
+        static final String TABLE = "word";
+    }
+
 
     public static String[] allBookColumns(){
         return new String[]{
@@ -53,6 +62,8 @@ public class Contract {
                 Book.LEVEL
         };
     }
+
+
 
 
 

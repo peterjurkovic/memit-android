@@ -1,6 +1,7 @@
 package io.memit.android.activity.lecture;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -23,11 +24,10 @@ import android.widget.TextView;
 
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
+import io.memit.android.activity.BookListActivity;
 import io.memit.android.activity.EditBookActivity;
-import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
-
-import static android.content.ContentUris.withAppendedId;
+import io.memit.android.tools.UriUtils;
 
 /**
  * Created by peter on 2/16/17.
@@ -38,12 +38,12 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
     private static final String TAG =  LectureListActivity.class.getSimpleName();
     private static final byte LECTURE_LOADER = 1;
 
-    public final static String BOOK_ID_EXTRA = "bookIdExtra";
+    public final static String BOOK_LECTURES_URI_EXTRA = "bookIdExtra";
     public final static String BOOK_NAME_EXTRA = "bookNameExtra";
 
     private RecyclerView recyclerView;
     private TextView empty;
-    private long bookdId;
+    private Uri bookLecturesUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,12 +51,16 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         setContentView(R.layout.activity_lecture_list);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.lecture_toolbar);
-        bookdId = getIntent().getExtras().getLong(BOOK_ID_EXTRA);
+        bookLecturesUri = getIntent().getExtras().getParcelable(BOOK_LECTURES_URI_EXTRA);
         String bookName = getIntent().getExtras().getString(BOOK_NAME_EXTRA);
         toolbar.setTitle(bookName);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-
-        setSupportActionBar(toolbar);
+        useBackButtonIn(toolbar, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LectureListActivity.this, BookListActivity.class));
+            }
+        });
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         empty = (TextView) findViewById(R.id.empty);
 
@@ -67,18 +71,17 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         appBarLayout.addOnOffsetChangedListener(new ToggleAppBarIconListener());
 
-        FloatingActionButton addBookBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
-        addBookBtn.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        addLectureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(LectureListActivity.this, AddLectureActivity.class);
-                i.putExtra(BOOK_ID_EXTRA, bookdId);
+                i.putExtra(BOOK_LECTURES_URI_EXTRA, bookLecturesUri);
                 startActivity(i);
             }
         });
-
-        initDrawer(toolbar,savedInstanceState);
         showSuccessfulySavedMessage(findViewById(R.id.root));
+
     }
 
     @Override
@@ -86,7 +89,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         switch (id) {
             case LECTURE_LOADER:
                 return new CursorLoader(this,
-                        withAppendedId(Lecture.CONTENT_URI, bookdId),
+                        bookLecturesUri,
                         null,
                         null,
                         null,
@@ -145,7 +148,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
                 holder.name.setText(name);
                 holder.info.setText(getString(R.string.lecutre_item_info, wordCount, activeWordCount));
 
-                holder.id = id;
+                holder.uri = ContentUris.withAppendedId(bookLecturesUri, id);
             }
         }
 
@@ -174,7 +177,6 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         private TextView name;
         private TextView info;
         private Uri uri;
-        private long id;
 
         public LectureViewHolder(View itemView) {
             super(itemView);
@@ -215,7 +217,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         switch (item.getItemId()){
             case R.id.lectureBookEdit :
                 Intent intent = new Intent(this, EditBookActivity.class);
-                intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, withAppendedId(Book.CONTENT_URI, bookdId));
+                intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, UriUtils.removeLastSegment(bookLecturesUri));
                 startActivity(intent);
                 break;
         }

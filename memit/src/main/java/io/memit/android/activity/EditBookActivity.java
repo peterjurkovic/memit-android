@@ -28,7 +28,7 @@ public class EditBookActivity extends BaseBookActivity {
     private final static int ID_BOOK = 2;
     public final static String BOOK_EXTRA_URI = "bookUri";
     public final static String REFERER_EXTRA = "referer";
-    private Uri bookUri;
+    private Uri bookIdUri;
     private String referer;
 
 
@@ -39,17 +39,15 @@ public class EditBookActivity extends BaseBookActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        bookUri = getIntent().getExtras().getParcelable(BOOK_EXTRA_URI);
+        bookIdUri = getIntent().getExtras().getParcelable(BOOK_EXTRA_URI);
         referer = getIntent().getExtras().getString(REFERER_EXTRA);
-
         getLoaderManager().initLoader(ID_BOOK, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
-                bookUri,
+                bookIdUri,
                 Contract.allBookColumns(),
                 null,
                 null,
@@ -85,7 +83,7 @@ public class EditBookActivity extends BaseBookActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
-            getContentResolver().update(bookUri, cv, null, null);
+            getContentResolver().update(bookIdUri, cv, null, null);
 
             if(shouldGoToBookDetail()){
                 goToBookDetail(bookId(), cv.getAsString(Contract.Book.NAME));
@@ -112,6 +110,8 @@ public class EditBookActivity extends BaseBookActivity {
     }
 
     public long bookId() {
-        return ContentUris.parseId(bookUri);
+        return ContentUris.parseId(bookIdUri);
     }
+
+
 }

@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,6 +25,8 @@ import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
 import io.memit.android.provider.BookDatabaseOperations;
 import io.memit.android.provider.Contract.Book;
+
+import static android.content.ContentUris.withAppendedId;
 
 /**
  * Created by peter on 2/4/17.
@@ -61,12 +64,11 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
         setSupportActionBar(toolbar);
         prepareSpinners();
         root = (CoordinatorLayout) findViewById(R.id.root);
-        initDrawer(toolbar,savedInstanceState);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), BookListActivity.class));
+                finish();
             }
         });
 
@@ -76,7 +78,7 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
                 onSaveButtonClicked();
             }
         });
-
+        useBackButtonIn(toolbar);
     }
 
     protected abstract  void onSaveButtonClicked();
@@ -159,7 +161,8 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
     protected void goToBookDetail(long bookId, String bookName){
         Intent i = new Intent(this, LectureListActivity.class);
-        i.putExtra(LectureListActivity.BOOK_ID_EXTRA, bookId());
+        Uri bookIdUri = withAppendedId(Book.CONTENT_URI, bookId);
+        i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, bookIdUri.withAppendedPath(bookIdUri, "lectures"));
         i.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
         i.putExtra(SHOW_SAVED_EXTRA, true );
         startActivity(i);

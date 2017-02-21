@@ -2,8 +2,11 @@ package io.memit.android.activity.lecture;
 
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -26,6 +29,7 @@ import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.tools.UriUtils;
 
 /**
  * Created by peter on 2/18/17.
@@ -33,7 +37,8 @@ import io.memit.android.provider.Contract.Lecture;
 
 abstract class BaseLectureActivity  extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private final static byte MIN_LECTURE_NAME = 1;
+    protected final static int MIN_LECTURE_NAME = 1;
+    protected final static int BOOK_LOADER_ID = 1;
 
     protected final int layoutId;
     protected final int titleId;
@@ -46,7 +51,7 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
     protected Button saveButton;
     protected Button cancelButton;
     protected CoordinatorLayout root;
-    protected long bookId;
+    protected Uri bookLecturesUri;
     protected TextView bookNameView;
 
     private RelativeLayout form;
@@ -64,7 +69,6 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
         setContentView(layoutId);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dynamic);
         toolbar.setTitle(titleId);
-        setSupportActionBar(toolbar);
         root = (CoordinatorLayout) findViewById(R.id.root);
         form = (RelativeLayout) root.findViewById(R.id.form);
         loader = (RelativeLayout) root.findViewById(R.id.loadingPanel);
@@ -73,21 +77,36 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToLectureList();
+                finish();
             }
         });
-
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSaveButtonClicked();
             }
         });
-        initDrawer(toolbar,savedInstanceState);
+        useBackButtonIn(toolbar);
+        bookLecturesUri = getIntent().getExtras().getParcelable(LectureListActivity.BOOK_LECTURES_URI_EXTRA);
+        getLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 
 
     protected abstract  void onSaveButtonClicked();
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader cursor = null;
+        if(id == BOOK_LOADER_ID){
+            cursor = new CursorLoader(this,
+                    UriUtils.removeLastSegment(bookLecturesUri),
+                    Contract.allBookColumns(),
+                    null,
+                    null,
+                    null);
+        }
+        return cursor;
+    }
 
     protected void prepareForm(){
         initForm();
@@ -121,7 +140,7 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
         contentValues.put(Lecture.NAME, lectureName);
         contentValues.put(Lecture.LANG_QUESTION, langOfQuestion);
         contentValues.put(Lecture.LANG_ANSWER, langOfAnswer);
-        contentValues.put(Lecture.BOOK_ID, bookId);
+        contentValues.put(Lecture.BOOK_ID, getBookId());
         return contentValues;
     }
 
@@ -170,10 +189,15 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
 
     protected void goToLectureList(){
         Intent i = new Intent(this, LectureListActivity.class);
-        i.putExtra(LectureListActivity.BOOK_ID_EXTRA, bookId);
+        i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, bookLecturesUri);
         i.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookNameView.getText().toString());
         startActivity(i);
     }
+
+    protected long getBookId(){
+        return UriUtils.getBookId(bookLecturesUri);
+    }
+
 
 
 }

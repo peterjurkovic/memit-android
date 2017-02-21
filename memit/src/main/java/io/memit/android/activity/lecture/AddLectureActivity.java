@@ -1,8 +1,6 @@
 package io.memit.android.activity.lecture;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,9 +18,6 @@ import io.memit.android.provider.Contract;
 public class AddLectureActivity extends BaseLectureActivity {
 
     private final static String TAG = AddLectureActivity.class.getName();
-    private final static byte BOOK_LOADER_ID = 1;
-
-
 
     public AddLectureActivity() {
         super(R.string.lecture_add_new, R.layout.activity_lecture_add);
@@ -31,22 +26,6 @@ public class AddLectureActivity extends BaseLectureActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        bookId = getIntent().getExtras().getLong(LectureListActivity.BOOK_ID_EXTRA);
-        getLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(id == BOOK_LOADER_ID){
-            return new CursorLoader(this,
-                    ContentUris.withAppendedId(Contract.Book.CONTENT_URI, bookId),
-                    Contract.allBookColumns(),
-                    null,
-                    null,
-                    null);
-        }
-        return null;
     }
 
     @Override
@@ -66,7 +45,7 @@ public class AddLectureActivity extends BaseLectureActivity {
                         .getColumnIndexOrThrow(Contract.Book.NAME));
                 bookNameView.setText(bookName);
             }else{
-                Log.w(TAG, "Can not load book [id="+bookId+"]");
+                Log.w(TAG, "Can not load book [id="+getBookId()+"]");
                 // TODO show some alert message
             }
         }
@@ -81,7 +60,7 @@ public class AddLectureActivity extends BaseLectureActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if( isValid(cv) ){
-            getContentResolver().insert(Contract.Lecture.CONTENT_URI, cv);
+            getContentResolver().insert(bookLecturesUri, cv);
             Snackbar.make(root, getString(R.string.book_saved), Snackbar.LENGTH_SHORT).show();
             goToLectureList();
         }

@@ -12,9 +12,11 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.SparseArray;
 
 import io.memit.android.BuildConfig;
+import io.memit.android.provider.Contract.Book;
+import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.tools.UriUtils;
 
 /**
  * Created by peter on 1/29/17.
@@ -26,28 +28,25 @@ public class MemitProvider extends ContentProvider{
 
     private DatabaseOpenHelper dbHelper;
 
-    private static final byte CODE_ALL_BOOKS = 100;
-    private static final byte CODE_BOOK_ID = 101;
-    private static final byte CODE_ALL_LECTURES= 103;
-    private static final byte CODE_LECTURE_ID = 102;
-
-    private static final SparseArray<String> URI_CODE_TABLE_MAP =  new SparseArray<>();
+    private static final byte BOOKS = 1;
+    private static final byte BOOK_ID = 2;
+    private static final byte BOOK_LECTURES = 3;
+    private static final byte BOOK_LECTURES_ID = 4;
+    private static final byte BOOK_LECTURES_WORDS = 5;
+    private static final byte BOOK_LECTURES_WORDS_ID = 6;
 
 
     private static final UriMatcher URI_MATCHER =  new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        URI_CODE_TABLE_MAP.put(CODE_ALL_BOOKS, DatabaseOpenHelper.Tables.BOOK);
-        URI_CODE_TABLE_MAP.put(CODE_BOOK_ID,  DatabaseOpenHelper.Tables.BOOK);
-        URI_CODE_TABLE_MAP.put(CODE_LECTURE_ID, DatabaseOpenHelper.Tables.LECTURE);
-        URI_CODE_TABLE_MAP.put(CODE_ALL_LECTURES, DatabaseOpenHelper.Tables.LECTURE);
-
-
-        URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Book.PATH, CODE_ALL_BOOKS);
-        URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Book.PATH + "/#", CODE_BOOK_ID);
-        URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Lecture.PATH + "/#" , CODE_LECTURE_ID);
-        URI_MATCHER.addURI(Contract.AUTHORITY, Contract.Lecture.PATH, CODE_ALL_LECTURES);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#", BOOK_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures", BOOK_LECTURES);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#", BOOK_LECTURES_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#/words", BOOK_LECTURES_WORDS);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#/words/#", BOOK_LECTURES_WORDS_ID);
     }
+
 
     @Override
     public boolean onCreate() {
@@ -67,42 +66,40 @@ public class MemitProvider extends ContentProvider{
 
         Cursor cursor;
         sortOrder = (sortOrder == null ? BaseColumns._ID : sortOrder);
+
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         final int code = URI_MATCHER.match(uri);
         Log.d(TAG, "code: " + code);
         switch (code) {
-            case CODE_ALL_BOOKS:
-                cursor = BookDatabaseOperations
+            case BOOKS:
+                return BookDatabaseOperations
                         .getInstance(getContext())
                         .getAllBooks();
-                break;
-            case CODE_LECTURE_ID:
-                String bookId = uri.getLastPathSegment();
-                cursor = LectureDatabaseOperation
+
+            case BOOK_LECTURES:
+                long bookId = UriUtils.getBookId(uri);
+                return LectureDatabaseOperation
                         .getInstance(getContext())
-                        .getAllLectures(Long.valueOf(bookId));
-                break;
-            case CODE_BOOK_ID:
+                        .getAllLectures(bookId);
+
+            case BOOK_ID:
                 if (selection == null) {
-                    selection = BaseColumns._ID
-                            + " = "
-                            + uri.getLastPathSegment();
+                    selection = BaseColumns._ID + " = " + uri.getLastPathSegment();
                 } else {
                     throw new IllegalArgumentException("Selection must " +
                             "be null when specifying ID as part of uri.");
                 }
-                cursor = database.query(URI_CODE_TABLE_MAP.get(code),
+                return database.query(Book.TABLE,
                         projection,
                         selection,
                         selectionArgs,
                         null,
                         null,
                         sortOrder);
-                break;
+
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        return cursor;
     }
 
     @Nullable
@@ -111,16 +108,16 @@ public class MemitProvider extends ContentProvider{
         Log.d(TAG, "[getType] uri: " + uri);
         final int code = URI_MATCHER.match(uri);
         switch (code) {
-            case CODE_ALL_BOOKS:
+            case BOOKS:
                 return String.format("%s/vnd.%s.%s",
                         ContentResolver.CURSOR_DIR_BASE_TYPE,
                         Contract.AUTHORITY,
-                        Contract.Book.PATH);
-            case CODE_BOOK_ID:
+                        Book.PATH);
+            case BOOK_ID:
                 return String.format("%s/vnd.%s.%s",
                         ContentResolver.CURSOR_ITEM_BASE_TYPE,
                         Contract.AUTHORITY,
-                        Contract.Book.PATH);
+                        Book.PATH);
             default:
                 return null;
         }
@@ -132,15 +129,15 @@ public class MemitProvider extends ContentProvider{
         Log.d(TAG, "Creating [uri="+uri+"] values: " + values);
         final int code = URI_MATCHER.match(uri);
         switch (code) {
-            case CODE_ALL_BOOKS:
+            case BOOKS:
                 id = dbHelper
                         .getWritableDatabase()
-                        .insertOrThrow(URI_CODE_TABLE_MAP.get(code), null, values);
+                        .insertOrThrow(Book.TABLE, null, values);
                 break;
-            case CODE_ALL_LECTURES:
+            case BOOK_LECTURES:
                 id = dbHelper
                         .getWritableDatabase()
-                        .insertOrThrow(URI_CODE_TABLE_MAP.get(code), null, values);
+                        .insertOrThrow(Lecture.TABLE, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -157,11 +154,11 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         Uri rootUri;
         switch (code) {
-            case CODE_BOOK_ID:
+            case BOOK_ID:
                     rowCount = BookDatabaseOperations
                             .getInstance(dbHelper)
                             .removeBook(uri.getLastPathSegment());
-                rootUri = Contract.Book.CONTENT_URI;
+                rootUri = Book.CONTENT_URI;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -177,7 +174,7 @@ public class MemitProvider extends ContentProvider{
          final int code = URI_MATCHER.match(uri);
          switch (code) {
 
-             case CODE_BOOK_ID:
+             case BOOK_ID:
                  if (selection == null
                          && selectionArgs == null) {
                      selection = BaseColumns._ID + " = ?";
@@ -191,7 +188,7 @@ public class MemitProvider extends ContentProvider{
                  }
                  rowCount = dbHelper
                          .getWritableDatabase()
-                         .update(URI_CODE_TABLE_MAP.get(code),
+                         .update(Book.TABLE,
                                  values,
                                  selection,
                                  selectionArgs);

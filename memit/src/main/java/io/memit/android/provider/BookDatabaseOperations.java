@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.memit.android.BuildConfig;
-import io.memit.android.provider.DatabaseOpenHelper.Tables;
-
+import io.memit.android.provider.Contract.Book;
+import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.provider.Contract.Word;
 /**
  * Created by peter on 1/30/17.
  */
@@ -51,7 +52,7 @@ public class BookDatabaseOperations extends BaseDatabaseOperations{
         Cursor cursor = null;
         try {
             cursor = helper.getWritableDatabase()
-                    .query(Tables.BOOK, new String[]{BaseColumns._ID}, selection, selectionArgs, null, null, null);
+                    .query(Book.TABLE, new String[]{BaseColumns._ID}, selection, selectionArgs, null, null, null);
             return cursor.moveToNext();
         }finally {
             if(cursor != null){
@@ -83,13 +84,13 @@ public class BookDatabaseOperations extends BaseDatabaseOperations{
         String[] selectionArgs = { String.valueOf(id) };
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
-        final int deletedCount = db.delete(Tables.BOOK, BaseColumns._ID+"=?", selectionArgs);
+        final int deletedCount = db.delete(Book.TABLE, BaseColumns._ID+"=?", selectionArgs);
         if(deletedCount > 0) {
             List<Long> ids = getLecturesId(db, selectionArgs);
             if(!ids.isEmpty()){
                 String inClause = asINClause(ids);
-                db.execSQL("DELETE FROM " + Tables.WORD+ " WHERE `lecture_id` IN " + inClause);
-                db.execSQL("DELETE FROM " + Tables.LECTURE+ " WHERE `book_id`= ? ", selectionArgs);
+                db.execSQL("DELETE FROM " + Word.TABLE+ " WHERE `lecture_id` IN " + inClause);
+                db.execSQL("DELETE FROM " + Lecture.TABLE + " WHERE `book_id`= ? ", selectionArgs);
             }
         }
         db.setTransactionSuccessful();

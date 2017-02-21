@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/root"
     android:fitsSystemWindows="true"
-    tools:context="io.memit.android.activity.lecture.AddLectureActivity">
+    tools:context="io.memit.android.activity.lecture.EditLectureActivity">
 
     <include layout="@layout/toolbar_dynamic" />
 

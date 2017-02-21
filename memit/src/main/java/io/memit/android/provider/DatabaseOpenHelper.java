@@ -118,9 +118,4 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.setForeignKeyConstraintsEnabled(true);
     }
 
-    public interface Tables {
-        String BOOK = "book";
-        String LECTURE = "lecture";
-        String WORD = "word";
-    }
 }
