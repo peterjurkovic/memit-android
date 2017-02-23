@@ -191,6 +191,7 @@ abstract class BaseLectureActivity  extends AbstractActivity implements LoaderMa
         Intent i = new Intent(this, LectureListActivity.class);
         i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, bookLecturesUri);
         i.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookNameView.getText().toString());
+        i.putExtra(LectureListActivity.SHOW_SAVED_EXTRA, true);
         startActivity(i);
     }
 

@@ -16,6 +16,8 @@ import io.memit.android.R;
 import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.provider.Contract;
+import io.memit.android.provider.Contract.Book;
+import io.memit.android.tools.CursorUtils;
 
 /**
  * Created by peter on 2/8/17.
@@ -57,16 +59,13 @@ public class EditBookActivity extends BaseBookActivity {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
-            bookNameEditText.setText(data.getString(data
-                    .getColumnIndexOrThrow(Contract.Book.NAME)));
-            String langQuestion = data.getString(data
-                    .getColumnIndexOrThrow(Contract.Book.LANG_QUESTION));
+            bookNameEditText.setText(CursorUtils.asString(data, Book.NAME));
+            String langQuestion = CursorUtils.asString(data,Book.LANG_QUESTION);
             preSelect(questionSpinner, langQuestion);
             String langAnswer = data.getString(data
-                    .getColumnIndexOrThrow(Contract.Book.LANG_ANSWER));
+                    .getColumnIndexOrThrow(Book.LANG_ANSWER));
             preSelect(answerSpinner, langAnswer);
-            String level = data.getString(data
-                    .getColumnIndexOrThrow(Contract.Book.LEVEL));
+            String level = CursorUtils.asString(data, Book.LEVEL);
             preSelect(levelSpinner, level);
 
         }else{
@@ -86,13 +85,12 @@ public class EditBookActivity extends BaseBookActivity {
             getContentResolver().update(bookIdUri, cv, null, null);
 
             if(shouldGoToBookDetail()){
-                goToBookDetail(bookId(), cv.getAsString(Contract.Book.NAME));
+                goToBookDetail(bookId(), cv.getAsString(Book.NAME));
             }else{
                 Intent i = new Intent(this, BookListActivity.class);
                 i.putExtra(SHOW_SAVED_EXTRA, true );
                 startActivity(i);
             }
-
         }
     }
 

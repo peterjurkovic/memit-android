@@ -45,8 +45,8 @@ public final class UriUtils {
     public static Uri removeLastSegment(Uri uri){
         final List<String> segments = uri.getPathSegments();
         final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(uri.getScheme());
         builder.encodedAuthority(uri.getAuthority());
-        builder.encodedPath(uri.getPath());
         builder.encodedQuery(uri.getQuery());
         for (int i = 0; i < segments.size() -1; i++) {
             builder.appendPath(segments.get(i));

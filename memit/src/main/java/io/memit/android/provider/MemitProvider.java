@@ -12,6 +12,7 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.SparseArray;
 
 import io.memit.android.BuildConfig;
 import io.memit.android.provider.Contract.Book;
@@ -35,10 +36,13 @@ public class MemitProvider extends ContentProvider{
     private static final byte BOOK_LECTURES_WORDS = 5;
     private static final byte BOOK_LECTURES_WORDS_ID = 6;
 
-
+    private static final SparseArray<String> CODE_TABLE_MAP = new SparseArray<>();
     private static final UriMatcher URI_MATCHER =  new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
+        CODE_TABLE_MAP.put(BOOK_ID, Book.TABLE);
+        CODE_TABLE_MAP.put(BOOK_LECTURES_ID, Lecture.TABLE);
+
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/#", BOOK_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures", BOOK_LECTURES);
@@ -81,7 +85,7 @@ public class MemitProvider extends ContentProvider{
                 return LectureDatabaseOperation
                         .getInstance(getContext())
                         .getAllLectures(bookId);
-
+            case BOOK_LECTURES_ID:
             case BOOK_ID:
                 if (selection == null) {
                     selection = BaseColumns._ID + " = " + uri.getLastPathSegment();
@@ -89,7 +93,7 @@ public class MemitProvider extends ContentProvider{
                     throw new IllegalArgumentException("Selection must " +
                             "be null when specifying ID as part of uri.");
                 }
-                return database.query(Book.TABLE,
+                return database.query(CODE_TABLE_MAP.get(code),
                         projection,
                         selection,
                         selectionArgs,
@@ -152,18 +156,21 @@ public class MemitProvider extends ContentProvider{
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int rowCount;
         final int code = URI_MATCHER.match(uri);
-        Uri rootUri;
         switch (code) {
             case BOOK_ID:
                     rowCount = BookDatabaseOperations
                             .getInstance(dbHelper)
                             .removeBook(uri.getLastPathSegment());
-                rootUri = Book.CONTENT_URI;
+                break;
+            case BOOK_LECTURES_ID:
+                rowCount = LectureDatabaseOperation
+                            .getInstance(dbHelper)
+                            .removeLecture(uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        notifyUris(uri, rootUri);
+        notifyUris(uri, UriUtils.removeLastSegment(uri));
         return rowCount;
     }
 
@@ -173,22 +180,18 @@ public class MemitProvider extends ContentProvider{
 
          final int code = URI_MATCHER.match(uri);
          switch (code) {
-
+             case BOOK_LECTURES_ID:
              case BOOK_ID:
-                 if (selection == null
-                         && selectionArgs == null) {
+                 if (selection == null && selectionArgs == null) {
                      selection = BaseColumns._ID + " = ?";
-
-                     selectionArgs = new String[] {
-                             uri.getLastPathSegment()
-                     };
+                     selectionArgs = new String[] { uri.getLastPathSegment()};
                  } else {
                      throw new IllegalArgumentException("Selection must be " +
                              "null when specifying ID as part of uri.");
                  }
                  rowCount = dbHelper
                          .getWritableDatabase()
-                         .update(Book.TABLE,
+                         .update(CODE_TABLE_MAP.get(code),
                                  values,
                                  selection,
                                  selectionArgs);

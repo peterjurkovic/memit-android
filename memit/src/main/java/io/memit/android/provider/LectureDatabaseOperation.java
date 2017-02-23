@@ -3,6 +3,11 @@ package io.memit.android.provider;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import io.memit.android.BuildConfig;
+import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.provider.Contract.Word;
 
 import static java.lang.String.valueOf;
 
@@ -11,6 +16,9 @@ import static java.lang.String.valueOf;
  */
 
 public class LectureDatabaseOperation extends BaseDatabaseOperations {
+
+
+    public final static String TAG = LectureDatabaseOperation.class.getName();
 
     private static final Object LOCK = new Object();
     private static LectureDatabaseOperation OPERATIONS;
@@ -50,5 +58,19 @@ public class LectureDatabaseOperation extends BaseDatabaseOperations {
 
         SQLiteDatabase db = helper.getWritableDatabase();
         return db.rawQuery(query.toString(), new String[]{valueOf(bookId )} );
+    }
+
+    public int removeLecture(String id){
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Removing book: " + id);
+
+        String[] selectionArgs = { String.valueOf(id) };
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL("DELETE FROM " + Word.TABLE+ " WHERE `lecture_id` = ?", selectionArgs);
+        db.execSQL("DELETE FROM " + Lecture.TABLE + " WHERE `_id`= ? ", selectionArgs);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return 1;
     }
 }

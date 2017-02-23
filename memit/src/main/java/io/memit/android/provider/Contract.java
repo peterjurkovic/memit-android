@@ -63,6 +63,16 @@ public class Contract {
         };
     }
 
+    public static String[] allLectureColumns(){
+        return new String[]{
+                Lecture._ID,
+                Lecture.SID,
+                Lecture.NAME,
+                Lecture.LANG_ANSWER,
+                Lecture.LANG_QUESTION
+        };
+    }
+
 
 
 

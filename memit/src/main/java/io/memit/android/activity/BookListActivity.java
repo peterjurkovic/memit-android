@@ -29,6 +29,9 @@ import io.memit.android.R;
 import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.provider.Contract.Book;
 
+import static io.memit.android.tools.CursorUtils.asInt;
+import static io.memit.android.tools.CursorUtils.asString;
+
 /**
  * Created by peter on 1/31/17.
  */
@@ -125,26 +128,14 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         @Override
         public void onBindViewHolder(BookViewHolder holder, int position) {
             if (bookCursor != null && bookCursor.moveToPosition(position)) {
-                String name = bookCursor
-                        .getString(bookCursor.getColumnIndexOrThrow(Book.NAME));
-
-                int id = bookCursor
-                        .getInt(bookCursor.getColumnIndexOrThrow(Book._ID));
-
-                int lectureCount = bookCursor
-                        .getInt(bookCursor.getColumnIndexOrThrow(Book.LECTURE_COUNT));
-
-                int wordCount = bookCursor
-                        .getInt(bookCursor.getColumnIndexOrThrow(Book.WORD_COUNT));
-
-                int activeWordCount = bookCursor
-                        .getInt(bookCursor.getColumnIndexOrThrow(Book.ACTIVE_WORD_COUNT));
-
+                String name = asString(bookCursor, Book.NAME);
+                int id = asInt(bookCursor, Book._ID);
+                int lectureCount = asInt(bookCursor, Book.LECTURE_COUNT);
+                int wordCount = asInt(bookCursor, Book.WORD_COUNT);
+                int activeWordCount =asInt(bookCursor,Book.ACTIVE_WORD_COUNT);
                 holder.viewName.setText(name);
                 holder.viewInfo.setText(getString(
                         R.string.book_item_info,lectureCount, wordCount, activeWordCount));
-                holder.bookName = name;
-                Log.d(TAG, holder.toString());
                 holder.uri = ContentUris.withAppendedId(Book.CONTENT_URI,  id);
             }
         }
@@ -175,7 +166,6 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         private TextView viewName;
         private TextView viewInfo;
         private Uri uri;
-        private String bookName;
 
         public BookViewHolder(View itemView) {
             super(itemView);
@@ -190,7 +180,6 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         public void onClick(View view) {
             Intent intent = new Intent(BookListActivity.this, LectureListActivity.class);
             intent.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, uri.withAppendedPath(uri, "lectures"));
-            intent.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
             startActivity(intent);
         }
 

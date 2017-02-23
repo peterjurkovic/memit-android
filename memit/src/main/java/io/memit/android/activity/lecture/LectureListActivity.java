@@ -9,11 +9,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,8 +26,13 @@ import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.BookListActivity;
 import io.memit.android.activity.EditBookActivity;
+import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
-import io.memit.android.tools.UriUtils;
+
+import static io.memit.android.activity.lecture.EditLectureActivity.BOOK_LECTURE_ID_URI_EXTRA;
+import static io.memit.android.tools.CursorUtils.asInt;
+import static io.memit.android.tools.CursorUtils.asString;
+import static io.memit.android.tools.UriUtils.removeLastSegment;
 
 /**
  * Created by peter on 2/16/17.
@@ -37,6 +42,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     private static final String TAG =  LectureListActivity.class.getSimpleName();
     private static final byte LECTURE_LOADER = 1;
+    private static final byte BOOK_LOADER = 2;
 
     public final static String BOOK_LECTURES_URI_EXTRA = "bookIdExtra";
     public final static String BOOK_NAME_EXTRA = "bookNameExtra";
@@ -50,27 +56,31 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lecture_list);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.lecture_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.lecture_toolbar);
         bookLecturesUri = getIntent().getExtras().getParcelable(BOOK_LECTURES_URI_EXTRA);
-        String bookName = getIntent().getExtras().getString(BOOK_NAME_EXTRA);
-        toolbar.setTitle(bookName);
+
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+
         useBackButtonIn(toolbar, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LectureListActivity.this, BookListActivity.class));
             }
         });
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(new LectureListCursorAdapter());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         empty = (TextView) findViewById(R.id.empty);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new LectureListCursorAdapter());
-
+        getLoaderManager().initLoader(BOOK_LOADER, null, this);
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
-
         appBarLayout.addOnOffsetChangedListener(new ToggleAppBarIconListener());
+        initAddNewLectureButton();
+        showSuccessfulySavedMessage(findViewById(R.id.root));
+    }
 
+    private void initAddNewLectureButton() {
         FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
         addLectureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +90,6 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
                 startActivity(i);
             }
         });
-        showSuccessfulySavedMessage(findViewById(R.id.root));
-
     }
 
     @Override
@@ -94,6 +102,14 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
                         null,
                         null,
                         Lecture.NAME);
+            case BOOK_LOADER:
+                return new CursorLoader(this,
+                        removeLastSegment(bookLecturesUri),
+                        new String[]{Book.NAME},
+                        null,
+                        null,
+                        null
+                        );
         }
 
         return null;
@@ -112,6 +128,13 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
                 ((LectureListCursorAdapter) recyclerView.getAdapter()).swapCursor(data);
             }
 
+        }else if (loader.getId() == BOOK_LOADER){
+
+            if(data != null && data.moveToNext()){
+                CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+                toolbar.setTitleEnabled(true);
+                toolbar.setTitle(asString(data, Book.NAME));
+            }
         }
 
     }
@@ -120,6 +143,11 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
     public void onLoaderReset(Loader<Cursor> loader) {
         ((LectureListCursorAdapter) recyclerView.getAdapter()).swapCursor(null);
     }
+
+    public void refresList(){
+        getLoaderManager().restartLoader(LECTURE_LOADER, null, this);
+    }
+
 
 
 
@@ -137,17 +165,12 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         @Override
         public void onBindViewHolder(LectureListActivity.LectureViewHolder holder, int position) {
             if (cursor != null && cursor.moveToPosition(position)) {
-                String name = cursor
-                        .getString(cursor.getColumnIndexOrThrow(Lecture.NAME));
-                int id = cursor.
-                        getInt(cursor.getColumnIndexOrThrow(Lecture._ID));
-                int wordCount = cursor
-                        .getInt(cursor.getColumnIndexOrThrow(Lecture.WORD_COUNT));
-                int activeWordCount = cursor
-                        .getInt(cursor.getColumnIndexOrThrow(Lecture.ACTIVE_WORD_COUNT));
+                String name =           asString(cursor, Lecture.NAME);
+                int id =                asInt(cursor, Lecture._ID);
+                int wordCount =         asInt(cursor, Lecture.WORD_COUNT);
+                int activeWordCount =   asInt(cursor, Lecture.ACTIVE_WORD_COUNT);
                 holder.name.setText(name);
                 holder.info.setText(getString(R.string.lecutre_item_info, wordCount, activeWordCount));
-
                 holder.uri = ContentUris.withAppendedId(bookLecturesUri, id);
             }
         }
@@ -203,7 +226,16 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            Log.d(TAG, item.getItemId() + "");
+            if(item.getItemId() == EDIT_ITEM){
+                Intent i = new Intent(LectureListActivity.this, EditLectureActivity.class);
+                i.putExtra(BOOK_LECTURES_URI_EXTRA, bookLecturesUri);
+                i.putExtra(BOOK_LECTURE_ID_URI_EXTRA, uri);
+                startActivity(i);
+            }
+
+            if(item.getItemId() == REMOVE_ITEM){
+               new LectureAsyncQueryHandler(LectureListActivity.this).removeLecture(uri);
+            }
             return false;
         }
 
@@ -217,7 +249,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         switch (item.getItemId()){
             case R.id.lectureBookEdit :
                 Intent intent = new Intent(this, EditBookActivity.class);
-                intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, UriUtils.removeLastSegment(bookLecturesUri));
+                intent.putExtra(EditBookActivity.BOOK_EXTRA_URI, removeLastSegment(bookLecturesUri));
                 startActivity(intent);
                 break;
         }
