@@ -26,6 +26,7 @@ import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.BookListActivity;
 import io.memit.android.activity.EditBookActivity;
+import io.memit.android.activity.word.WordListActivity;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
 
@@ -44,8 +45,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
     private static final byte LECTURE_LOADER = 1;
     private static final byte BOOK_LOADER = 2;
 
-    public final static String BOOK_LECTURES_URI_EXTRA = "bookIdExtra";
-    public final static String BOOK_NAME_EXTRA = "bookNameExtra";
+    public final static String BOOK_LECTURES_URI_EXTRA = "booklecturesUri";
 
     private RecyclerView recyclerView;
     private TextView empty;
@@ -212,7 +212,9 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         @Override
         public void onClick(View view) {
-
+            Intent i = new Intent(LectureListActivity.this, WordListActivity.class);
+            i.putExtra(WordListActivity.BOOK_LECTURES_URI_EXTRA, uri);
+            startActivity(i);
         }
 
 
@@ -242,7 +244,6 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
@@ -256,7 +257,6 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         return true;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

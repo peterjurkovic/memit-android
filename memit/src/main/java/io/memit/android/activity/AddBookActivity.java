@@ -17,7 +17,6 @@ public class AddBookActivity extends BaseBookActivity {
 
     private static final String TAG =  AddBookActivity.class.getSimpleName();
 
-
     public AddBookActivity(){
         super(R.layout.activity_book_add, R.string.book_add_new);
     }

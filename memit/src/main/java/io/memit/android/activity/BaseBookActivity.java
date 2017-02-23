@@ -159,11 +159,10 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
 
     protected abstract long bookId();
 
-    protected void goToBookDetail(long bookId, String bookName){
+    protected void goToBookDetail(long bookId){
         Intent i = new Intent(this, LectureListActivity.class);
         Uri bookIdUri = withAppendedId(Book.CONTENT_URI, bookId);
         i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, bookIdUri.withAppendedPath(bookIdUri, "lectures"));
-        i.putExtra(LectureListActivity.BOOK_NAME_EXTRA, bookName);
         i.putExtra(SHOW_SAVED_EXTRA, true );
         startActivity(i);
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginTop="3dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginBottom="3dp"
+    tools:context=".activity.word.WordListActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="7dp"
+        >
+
+        <TextView
+            android:id="@+id/word_question"
+            style="@style/word"
+            />
+
+        <TextView
+            android:id="@+id/word_answer"
+            android:layout_below="@id/word_question"
+            style="@style/word"
+            />
+
+        <ImageView style="@style/listItemNextIco"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

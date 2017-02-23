@@ -83,4 +83,10 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:src">@drawable/ic_navigate_next_black_24px</item>
     </style>
+
+    <style name="word" parent="font">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>

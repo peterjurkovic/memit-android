@@ -17,6 +17,7 @@ import android.util.SparseArray;
 import io.memit.android.BuildConfig;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.provider.Contract.Word;
 import io.memit.android.tools.UriUtils;
 
 /**
@@ -42,6 +43,8 @@ public class MemitProvider extends ContentProvider{
     static {
         CODE_TABLE_MAP.put(BOOK_ID, Book.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_ID, Lecture.TABLE);
+        CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS, Word.TABLE);
+
 
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/#", BOOK_ID);
@@ -93,17 +96,14 @@ public class MemitProvider extends ContentProvider{
                     throw new IllegalArgumentException("Selection must " +
                             "be null when specifying ID as part of uri.");
                 }
-                return database.query(CODE_TABLE_MAP.get(code),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-
-            default:
-                throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        return database.query(CODE_TABLE_MAP.get(code),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
     }
 
     @Nullable

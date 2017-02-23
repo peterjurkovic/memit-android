@@ -49,13 +49,17 @@ public class Contract {
 
     public interface Word extends BaseContract.SyncColumns{
         static final String TABLE = "word";
+
+        static final String QUESTION = "question";
+        static final String ANSWER = "answer";
+        static final String ACTIVE = "active";
+        static final String LECTURE_ID = "lecture_id";
     }
 
 
     public static String[] allBookColumns(){
         return new String[]{
                 Book._ID,
-                Book.SID,
                 Book.NAME,
                 Book.LANG_ANSWER,
                 Book.LANG_QUESTION,
@@ -66,10 +70,18 @@ public class Contract {
     public static String[] allLectureColumns(){
         return new String[]{
                 Lecture._ID,
-                Lecture.SID,
                 Lecture.NAME,
                 Lecture.LANG_ANSWER,
                 Lecture.LANG_QUESTION
+        };
+    }
+
+    public static String[] getWordsColumns(){
+        return new String[]{
+                Word._ID,
+                Word.QUESTION,
+                Word.ANSWER,
+                Word.ACTIVE
         };
     }
 
