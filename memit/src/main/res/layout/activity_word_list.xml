@@ -9,7 +9,31 @@
     android:fitsSystemWindows="true"
     tools:context=".activity.word.WordListActivity">
 
-    <include layout="@layout/toolbar_lecture_detail" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:background="#EAEAEA">
+
+            <TextView
+                android:id="@+id/lectureName"
+                style="@style/lectureName"/>
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <include layout="@layout/toolbar_word_detail" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

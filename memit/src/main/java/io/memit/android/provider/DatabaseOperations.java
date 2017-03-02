@@ -66,6 +66,16 @@ public class DatabaseOperations extends BaseDatabaseOperations {
 
     }
 
+    public Cursor getLectureById(long lectureId){
+        StringBuilder query = new StringBuilder()
+                .append("SELECT l.*, b.name as bookName ")
+                .append("FROM book b " )
+                .append("   JOIN lecture l ON l.book_id = b._id ")
+                .append("WHERE l._id = ").append(lectureId);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        return db.rawQuery(query.toString(), null );
+    }
+
 
     public Cursor getAllBooks(){
         StringBuilder query = new StringBuilder()

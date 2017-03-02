@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,7 @@ import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.activity.lecture.ToggleAppBarIconListener;
 import io.memit.android.provider.Contract;
+import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
 
 import static android.content.ContentUris.withAppendedId;
@@ -38,11 +40,13 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     private static final String TAG =  WordListActivity.class.getSimpleName();
     private static final byte WORDS_LOADER = 1;
+    private static final byte LECTURE_LOADER = 2;
 
     public final static String BOOK_LECTURES_URI_EXTRA = "booklecturesWordsUri";
 
     private RecyclerView recyclerView;
     private TextView empty;
+    // books/{id}/lectures/{id}/words
     private Uri bookLecturesWordsUri;
 
     @Override
@@ -50,7 +54,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_word_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.lecture_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.word_toolbar);
         bookLecturesWordsUri = getIntent().getExtras().getParcelable(BOOK_LECTURES_URI_EXTRA);
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
@@ -69,11 +73,13 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         empty = (TextView) findViewById(R.id.empty);
 
-        //getLoaderManager().initLoader(BOOK_LOADER, null, this);
-        //getLoaderManager().initLoader(LECTURE_LOADER, null, this);
+
+
         appBarLayout.addOnOffsetChangedListener(new ToggleAppBarIconListener());
         //initAddNewLectureButton();
         showSuccessfulySavedMessage(findViewById(R.id.root));
+        getLoaderManager().initLoader(LECTURE_LOADER, null, this);
+        getLoaderManager().initLoader(WORDS_LOADER, null, this);
     }
 
     @Override
@@ -83,9 +89,16 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 return new CursorLoader(this,
                         bookLecturesWordsUri,
                         Contract.getWordsColumns(),
-                         Word.LECTURE_ID+"=?",
+                        Word.LECTURE_ID+"=?",
                         new String[]{bookLecturesWordsUri.getLastPathSegment()},
                         Word.QUESTION);
+            case LECTURE_LOADER :
+            return new CursorLoader(this,
+                    removeLastSegment(bookLecturesWordsUri),
+                    null,
+                    null,
+                    null,
+                    null);
         }
         return null;
     }
@@ -94,7 +107,14 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
             case WORDS_LOADER:
-
+            case LECTURE_LOADER:
+                if(data != null && data.moveToNext()){
+                    CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+                    toolbar.setTitleEnabled(true);
+                    toolbar.setTitle(asString(data, "bookName"));
+                    ((TextView)findViewById(R.id.lectureName))
+                            .setText(asString(data, Lecture.NAME));
+                }
         }
     }
 

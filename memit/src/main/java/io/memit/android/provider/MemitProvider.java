@@ -79,16 +79,19 @@ public class MemitProvider extends ContentProvider{
         Log.d(TAG, "code: " + code);
         switch (code) {
             case BOOKS:
-                return BookDatabaseOperations
+                return DatabaseOperations
                         .getInstance(getContext())
                         .getAllBooks();
 
             case BOOK_LECTURES:
                 long bookId = UriUtils.getBookId(uri);
-                return LectureDatabaseOperation
+                return DatabaseOperations
                         .getInstance(getContext())
                         .getAllLectures(bookId);
             case BOOK_LECTURES_ID:
+                return  DatabaseOperations
+                        .getInstance(getContext())
+                        .getLectureById(UriUtils.getLectureId(uri));
             case BOOK_ID:
                 if (selection == null) {
                     selection = BaseColumns._ID + " = " + uri.getLastPathSegment();
@@ -158,12 +161,12 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case BOOK_ID:
-                    rowCount = BookDatabaseOperations
+                    rowCount = DatabaseOperations
                             .getInstance(dbHelper)
                             .removeBook(uri.getLastPathSegment());
                 break;
             case BOOK_LECTURES_ID:
-                rowCount = LectureDatabaseOperation
+                rowCount = DatabaseOperations
                             .getInstance(dbHelper)
                             .removeLecture(uri.getLastPathSegment());
                 break;

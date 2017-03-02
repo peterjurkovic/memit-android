@@ -23,8 +23,8 @@ import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.model.Lang;
 import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
-import io.memit.android.provider.BookDatabaseOperations;
 import io.memit.android.provider.Contract.Book;
+import io.memit.android.provider.DatabaseOperations;
 
 import static android.content.ContentUris.withAppendedId;
 
@@ -147,9 +147,9 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
             bookNameEditText.setError( getString(R.string.error_string_short, MIN_BOOK_NAME_LENGTH ));
             return false;
         }
-        boolean bookAlreadyExists = BookDatabaseOperations
+        boolean bookAlreadyExists = DatabaseOperations
                 .getInstance(getApplicationContext())
-                .exists(bookName, bookId());
+                .bookExists(bookName, bookId());
         if(bookAlreadyExists){
             bookNameEditText.setError(getString(R.string.book_form_name_exists_error));
             return false;

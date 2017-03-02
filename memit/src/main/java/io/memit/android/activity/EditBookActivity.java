@@ -85,7 +85,7 @@ public class EditBookActivity extends BaseBookActivity {
             getContentResolver().update(bookIdUri, cv, null, null);
 
             if(shouldGoToBookDetail()){
-                goToBookDetail(bookId(), cv.getAsString(Book.NAME));
+                goToBookDetail(bookId());
             }else{
                 Intent i = new Intent(this, BookListActivity.class);
                 i.putExtra(SHOW_SAVED_EXTRA, true );

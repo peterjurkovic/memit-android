@@ -165,6 +165,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
 
         private TextView viewName;
         private TextView viewInfo;
+        // books/{id}
         private Uri uri;
 
         public BookViewHolder(View itemView) {

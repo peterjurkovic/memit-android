@@ -49,6 +49,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     private RecyclerView recyclerView;
     private TextView empty;
+    // books/{id}/lectures
     private Uri bookLecturesUri;
 
     @Override
@@ -213,7 +214,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         @Override
         public void onClick(View view) {
             Intent i = new Intent(LectureListActivity.this, WordListActivity.class);
-            i.putExtra(WordListActivity.BOOK_LECTURES_URI_EXTRA, uri);
+            i.putExtra(WordListActivity.BOOK_LECTURES_URI_EXTRA, uri.withAppendedPath(uri, "words"));
             startActivity(i);
         }
 

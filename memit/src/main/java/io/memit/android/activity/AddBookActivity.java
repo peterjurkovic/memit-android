@@ -27,7 +27,7 @@ public class AddBookActivity extends BaseBookActivity {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
             Uri uri = getContentResolver().insert(Contract.Book.CONTENT_URI, cv);
-            goToBookDetail(Long.valueOf(uri.getLastPathSegment()), cv.getAsString(Contract.Book.NAME));
+            goToBookDetail(Long.valueOf(uri.getLastPathSegment()));
         }
     }
 
