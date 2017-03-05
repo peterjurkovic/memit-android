@@ -69,6 +69,11 @@
             android:parentActivityName=".activity.lecture.LectureListActivity"
             />
 
+        <activity android:name=".activity.word.AddWordActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.word.WordListActivity"
+            />
+
 
 
     </application>

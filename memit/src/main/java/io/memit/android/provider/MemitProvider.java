@@ -43,6 +43,8 @@ public class MemitProvider extends ContentProvider{
     static {
         CODE_TABLE_MAP.put(BOOK_ID, Book.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_ID, Lecture.TABLE);
+        CODE_TABLE_MAP.put(BOOKS, Book.TABLE);
+        CODE_TABLE_MAP.put(BOOK_LECTURES, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS, Word.TABLE);
 
 
@@ -137,14 +139,12 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case BOOKS:
-                id = dbHelper
-                        .getWritableDatabase()
-                        .insertOrThrow(Book.TABLE, null, values);
-                break;
             case BOOK_LECTURES:
+            case BOOK_LECTURES_WORDS:
                 id = dbHelper
                         .getWritableDatabase()
-                        .insertOrThrow(Lecture.TABLE, null, values);
+                        .insertOrThrow(CODE_TABLE_MAP.get(code), null, values);
+                Log.i(TAG, "New ID: " + id+ " generated in table: " + CODE_TABLE_MAP.get(code));
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);

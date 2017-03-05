@@ -42,6 +42,13 @@
     <string name="lecutre_list_empty">The textbook does not contain any lecture</string>
     <string name="lecture_form_name">Name of the lecture</string>
 
+    <!-- WORD -->
+    <string name="word_add_new">Add word</string>
+    <string name="word_add_question_unassigned">Type a question</string>
+    <string name="word_add_answer_unassigned">Type an question</string>
+    <string name="word_add_question">Your question in %1$s</string>
+    <string name="word_add_answer">Your answer in %1$s</string>
+    <string name="word_required">Can not be empty</string>
 
     <!-- VALIDATION -->
     <string name="error_string_short">Must have at least %1$d characters</string>

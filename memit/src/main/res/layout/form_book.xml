@@ -79,10 +79,7 @@
     <LinearLayout
         android:layout_below="@id/bookLevelSpinner"
         android:layout_marginTop="15dp"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:orientation="horizontal"
-        android:weightSum="1.0" >
+        style="@style/formButtonWrapp">
 
         <Button
             android:id="@+id/bookCancelBtn"

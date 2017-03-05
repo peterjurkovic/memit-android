@@ -12,7 +12,7 @@
     <RelativeLayout
         android:id="@+id/lectureBookNameHolder"
         android:layout_width="match_parent"
-        android:background="#EEEEEE"
+        android:background="@color/colorSubheader"
         android:padding="8dp"
         android:layout_marginBottom="5dp"
         android:layout_height="wrap_content">
@@ -97,10 +97,7 @@
         <LinearLayout
             android:layout_below="@id/lectureLangAnswerSpinner"
             android:layout_marginTop="15dp"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:weightSum="1.0" >
+            style="@style/formButtonWrapp">
 
             <Button
                 android:id="@+id/lectureCancelBtn"

@@ -25,6 +25,10 @@ public final class UriUtils {
         return getValueAt(uri, LECTURE_ID_IDX);
     }
 
+    public static String getLectureIdAsString(Uri uri){
+        return String.valueOf( getLectureId(uri) ) ;
+    }
+
     public static long getWordId(Uri uri){
         return Long.valueOf( uri.getLastPathSegment());
     }
@@ -53,5 +57,11 @@ public final class UriUtils {
         }
         return builder.build();
     }
+
+    public static Uri removeTwoLastSegment(Uri uri){
+        return removeLastSegment(removeLastSegment(uri));
+    }
+
+
 
 }

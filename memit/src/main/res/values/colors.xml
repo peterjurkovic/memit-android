@@ -15,5 +15,6 @@
     <color name="colorDivider">#BDBDBD</color>
     <color name="listItemInfoTextColor">#343434</color>
     <color name="listItemTitleTextColor">#111</color>
+    <color name="colorSubheader">#EAEAEA</color>
 </resources>
 

@@ -2,6 +2,7 @@ package io.memit.android.provider;
 
 import android.content.ContentResolver;
 import android.net.Uri;
+import android.provider.BaseColumns;
 
 import io.memit.android.BuildConfig;
 
@@ -20,8 +21,17 @@ public class Contract {
 
 
 
+    public interface SyncColumns extends BaseColumns {
+        static final String SID = "sid";
+        static final String CHANGED = "changed";
+        static final String CREATED = "created";
 
-    public interface Book extends BaseContract.SyncColumns {
+        static final String LECTURE_COUNT = "lecture_count";
+        static final String WORD_COUNT = "word_count";
+        static final String ACTIVE_WORD_COUNT = "active_word_count";
+    }
+
+    public interface Book extends SyncColumns {
         static final String TABLE = "book";
         static final String PATH = "books";
 
@@ -36,7 +46,7 @@ public class Contract {
 
     }
 
-    public interface Lecture extends BaseContract.SyncColumns{
+    public interface Lecture extends SyncColumns{
         static final String TABLE = "lecture";
         static final String PATH = "lectures";
 
@@ -47,7 +57,7 @@ public class Contract {
         // static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
     }
 
-    public interface Word extends BaseContract.SyncColumns{
+    public interface Word extends SyncColumns{
         static final String TABLE = "word";
 
         static final String QUESTION = "question";

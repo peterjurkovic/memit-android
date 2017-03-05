@@ -35,7 +35,7 @@ import io.memit.android.tools.UriUtils;
  * Created by peter on 2/18/17.
  */
 
-abstract class BaseLectureActivity  extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+abstract class BaseLectureActivity extends AbstractActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     protected final static int MIN_LECTURE_NAME = 1;
     protected final static int BOOK_LOADER_ID = 1;

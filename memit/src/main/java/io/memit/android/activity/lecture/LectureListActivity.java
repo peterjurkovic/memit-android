@@ -76,7 +76,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
         getLoaderManager().initLoader(BOOK_LOADER, null, this);
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
-        appBarLayout.addOnOffsetChangedListener(new ToggleAppBarIconListener());
+        appBarLayout.addOnOffsetChangedListener(new ToggleLectureAppBarIconListener());
         initAddNewLectureButton();
         showSuccessfulySavedMessage(findViewById(R.id.root));
     }

@@ -59,6 +59,9 @@
     <style name="font" >
     </style>
 
+    <style name="fontRegular" >
+    </style>
+
     <style name="listItemTitle" parent="font">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -84,10 +87,12 @@
         <item name="android:src">@drawable/ic_navigate_next_black_24px</item>
     </style>
 
-    <style name="word" parent="font">
+    <style name="word" parent="fontRegular">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="lectureName">
@@ -95,5 +100,30 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="textarea" parent="@android:style/Widget.EditText">
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:lines">4</item>
+        <item name="android:maxLines">6</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">start</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="textareaWrapp">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#555</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="formButtonWrapp">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:weightSum">1.0</item>
     </style>
 </resources>

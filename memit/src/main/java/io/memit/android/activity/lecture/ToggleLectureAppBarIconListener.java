@@ -10,11 +10,12 @@ import io.memit.android.R;
  * Created by peter on 2/18/17.
  */
 
-public class ToggleAppBarIconListener implements  AppBarLayout.OnOffsetChangedListener {
+public class ToggleLectureAppBarIconListener implements  AppBarLayout.OnOffsetChangedListener {
 
     private boolean isVisible = true;
     private int scrollRange = -2;
     private ActionMenuItemView item;
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (scrollRange == -2) {

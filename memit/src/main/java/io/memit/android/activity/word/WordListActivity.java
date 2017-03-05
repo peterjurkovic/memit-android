@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,15 +23,17 @@ import android.widget.TextView;
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.lecture.LectureListActivity;
-import io.memit.android.activity.lecture.ToggleAppBarIconListener;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
 
 import static android.content.ContentUris.withAppendedId;
+import static io.memit.android.activity.word.BaseWordActivity.BOOK_LECTURE_WORDS_URI_EXTRA;
 import static io.memit.android.tools.CursorUtils.asInt;
 import static io.memit.android.tools.CursorUtils.asString;
+import static io.memit.android.tools.UriUtils.getLectureIdAsString;
 import static io.memit.android.tools.UriUtils.removeLastSegment;
+import static io.memit.android.tools.UriUtils.removeTwoLastSegment;
 
 /**
  * Created by peter on 2/23/17.
@@ -63,7 +66,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(WordListActivity.this, LectureListActivity.class);
-                i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, removeLastSegment(bookLecturesWordsUri));
+                i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, removeTwoLastSegment(bookLecturesWordsUri));
                 startActivity(i);
             }
         });
@@ -74,9 +77,8 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         empty = (TextView) findViewById(R.id.empty);
 
 
-
-        appBarLayout.addOnOffsetChangedListener(new ToggleAppBarIconListener());
-        //initAddNewLectureButton();
+        appBarLayout.addOnOffsetChangedListener(new ToggleWordAppBarIconListener());
+        initAddNewWordButton();
         showSuccessfulySavedMessage(findViewById(R.id.root));
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
         getLoaderManager().initLoader(WORDS_LOADER, null, this);
@@ -90,7 +92,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                         bookLecturesWordsUri,
                         Contract.getWordsColumns(),
                         Word.LECTURE_ID+"=?",
-                        new String[]{bookLecturesWordsUri.getLastPathSegment()},
+                        new String[]{getLectureIdAsString(bookLecturesWordsUri)},
                         Word.QUESTION);
             case LECTURE_LOADER :
             return new CursorLoader(this,
@@ -107,6 +109,15 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
             case WORDS_LOADER:
+                if (data == null || data.getCount() == 0) {
+                    empty.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    empty.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    ((WordListCursorAdapter) recyclerView.getAdapter()).swapCursor(data);
+                }
+                break;
             case LECTURE_LOADER:
                 if(data != null && data.moveToNext()){
                     CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
@@ -120,7 +131,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        ((WordListCursorAdapter) recyclerView.getAdapter()).swapCursor(null);
     }
 
     private class WordListCursorAdapter extends RecyclerView.Adapter<WordViewHolder>  {
@@ -200,6 +211,18 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         }
 
 
+    }
+
+    private void initAddNewWordButton() {
+        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        addLectureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(WordListActivity.this, AddWordActivity.class);
+                Intent intent = i.putExtra(BOOK_LECTURE_WORDS_URI_EXTRA, bookLecturesWordsUri);
+                startActivity(i);
+            }
+        });
     }
 }
 
