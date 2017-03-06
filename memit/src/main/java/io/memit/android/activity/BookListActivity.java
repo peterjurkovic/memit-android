@@ -64,7 +64,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         getLoaderManager().initLoader(LOADER_ID_BOOK, null, this);
 
 
-        FloatingActionButton addBookBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        FloatingActionButton addBookBtn = (FloatingActionButton) findViewById(R.id.addBtn);
         addBookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

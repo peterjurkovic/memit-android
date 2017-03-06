@@ -10,48 +10,45 @@
     tools:context=".activity.word.WordListActivity">
 
 
+    <include layout="@layout/toolbar_word_detail" />
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:background="@color/colorSubheader">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:id="@+id/lectureName"
                 style="@style/lectureName"/>
 
-        </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/word_list_empty"
+                android:gravity="center"/>
+
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-
-    <include layout="@layout/toolbar_word_detail" />
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/lecutre_list_empty"
-        android:gravity="center"/>
-
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addBookBtn"
+        android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

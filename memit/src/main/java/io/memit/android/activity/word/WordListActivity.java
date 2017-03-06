@@ -214,7 +214,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     }
 
     private void initAddNewWordButton() {
-        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBtn);
         addLectureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

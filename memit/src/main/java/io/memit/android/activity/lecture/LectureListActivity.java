@@ -82,7 +82,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
     }
 
     private void initAddNewLectureButton() {
-        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBookBtn);
+        FloatingActionButton addLectureBtn = (FloatingActionButton) findViewById(R.id.addBtn);
         addLectureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -44,6 +44,7 @@
 
     <!-- WORD -->
     <string name="word_add_new">Add word</string>
+    <string name="word_list_empty">The lecture does not contain any cards</string>
     <string name="word_add_question_unassigned">Type a question</string>
     <string name="word_add_answer_unassigned">Type an question</string>
     <string name="word_add_question">Your question in %1$s</string>
