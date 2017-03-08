@@ -12,40 +12,22 @@
 
     <include layout="@layout/toolbar_word_detail" />
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scroll"
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/lectureName"
-                style="@style/lectureName"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/word_list_empty"
-                android:gravity="center"/>
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/word_list_empty"
+        android:gravity="center"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addBtn"

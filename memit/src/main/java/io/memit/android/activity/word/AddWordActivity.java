@@ -51,7 +51,7 @@ public class AddWordActivity extends BaseWordActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if(isFormValid(cv)){
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 100; i++)
                 getContentResolver().insert(bookLecturesWordsUri, cv);
             goBack();
         }
