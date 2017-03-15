@@ -10,14 +10,19 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.memit.android.R;
@@ -26,8 +31,8 @@ import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
+import io.memit.android.tools.SparseArrayMultiSelector;
 
-import static android.content.ContentUris.withAppendedId;
 import static io.memit.android.activity.word.BaseWordActivity.BOOK_LECTURE_WORDS_URI_EXTRA;
 import static io.memit.android.tools.CursorUtils.asInt;
 import static io.memit.android.tools.CursorUtils.asString;
@@ -49,9 +54,15 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     private RecyclerView recyclerView;
     private TextView empty;
+    private ProgressBar loader;
     // books/{id}/lectures/{id}/words
     private Uri bookLecturesWordsUri;
 
+
+    SparseArrayMultiSelector multiSelector = new SparseArrayMultiSelector() ;
+    ModalMultiSelectorCallback multiSelectorCallback;
+    ActionMode actinMode;
+    private WordListCursorAdapter adatper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,18 +81,21 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 startActivity(i);
             }
         });
-
+        adatper = new WordListCursorAdapter();
+        loader = (ProgressBar) findViewById(R.id.loader);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(new WordListActivity.WordListCursorAdapter());
+        recyclerView.setAdapter(adatper);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        empty = (TextView) findViewById(R.id.empty);
 
+        empty = (TextView) findViewById(R.id.empty);
 
         appBarLayout.addOnOffsetChangedListener(new ToggleWordAppBarIconListener());
         initAddNewWordButton();
         showSuccessfulySavedMessage(findViewById(R.id.root));
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
         getLoaderManager().initLoader(WORDS_LOADER, null, this);
+
+
     }
 
     @Override
@@ -129,6 +143,11 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         }
     }
 
+    public boolean isAnyItemSelected(){
+      //  recyclerView.getAdapter().has
+        return false;
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         ((WordListCursorAdapter) recyclerView.getAdapter()).swapCursor(null);
@@ -137,6 +156,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private class WordListCursorAdapter extends RecyclerView.Adapter<WordViewHolder>  {
 
         private Cursor cursor;
+        private SparseBooleanArray mSelectedItemsIds = new SparseBooleanArray();
 
         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -147,12 +167,8 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
-            if (cursor != null && cursor.moveToPosition(position)) {
-                int id = asInt(cursor, Word._ID);
-                holder.question.setText( asString(cursor, Word.QUESTION) );
-                holder.answer.setText( asString(cursor, Word.QUESTION) );
-                holder.uri = withAppendedId(bookLecturesWordsUri, id);
-            }
+            holder.bindItem(position, cursor);
+
         }
 
         @Override
@@ -167,8 +183,51 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             cursor = newWordCursor;
             notifyDataSetChanged();
         }
+
+        //Toggle selection methods
+        public void toggleSelection(int position) {
+            selectView(position, !mSelectedItemsIds.get(position));
+        }
+
+
+        //Remove selected selections
+        public void removeSelection() {
+            mSelectedItemsIds = new SparseBooleanArray();
+        }
+
+
+        //Put or delete selected position into SparseBooleanArray
+        public void selectView(int position, boolean value) {
+            if (value)
+                mSelectedItemsIds.put(position, value);
+            else
+                mSelectedItemsIds.delete(position);
+        }
+
+        //Get total selected count
+        public int getSelectedCount() {
+            return mSelectedItemsIds.size();
+        }
+
+        public boolean hasSelected(){
+            return getSelectedCount() > 0;
+        }
+
+        private boolean isItemChecked(int position) {
+            return mSelectedItemsIds.get(position);
+        }
+
+        //Return all selected ids
+        public SparseBooleanArray getSelectedIds() {
+            return mSelectedItemsIds;
+        }
     }
 
+    private void verifyMultiselectorCallback(){
+        if(multiSelectorCallback  == null)
+            multiSelectorCallback = new ModalMultiSelectorCallback(this, multiSelector);
+
+    }
 
 
     private class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -179,20 +238,39 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
         private TextView question;
         private TextView answer;
-        private Uri uri;
+        private CheckBox checkBox;
+        private int id;
 
         public WordViewHolder(View itemView) {
             super(itemView);
-
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
             question = (TextView) itemView.findViewById(R.id.word_question);
             answer = (TextView) itemView.findViewById(R.id.word_answer);
+            checkBox = (CheckBox) itemView.findViewById(R.id.wordCheckbox);
         }
+
 
         @Override
         public void onClick(View view) {
-
+            verifyMultiselectorCallback();
+            boolean isChecked = checkBox.isChecked();
+            Log.i(TAG, "is checked: " + isChecked);
+            if(isChecked){
+                multiSelector.removeAt(id);
+            }else{
+                multiSelector.setSelected(id);
+            }
+            checkBox.setChecked(!isChecked);
+            int selectedCount = multiSelector.getSelectedCount();
+            if (actinMode == null && selectedCount > 0) {
+                actinMode = startSupportActionMode(multiSelectorCallback);
+            }else if(actinMode  != null && selectedCount == 0){
+                actinMode.finish();
+                actinMode = null;
+            }else if(actinMode != null && selectedCount > 0){
+                actinMode.setTitle("Selected: " + selectedCount);
+            }
         }
 
 
@@ -206,10 +284,19 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-
             return false;
         }
 
+
+        public void bindItem(int position, Cursor wordCursor) {
+
+            if (wordCursor != null && wordCursor.moveToPosition(position)) {
+                this.id = asInt(wordCursor, Word._ID);
+                question.setText( asString(wordCursor, Word.QUESTION) );
+                answer.setText( asString(wordCursor, Word.ANSWER) );
+                checkBox.setChecked(multiSelector.isSelected(id));
+            }
+        }
 
     }
 
@@ -224,6 +311,20 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             }
         });
     }
+
+    public void showLoader(){
+        loader.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoader(){
+        loader.setVisibility(View.GONE);
+    }
+
+    public Uri getUri(){
+        return bookLecturesWordsUri;
+    }
+
+
 }
 
 

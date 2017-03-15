@@ -235,6 +235,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
              super.startQuery(token, cookie, uri, projection, selection, selectionArgs, orderBy);
          }
 
+
          @Override
          protected void onDeleteComplete(int position, Object cookie, int result) {
              BookListActivity activity = weekActivity.get();

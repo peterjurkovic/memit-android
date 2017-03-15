@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.model.Lang;
+import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Word;
+import io.memit.android.tools.CursorUtils;
 import io.memit.android.tools.UriUtils;
 
 import static io.memit.android.tools.UriUtils.removeLastSegment;
@@ -174,6 +177,23 @@ public abstract class BaseWordActivity extends AbstractActivity implements Loade
         return UriUtils.getLectureId(bookLecturesWordsUri);
     }
 
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(loader.getId() == LOAD_LECTURE_LOADER){
+            if(data != null && data.moveToFirst()){
+                String langQuestion = CursorUtils.asString(data, Contract.Lecture.LANG_QUESTION);
+                String langAnswer = CursorUtils.asString(data, Contract.Lecture.LANG_ANSWER);
+                String lectureName = CursorUtils.asString(data, Contract.Lecture.NAME);
+                setQuestionInputHit(langQuestion);
+                setAnswerInputHit(langAnswer);
+                setHeader(lectureName);
+            }else{
+                Log.e(getClass().getSimpleName(),"Could not load lecture information: " );
+            }
+        }
+        hideLoader();
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

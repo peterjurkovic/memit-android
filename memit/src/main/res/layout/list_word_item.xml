@@ -18,17 +18,31 @@
         android:padding="7dp"
         >
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:id="@+id/wordCheckbox"
+            />
+
         <TextView
             android:id="@+id/word_question"
             style="@style/word"
+            android:text="Question"
             android:textColor="#111"
             />
 
         <TextView
+            android:text="Answer"
             android:id="@+id/word_answer"
             android:layout_below="@id/word_question"
             style="@style/word"
             />
+
 
 
     </RelativeLayout>

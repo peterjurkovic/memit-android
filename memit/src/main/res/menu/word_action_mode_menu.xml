@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/activate"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_play_arrow_black_24px"
+        android:title="@string/activate"
+        />
+
+    <item
+        android:id="@+id/deactivate"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_stop_black_24px"
+        android:title="@string/deactivate"
+        />
+
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="3"
+        android:icon="@drawable/ic_delete_black_24px"
+        android:title="@string/delete"
+        />
+
+
+
+</menu>

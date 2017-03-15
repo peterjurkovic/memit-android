@@ -156,7 +156,7 @@ public class MemitProvider extends ContentProvider{
 
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(Uri uri, String whereClause, String[] whereArgs) {
         int rowCount;
         final int code = URI_MATCHER.match(uri);
         switch (code) {
@@ -173,7 +173,10 @@ public class MemitProvider extends ContentProvider{
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        notifyUris(uri, UriUtils.removeLastSegment(uri));
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        rowCount = database.delete(CODE_TABLE_MAP.get(code),whereClause, whereArgs);
+        notifyUris(uri);
         return rowCount;
     }
 

@@ -13,13 +13,24 @@ public class CursorUtils {
         if(c != null){
             return c.getString(c.getColumnIndexOrThrow(column));
         }
-        throw new IllegalArgumentException("Curor is already closed. [column="+column+"]");
+        throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
     }
 
     public static int asInt(Cursor c, String column){
         if(c != null){
             return c.getInt(c.getColumnIndexOrThrow(column));
         }
-        throw new IllegalArgumentException("Curor is already closed. [column="+column+"]");
+        throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
+    }
+
+    public static long asLong(Cursor c, String column){
+        if(c != null){
+            return c.getLong(c.getColumnIndexOrThrow(column));
+        }
+        throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
+    }
+
+    public static boolean asBoolean(Cursor c, String column){
+        return asInt(c, column) == 1;
     }
 }

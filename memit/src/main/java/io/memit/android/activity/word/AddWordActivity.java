@@ -4,13 +4,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.util.Log;
 
 import io.memit.android.BaseActivity;
 import io.memit.android.R;
 import io.memit.android.activity.lecture.LectureListActivity;
-import io.memit.android.provider.Contract.Lecture;
-import io.memit.android.tools.CursorUtils;
 
 /**
  * Created by peter on 3/5/17.
@@ -26,18 +23,7 @@ public class AddWordActivity extends BaseWordActivity {
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(loader.getId() == LOAD_LECTURE_LOADER){
-            if(data != null && data.moveToFirst()){
-                String langQuestion = CursorUtils.asString(data, Lecture.LANG_QUESTION);
-                String langAnswer = CursorUtils.asString(data, Lecture.LANG_ANSWER);
-                String lectureName = CursorUtils.asString(data, Lecture.NAME);
-                setQuestionInputHit(langQuestion);
-                setAnswerInputHit(langAnswer);
-                setHeader(lectureName);
-            }else{
-                Log.e(TAG,"Could not load lecture information: " );
-            }
-        }
+        super.onLoadFinished(loader, data);
         hideLoader();
     }
 
@@ -51,7 +37,7 @@ public class AddWordActivity extends BaseWordActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if(isFormValid(cv)){
-            for(int i = 0; i < 100; i++)
+            for(int i = 0; i < 250;i++ )
                 getContentResolver().insert(bookLecturesWordsUri, cv);
             goBack();
         }
