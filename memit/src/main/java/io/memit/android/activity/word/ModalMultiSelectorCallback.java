@@ -1,16 +1,21 @@
 package io.memit.android.activity.word;
 
 import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.view.ActionMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 
+import io.memit.android.BuildConfig;
 import io.memit.android.R;
-import io.memit.android.tools.SparseArrayMultiSelector;
+import io.memit.android.provider.Contract;
+import io.memit.android.tools.HashSetMultiSelector;
 import io.memit.android.tools.StringsUtils;
 
 /**
@@ -19,16 +24,20 @@ import io.memit.android.tools.StringsUtils;
 
 public class ModalMultiSelectorCallback implements ActionMode.Callback  {
 
+    private final String tag = getClass().getName();
+
     private final byte DELETE = 1;
     private final byte ACTIVATE = 2;
     private final byte DEACTIVATE = 3;
 
     private final WeakReference<WordListActivity> activity;
-    private final WeakReference<SparseArrayMultiSelector>  selector;
-    private QueryHelper queryHelper;
-    public ModalMultiSelectorCallback(WordListActivity context, SparseArrayMultiSelector selector){
+    private final WeakReference<HashSetMultiSelector>  selector;
+    private final QueryHelper queryHelper ;
+
+    public ModalMultiSelectorCallback(WordListActivity context, HashSetMultiSelector selector){
         this.activity = new WeakReference<WordListActivity>(context);
-        this.selector = new WeakReference<SparseArrayMultiSelector>( selector );
+        this.selector = new WeakReference<HashSetMultiSelector>( selector );
+        this.queryHelper = new QueryHelper();
     }
 
     @Override
@@ -49,11 +58,11 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
             if(ids.size() > 0)
                 switch (item.getItemId()){
                     case R.id.activate:
-
+                        activate(ids);
                         break;
 
                     case R.id.deactivate:
-
+                        deactivate(ids);
                         break;
 
                     case R.id.delete:
@@ -69,11 +78,24 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
 
     }
 
-    private void activate(Collection<Object> ids){
-        String condition = StringsUtils.joinConditions(ids, "_id", "OR");
-        //  (int token, Object cookie, Uri uri, String selection, String[] selectionArgs) {
-       // queryHelper.startUpdate(ACTIVATE, );
+    private void activate(Collection<Integer> ids){
+        toggle(ids, 1);
     }
+
+    private void deactivate(Collection<Integer> ids){
+        toggle(ids, 0);
+    }
+
+    private void toggle(Collection<Integer> ids, int active){
+        String condition = StringsUtils.joinConditions(ids, "_id", "OR");
+        if(BuildConfig.DEBUG){
+            Log.d(tag, (active == 1 ? "Activating" : "Deactivateing ") + " " + condition );
+        }
+        ContentValues cv = new ContentValues();
+        cv.put(Contract.Word.ACTIVE, active);
+        queryHelper.startUpdate(ACTIVATE, null, activity.get().getUri(), cv, condition, null );
+    }
+
 
 
     private class QueryHelper extends AsyncQueryHandler {
@@ -93,11 +115,22 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
         }
 
         @Override
+        protected void onUpdateComplete(int token, Object cookie, int result) {
+            Log.i(tag, "Number of "+(token == ACTIVATE ? "activated" :"deactivated" )+" words: " + result);
+            if( ! isActivityAlive()){
+                return;
+            }
+            activity.get().reloadView();
+        }
+
+        @Override
         protected void onDeleteComplete(int position, Object cookie, int result) {
+            Log.i(tag, "Number of deleted words: " + result);
+
             if( ! isActivityAlive() ){
                 return;
             }
-            activity.get().hideLoader();
+            activity.get().reloadView();
            // activity.getLoaderManager().restartLoader(LOADER_ID_BOOK, null, activity);
            // Snackbar.make(activity.root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
         }

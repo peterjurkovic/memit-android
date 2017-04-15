@@ -16,5 +16,7 @@
     <color name="listItemInfoTextColor">#343434</color>
     <color name="listItemTitleTextColor">#111</color>
     <color name="colorSubheader">#EAEAEA</color>
+    <color name="activated">#eeffd6</color>
+    <color name="selected">#6bfffa</color>
 </resources>
 

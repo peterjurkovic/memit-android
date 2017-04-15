@@ -184,7 +184,9 @@ public class MemitProvider extends ContentProvider{
      public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
          int rowCount;
 
+
          final int code = URI_MATCHER.match(uri);
+         final String table = CODE_TABLE_MAP.get(code);
          switch (code) {
              case BOOK_LECTURES_ID:
              case BOOK_ID:
@@ -202,6 +204,10 @@ public class MemitProvider extends ContentProvider{
                                  selection,
                                  selectionArgs);
                  break;
+             case BOOK_LECTURES_WORDS:
+                 return dbHelper.getReadableDatabase()
+                                        .update(table, values, selection, selectionArgs);
+
              default:
                  throw new IllegalArgumentException("Invalid Uri: " + uri);
          }

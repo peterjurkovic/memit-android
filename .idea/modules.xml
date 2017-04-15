@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MemIt.iml" filepath="$PROJECT_DIR$/MemIt.iml" />
       <module fileurl="file://$PROJECT_DIR$/memit/memit.iml" filepath="$PROJECT_DIR$/memit/memit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/memit-android.iml" filepath="$PROJECT_DIR$/memit-android.iml" />
     </modules>
   </component>
 </project>

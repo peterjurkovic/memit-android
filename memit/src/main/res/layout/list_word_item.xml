@@ -10,11 +10,13 @@
     android:layout_marginBottom="1dp"
     android:foreground="?android:attr/selectableItemBackground"
 
+
     tools:context=".activity.word.WordListActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/word_item"
         android:padding="7dp"
         >
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import io.memit.android.R;
@@ -31,9 +33,10 @@ import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
-import io.memit.android.tools.SparseArrayMultiSelector;
+import io.memit.android.tools.HashSetMultiSelector;
 
 import static io.memit.android.activity.word.BaseWordActivity.BOOK_LECTURE_WORDS_URI_EXTRA;
+import static io.memit.android.tools.CursorUtils.asBool;
 import static io.memit.android.tools.CursorUtils.asInt;
 import static io.memit.android.tools.CursorUtils.asString;
 import static io.memit.android.tools.UriUtils.getLectureIdAsString;
@@ -49,7 +52,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private static final String TAG =  WordListActivity.class.getSimpleName();
     private static final byte WORDS_LOADER = 1;
     private static final byte LECTURE_LOADER = 2;
-
+    private static final String SELECTION_POSITIONS = "position";
     public final static String BOOK_LECTURES_URI_EXTRA = "booklecturesWordsUri";
 
     private RecyclerView recyclerView;
@@ -59,7 +62,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private Uri bookLecturesWordsUri;
 
 
-    SparseArrayMultiSelector multiSelector = new SparseArrayMultiSelector() ;
+    private final HashSetMultiSelector multiSelector = new HashSetMultiSelector() ;
     ModalMultiSelectorCallback multiSelectorCallback;
     ActionMode actinMode;
     private WordListCursorAdapter adatper;
@@ -181,6 +184,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 cursor.close();
             }
             cursor = newWordCursor;
+            mSelectedItemsIds.clear();
             notifyDataSetChanged();
         }
 
@@ -197,9 +201,9 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
 
         //Put or delete selected position into SparseBooleanArray
-        public void selectView(int position, boolean value) {
-            if (value)
-                mSelectedItemsIds.put(position, value);
+        public void selectView(int position, boolean isSelected) {
+            if (isSelected)
+                mSelectedItemsIds.put(position, isSelected);
             else
                 mSelectedItemsIds.delete(position);
         }
@@ -236,6 +240,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         private final static byte EDIT_ITEM = 1;
         private final static byte REMOVE_ITEM = 2;
 
+        private RelativeLayout layout;
         private TextView question;
         private TextView answer;
         private CheckBox checkBox;
@@ -248,6 +253,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             question = (TextView) itemView.findViewById(R.id.word_question);
             answer = (TextView) itemView.findViewById(R.id.word_answer);
             checkBox = (CheckBox) itemView.findViewById(R.id.wordCheckbox);
+            layout = (RelativeLayout) itemView.findViewById(R.id.word_item);
         }
 
 
@@ -255,7 +261,6 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         public void onClick(View view) {
             verifyMultiselectorCallback();
             boolean isChecked = checkBox.isChecked();
-            Log.i(TAG, "is checked: " + isChecked);
             if(isChecked){
                 multiSelector.removeAt(id);
             }else{
@@ -265,6 +270,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             int selectedCount = multiSelector.getSelectedCount();
             if (actinMode == null && selectedCount > 0) {
                 actinMode = startSupportActionMode(multiSelectorCallback);
+                actinMode.setTitle("Selected: " + selectedCount);
             }else if(actinMode  != null && selectedCount == 0){
                 actinMode.finish();
                 actinMode = null;
@@ -294,10 +300,26 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 this.id = asInt(wordCursor, Word._ID);
                 question.setText( asString(wordCursor, Word.QUESTION) );
                 answer.setText( asString(wordCursor, Word.ANSWER) );
-                checkBox.setChecked(multiSelector.isSelected(id));
+                boolean isSelected = multiSelector.isSelected(id);
+                boolean isActivated = asBool(wordCursor, Word.ACTIVE);
+                checkBox.setChecked(isSelected);
+                if(isSelected){
+                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.selected));
+                }else if(isActivated){
+                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.activated));
+                }else{
+                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.md_white_1000));
+                }
+
             }
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle information) {
+        information.putIntegerArrayList(SELECTION_POSITIONS, this.multiSelector.getAllIds());
+        // information.putBoolean(SELECTIONS_STATE, isSelectable());
     }
 
     private void initAddNewWordButton() {
@@ -325,6 +347,16 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     }
 
 
+    public void reloadView(){
+        if(actinMode != null){
+            actinMode.finish();
+            actinMode = null;
+            multiSelector.clear();
+        }
+        getLoaderManager().restartLoader(WORDS_LOADER, null, this);
+        hideLoader();
+
+    }
 }
 
 

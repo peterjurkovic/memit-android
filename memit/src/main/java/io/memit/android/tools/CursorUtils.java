@@ -30,6 +30,13 @@ public class CursorUtils {
         throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
     }
 
+    public static boolean asBool(Cursor c, String column){
+        if(c != null){
+            return c.getInt(c.getColumnIndexOrThrow(column)) == 1;
+        }
+        throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
+    }
+
     public static boolean asBoolean(Cursor c, String column){
         return asInt(c, column) == 1;
     }
