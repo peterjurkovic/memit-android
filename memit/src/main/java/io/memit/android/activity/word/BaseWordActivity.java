@@ -170,7 +170,7 @@ public abstract class BaseWordActivity extends AbstractActivity implements Loade
     }
 
 
-    protected Long getLectureId(){
+    protected String getLectureId(){
         if(isStandalonAction()){
             return null;
         }

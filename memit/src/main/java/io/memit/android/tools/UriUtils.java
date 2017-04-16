@@ -10,18 +10,18 @@ import java.util.List;
 
 public final class UriUtils {
 
-    public static final byte NOT_FOUND = -1;
+    public static final String NOT_FOUND = null;
     private final static byte BOOK_ID_IDX = 1;
     private final static byte LECTURE_ID_IDX = 3;
 
     private UriUtils(){}
 
 
-    public static long getBookId(Uri uri){
+    public static String getBookId(Uri uri){
         return getValueAt(uri, BOOK_ID_IDX);
     }
 
-    public static long getLectureId(Uri uri){
+    public static String getLectureId(Uri uri){
         return getValueAt(uri, LECTURE_ID_IDX);
     }
 
@@ -33,14 +33,11 @@ public final class UriUtils {
         return Long.valueOf( uri.getLastPathSegment());
     }
 
-    public static long getValueAt(Uri uri, int idx){
+    public static String getValueAt(Uri uri, int idx){
         List<String> paths = uri.getPathSegments();
         for(int i = 0; i < paths.size(); i++){
             if(i == idx){
-                String id = paths.get(idx);
-                if(id.matches("\\d+")){
-                    return Long.valueOf(id);
-                }
+                return paths.get(idx);
             }
         }
         return NOT_FOUND;

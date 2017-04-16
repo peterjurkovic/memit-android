@@ -29,6 +29,7 @@ import io.memit.android.activity.EditBookActivity;
 import io.memit.android.activity.word.WordListActivity;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.tools.UriUtils;
 
 import static io.memit.android.activity.lecture.EditLectureActivity.BOOK_LECTURE_ID_URI_EXTRA;
 import static io.memit.android.tools.CursorUtils.asInt;
@@ -167,12 +168,12 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         public void onBindViewHolder(LectureListActivity.LectureViewHolder holder, int position) {
             if (cursor != null && cursor.moveToPosition(position)) {
                 String name =           asString(cursor, Lecture.NAME);
-                int id =                asInt(cursor, Lecture._ID);
+                String id =             asString(cursor, Lecture._ID);
                 int wordCount =         asInt(cursor, Lecture.WORD_COUNT);
                 int activeWordCount =   asInt(cursor, Lecture.ACTIVE_WORD_COUNT);
                 holder.name.setText(name);
                 holder.info.setText(getString(R.string.lecutre_item_info, wordCount, activeWordCount));
-                holder.uri = ContentUris.withAppendedId(bookLecturesUri, id);
+                holder.uri = UriUtils.withAppendedId(bookLecturesUri, id);
             }
         }
 

@@ -24,7 +24,7 @@ public class EditLectureActivity extends BaseLectureActivity{
 
     public final static String BOOK_LECTURE_ID_URI_EXTRA = "bookLectureId";
     private final static String TAG = EditLectureActivity.class.getName();
-    private final static byte LOAD_LECTURE_LOEADER = 3;
+    private final static byte LOAD_LECTURE_LOADER = 3;
     private AtomicInteger counter = new AtomicInteger(2);
 
     public EditLectureActivity(){
@@ -37,7 +37,7 @@ public class EditLectureActivity extends BaseLectureActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bookLectureIdUri = getIntent().getExtras().getParcelable(BOOK_LECTURE_ID_URI_EXTRA);
-        getLoaderManager().initLoader(LOAD_LECTURE_LOEADER, null, this);
+        getLoaderManager().initLoader(LOAD_LECTURE_LOADER, null, this);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EditLectureActivity extends BaseLectureActivity{
             return loader;
         }
         switch (id) {
-            case LOAD_LECTURE_LOEADER:
+            case LOAD_LECTURE_LOADER:
                 return new CursorLoader(this,
                         bookLecturesUri,
                         Contract.allLectureColumns(),
@@ -79,7 +79,7 @@ public class EditLectureActivity extends BaseLectureActivity{
                 Log.w(TAG, "Can not load book [id="+getBookId()+"]");
                 // TODO show some alert message
             }
-        }else if(loader.getId() == LOAD_LECTURE_LOEADER){
+        }else if(loader.getId() == LOAD_LECTURE_LOADER){
             if(data != null && data.moveToNext()){
                 String langQuestion = data.getString(data
                         .getColumnIndexOrThrow(Lecture.LANG_QUESTION));

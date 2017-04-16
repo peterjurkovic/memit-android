@@ -51,11 +51,11 @@ public class MemitProvider extends ContentProvider{
 
 
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#", BOOK_ID);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures", BOOK_LECTURES);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#", BOOK_LECTURES_ID);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#/words", BOOK_LECTURES_WORDS);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "books/#/lectures/#/words/#", BOOK_LECTURES_WORDS_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/*", BOOK_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures", BOOK_LECTURES);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*", BOOK_LECTURES_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words", BOOK_LECTURES_WORDS);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words/*", BOOK_LECTURES_WORDS_ID);
     }
 
 
@@ -88,7 +88,7 @@ public class MemitProvider extends ContentProvider{
                         .getAllBooks();
 
             case BOOK_LECTURES:
-                long bookId = UriUtils.getBookId(uri);
+                String bookId = UriUtils.getBookId(uri);
                 return DatabaseOperations
                         .getInstance(getContext())
                         .getAllLectures(bookId);
@@ -98,7 +98,7 @@ public class MemitProvider extends ContentProvider{
                         .getLectureById(UriUtils.getLectureId(uri));
             case BOOK_ID:
                 if (selection == null) {
-                    selection = BaseColumns._ID + " = " + uri.getLastPathSegment();
+                    selection = BaseColumns._ID + " = '" + uri.getLastPathSegment() + "'";
                 } else {
                     throw new IllegalArgumentException("Selection must " +
                             "be null when specifying ID as part of uri.");
@@ -136,20 +136,20 @@ public class MemitProvider extends ContentProvider{
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        long id;
+
+
         Log.d(TAG, "Creating [uri="+uri+"] values: " + values);
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case BOOKS:
             case BOOK_LECTURES:
             case BOOK_LECTURES_WORDS:
-                if( ! values.containsKey(BaseColumns._ID)){
-                    values.put(BaseColumns._ID, UUID.randomUUID().toString());
-                }
-                id = dbHelper
-                        .getWritableDatabase()
+                String id = UUID.randomUUID().toString();
+                values.put(BaseColumns._ID, id);
+
+                dbHelper.getWritableDatabase()
                         .insertOrThrow(CODE_TABLE_MAP.get(code), null, values);
-                Log.i(TAG, "New ID: " + id+ " generated in table: " + CODE_TABLE_MAP.get(code));
+                Log.i(TAG, "New ID: " + id+ " generated");
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);

@@ -194,7 +194,7 @@ abstract class BaseLectureActivity extends AbstractActivity implements LoaderMan
         startActivity(i);
     }
 
-    protected long getBookId(){
+    protected String getBookId(){
         return UriUtils.getBookId(bookLecturesUri);
     }
 

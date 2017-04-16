@@ -74,12 +74,12 @@ public class DatabaseOperations extends BaseDatabaseOperations {
 
     }
 
-    public Cursor getLectureById(long lectureId){
+    public Cursor getLectureById(String lectureId){
         StringBuilder query = new StringBuilder()
                 .append("SELECT l.*, b.name as bookName ")
                 .append("FROM book b " )
                 .append("   JOIN lecture l ON l.book_id = b._id ")
-                .append("WHERE l._id = ").append(lectureId);
+                .append("WHERE l._id = '").append(lectureId).append("'");
         SQLiteDatabase db = helper.getWritableDatabase();
         return db.rawQuery(query.toString(), null );
     }
@@ -140,20 +140,23 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         return ids;
     }
 
-    public Cursor getAllLectures( long bookId ){
-
+    public Cursor getAllLectures( String bookId ){
+        if(bookId == null){
+            Log.e(TAG, "Unexpected NULL bookId");
+            bookId = "";
+        }
         StringBuilder query = new StringBuilder()
             .append("SELECT l._id, l.name, l.lang_question, l.lang_answer, ")
             .append("   IFNULL(COUNT( DISTINCT w._id ),0) as word_count, ")
             .append("   IFNULL(SUM( w.active ),0) as active_word_count ")
             .append("FROM lecture l ")
             .append("LEFT JOIN word w ON w.lecture_id = l._id AND w.deleted = 0 ")
-            .append("WHERE l.book_id = ? AND l.deleted = 0")
+            .append("WHERE l.book_id = ? AND l.deleted = 0 ")
             .append("GROUP BY l._id ")
             .append("ORDER BY l.name ");
 
         SQLiteDatabase db = helper.getWritableDatabase();
-        return db.rawQuery(query.toString(), new String[]{valueOf(bookId )} );
+        return db.rawQuery(query.toString(), new String[]{bookId } );
     }
 
     public int removeLecture(String id){
