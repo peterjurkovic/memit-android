@@ -25,8 +25,8 @@ import io.memit.android.model.Level;
 import io.memit.android.model.SpinnerState;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.DatabaseOperations;
+import io.memit.android.tools.UriUtils;
 
-import static android.content.ContentUris.withAppendedId;
 
 /**
  * Created by peter on 2/4/17.
@@ -157,11 +157,11 @@ public abstract class BaseBookActivity extends AbstractActivity implements Loade
         return true;
     }
 
-    protected abstract long bookId();
+    protected abstract String bookId();
 
-    protected void goToBookDetail(long bookId){
+    protected void goToBookDetail(String bookId){
         Intent i = new Intent(this, LectureListActivity.class);
-        Uri bookIdUri = withAppendedId(Book.CONTENT_URI, bookId);
+        Uri bookIdUri = UriUtils.withAppendedId(Book.CONTENT_URI, bookId);
         i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, bookIdUri.withAppendedPath(bookIdUri, "lectures"));
         i.putExtra(SHOW_SAVED_EXTRA, true );
         startActivity(i);

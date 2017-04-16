@@ -1,5 +1,6 @@
 package io.memit.android.provider;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -47,12 +48,19 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         return OPERATIONS;
     }
 
-    public boolean bookExists(String name, long id){
+    public boolean bookExists(String name, String id){
         if (BuildConfig.DEBUG)
             Log.d(TAG, "Checking whether book with [name=" + name+ "] [id=" + id + "] bookExists");
+        String selection;
+        String[] selectionArgs;
+        if(id == null){
+            selection =  "name=? AND deleted = 0 ";
+            selectionArgs = new String[]{ String.valueOf(name) };
+        }else{
+            selection =  "name=? AND deleted = 0 AND _id<>?  ";
+            selectionArgs = new String[]{ String.valueOf(name), id };
+        }
 
-        String selection =  "name=? AND _id<>?";
-        String[] selectionArgs = { String.valueOf(name), String.valueOf(id) };
         Cursor cursor = null;
         try {
             cursor = helper.getWritableDatabase()
@@ -82,10 +90,11 @@ public class DatabaseOperations extends BaseDatabaseOperations {
                 .append("SELECT b._id, b.name, ")
                 .append("   COUNT(DISTINCT l._id) as lecture_count, " )
                 .append("   IFNULL(COUNT(DISTINCT w._id),0) as word_count, " )
-                .append("   IFNULL(SUM( w.active),0)as active_word_count " )
+                .append("   IFNULL(SUM( w.active),0) as active_word_count " )
                 .append("FROM book b " )
-                .append("   LEFT JOIN lecture l ON l.book_id = b._id ")
-                .append("   LEFT JOIN word w ON w.lecture_id = l._id ")
+                .append("   LEFT JOIN lecture l ON l.book_id = b._id AND l.deleted = 0 ")
+                .append("   LEFT JOIN word w ON w.lecture_id = l._id AND w.deleted = 0 ")
+                .append("WHERE b.deleted = 0 ")
                 .append("GROUP BY b._id ")
                 .append("ORDER BY b.name");
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -99,18 +108,22 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         String[] selectionArgs = { String.valueOf(id) };
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
-        final int deletedCount = db.delete(Contract.Book.TABLE, BaseColumns._ID+"=?", selectionArgs);
-        if(deletedCount > 0) {
+        String now = now(db);
+        ContentValues deleted = new ContentValues();
+        deleted.put(Contract.SyncColumns.DELETED, 1);
+        deleted.put(Contract.SyncColumns.CHANGED, now);
+        final int updatedCount = db.update(Contract.Book.TABLE, deleted, BaseColumns._ID+"=?", selectionArgs);
+        if(updatedCount > 0) {
             List<Long> ids = getLecturesId(db, selectionArgs);
             if(!ids.isEmpty()){
                 String inClause = asINClause(ids);
-                db.execSQL("DELETE FROM " + Word.TABLE+ " WHERE `lecture_id` IN " + inClause);
-                db.execSQL("DELETE FROM " + Lecture.TABLE + " WHERE `book_id`= ? ", selectionArgs);
+                db.execSQL("UPDATE " + Word.TABLE+ " SET deleted = 1, changed='"+now+"' WHERE `lecture_id` IN " + inClause);
+                db.execSQL("UPDATE " + Lecture.TABLE + " SET deleted = 1, changed='"+now+"' WHERE `book_id`= ? ", selectionArgs);
             }
         }
         db.setTransactionSuccessful();
         db.endTransaction();
-        return deletedCount;
+        return updatedCount;
     }
 
     private List<Long> getLecturesId(SQLiteDatabase db, String[] selectionArgs ){
@@ -134,8 +147,8 @@ public class DatabaseOperations extends BaseDatabaseOperations {
             .append("   IFNULL(COUNT( DISTINCT w._id ),0) as word_count, ")
             .append("   IFNULL(SUM( w.active ),0) as active_word_count ")
             .append("FROM lecture l ")
-            .append("LEFT JOIN word w ON w.lecture_id = l._id ")
-            .append("WHERE l.book_id = ? ")
+            .append("LEFT JOIN word w ON w.lecture_id = l._id AND w.deleted = 0 ")
+            .append("WHERE l.book_id = ? AND l.deleted = 0")
             .append("GROUP BY l._id ")
             .append("ORDER BY l.name ");
 
@@ -150,8 +163,9 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         String[] selectionArgs = { String.valueOf(id) };
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
-        db.execSQL("DELETE FROM " + Word.TABLE+ " WHERE `lecture_id` = ?", selectionArgs);
-        db.execSQL("DELETE FROM " + Lecture.TABLE + " WHERE `_id`= ? ", selectionArgs);
+        String now = now(db);
+        db.execSQL("UPDATE " + Word.TABLE+ " SET deleted = 1, changed='"+now+"' WHERE `lecture_id` = ?", selectionArgs);
+        db.execSQL("UPDATE " + Lecture.TABLE + " SET deleted = 1, changed='"+now+"' WHERE `_id`= ? ", selectionArgs);
         db.setTransactionSuccessful();
         db.endTransaction();
         return 1;

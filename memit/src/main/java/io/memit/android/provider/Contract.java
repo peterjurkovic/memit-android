@@ -22,7 +22,7 @@ public class Contract {
 
 
     public interface SyncColumns extends BaseColumns {
-        static final String SID = "sid";
+        static final String DELETED = "deleted";
         static final String CHANGED = "changed";
         static final String CREATED = "created";
 

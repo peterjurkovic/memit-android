@@ -18,6 +18,7 @@ import io.memit.android.adapter.SpinnerAdapter;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.tools.CursorUtils;
+import io.memit.android.tools.UriUtils;
 
 /**
  * Created by peter on 2/8/17.
@@ -107,8 +108,8 @@ public class EditBookActivity extends BaseBookActivity {
         }
     }
 
-    public long bookId() {
-        return ContentUris.parseId(bookIdUri);
+    public String bookId() {
+        return UriUtils.parseId(bookIdUri);
     }
 
 

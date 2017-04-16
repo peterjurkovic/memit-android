@@ -27,13 +27,13 @@ public class AddBookActivity extends BaseBookActivity {
         ContentValues cv = getConentValues();
         if( isBookValid(cv) ){
             Uri uri = getContentResolver().insert(Contract.Book.CONTENT_URI, cv);
-            goToBookDetail(Long.valueOf(uri.getLastPathSegment()));
+            goToBookDetail(uri.getLastPathSegment());
         }
     }
 
     @Override
-    protected long bookId() {
-        return 0;
+    protected String bookId() {
+        return null;
     }
 
 

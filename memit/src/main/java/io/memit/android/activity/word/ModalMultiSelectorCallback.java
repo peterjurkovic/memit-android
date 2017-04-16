@@ -68,6 +68,9 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
                     case R.id.delete:
 
                         break;
+                    default:
+                        throw new IllegalArgumentException(
+                                "Unexpected item id: " + item.getItemId());
                 }
         }
         return false;
@@ -89,7 +92,7 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
     private void toggle(Collection<Integer> ids, int active){
         String condition = StringsUtils.joinConditions(ids, "_id", "OR");
         if(BuildConfig.DEBUG){
-            Log.d(tag, (active == 1 ? "Activating" : "Deactivateing ") + " " + condition );
+            Log.d(tag, (active == 1 ? "Activating" : "Deactivating ") + " " + condition );
         }
         ContentValues cv = new ContentValues();
         cv.put(Contract.Word.ACTIVE, active);
@@ -105,18 +108,19 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
         }
 
         @Override
-        public void startQuery(int token, Object cookie, Uri uri, String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        public void startQuery(int token, Object cookie, Uri uri,
+                                String[] projection, String selection, String[] selectionArgs, String orderBy) {
 
             if( isActivityAlive() ){
                 activity.get().showLoader();
-                super.startQuery(token, cookie, activity.get().getUri(), projection, selection, selectionArgs, orderBy);
+                super.startQuery(token, cookie, activity.get().getUri(),
+                            projection, selection, selectionArgs, orderBy);
             }
 
         }
 
         @Override
         protected void onUpdateComplete(int token, Object cookie, int result) {
-            Log.i(tag, "Number of "+(token == ACTIVATE ? "activated" :"deactivated" )+" words: " + result);
             if( ! isActivityAlive()){
                 return;
             }

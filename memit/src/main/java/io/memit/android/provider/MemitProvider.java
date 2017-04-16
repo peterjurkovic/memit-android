@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.util.UUID;
+
 import io.memit.android.BuildConfig;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
@@ -141,6 +143,9 @@ public class MemitProvider extends ContentProvider{
             case BOOKS:
             case BOOK_LECTURES:
             case BOOK_LECTURES_WORDS:
+                if( ! values.containsKey(BaseColumns._ID)){
+                    values.put(BaseColumns._ID, UUID.randomUUID().toString());
+                }
                 id = dbHelper
                         .getWritableDatabase()
                         .insertOrThrow(CODE_TABLE_MAP.get(code), null, values);
@@ -151,7 +156,7 @@ public class MemitProvider extends ContentProvider{
         }
 
         notifyUris(uri);
-        return ContentUris.withAppendedId(uri, id);
+        return UriUtils.withAppendedId(uri, values.getAsString(BaseColumns._ID));
     }
 
 
@@ -173,9 +178,8 @@ public class MemitProvider extends ContentProvider{
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-        rowCount = database.delete(CODE_TABLE_MAP.get(code),whereClause, whereArgs);
+//        SQLiteDatabase database = dbHelper.getReadableDatabase();
+//        rowCount = database.delete(CODE_TABLE_MAP.get(code),whereClause, whereArgs);
         notifyUris(uri);
         return rowCount;
     }

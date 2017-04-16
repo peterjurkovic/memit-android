@@ -1,6 +1,7 @@
 package io.memit.android.activity.word;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -15,8 +16,6 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -55,6 +54,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private static final String SELECTION_POSITIONS = "position";
     public final static String BOOK_LECTURES_URI_EXTRA = "booklecturesWordsUri";
 
+    private Colors colors;
     private RecyclerView recyclerView;
     private TextView empty;
     private ProgressBar loader;
@@ -95,6 +95,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         appBarLayout.addOnOffsetChangedListener(new ToggleWordAppBarIconListener());
         initAddNewWordButton();
         showSuccessfulySavedMessage(findViewById(R.id.root));
+        this.colors = new Colors(this);
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
         getLoaderManager().initLoader(WORDS_LOADER, null, this);
 
@@ -146,11 +147,6 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         }
     }
 
-    public boolean isAnyItemSelected(){
-      //  recyclerView.getAdapter().has
-        return false;
-    }
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         ((WordListCursorAdapter) recyclerView.getAdapter()).swapCursor(null);
@@ -159,9 +155,8 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private class WordListCursorAdapter extends RecyclerView.Adapter<WordViewHolder>  {
 
         private Cursor cursor;
-        private SparseBooleanArray mSelectedItemsIds = new SparseBooleanArray();
 
-        @Override
+         @Override
         public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_word_item, parent, false);
@@ -173,7 +168,6 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             holder.bindItem(position, cursor);
 
         }
-
         @Override
         public int getItemCount() {
             return (cursor == null ? 0 : cursor.getCount());
@@ -184,47 +178,9 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 cursor.close();
             }
             cursor = newWordCursor;
-            mSelectedItemsIds.clear();
             notifyDataSetChanged();
         }
 
-        //Toggle selection methods
-        public void toggleSelection(int position) {
-            selectView(position, !mSelectedItemsIds.get(position));
-        }
-
-
-        //Remove selected selections
-        public void removeSelection() {
-            mSelectedItemsIds = new SparseBooleanArray();
-        }
-
-
-        //Put or delete selected position into SparseBooleanArray
-        public void selectView(int position, boolean isSelected) {
-            if (isSelected)
-                mSelectedItemsIds.put(position, isSelected);
-            else
-                mSelectedItemsIds.delete(position);
-        }
-
-        //Get total selected count
-        public int getSelectedCount() {
-            return mSelectedItemsIds.size();
-        }
-
-        public boolean hasSelected(){
-            return getSelectedCount() > 0;
-        }
-
-        private boolean isItemChecked(int position) {
-            return mSelectedItemsIds.get(position);
-        }
-
-        //Return all selected ids
-        public SparseBooleanArray getSelectedIds() {
-            return mSelectedItemsIds;
-        }
     }
 
     private void verifyMultiselectorCallback(){
@@ -245,6 +201,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         private TextView answer;
         private CheckBox checkBox;
         private int id;
+        private boolean activated;
 
         public WordViewHolder(View itemView) {
             super(itemView);
@@ -267,16 +224,17 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 multiSelector.setSelected(id);
             }
             checkBox.setChecked(!isChecked);
+            updateBackground(!isChecked);
             int selectedCount = multiSelector.getSelectedCount();
             if (actinMode == null && selectedCount > 0) {
                 actinMode = startSupportActionMode(multiSelectorCallback);
-                actinMode.setTitle("Selected: " + selectedCount);
             }else if(actinMode  != null && selectedCount == 0){
-                actinMode.finish();
-                actinMode = null;
-            }else if(actinMode != null && selectedCount > 0){
+                clearActionMode();
+            }
+            if(actinMode != null && selectedCount > 0){
                 actinMode.setTitle("Selected: " + selectedCount);
             }
+
         }
 
 
@@ -301,18 +259,22 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 question.setText( asString(wordCursor, Word.QUESTION) );
                 answer.setText( asString(wordCursor, Word.ANSWER) );
                 boolean isSelected = multiSelector.isSelected(id);
-                boolean isActivated = asBool(wordCursor, Word.ACTIVE);
+                this.activated = asBool(wordCursor, Word.ACTIVE);
                 checkBox.setChecked(isSelected);
-                if(isSelected){
-                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.selected));
-                }else if(isActivated){
-                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.activated));
-                }else{
-                    layout.setBackgroundColor(ContextCompat.getColor(WordListActivity.this,R.color.md_white_1000));
-                }
-
+                updateBackground(isSelected);
             }
         }
+
+        public void updateBackground(boolean isSelected){
+            if(isSelected){
+                layout.setBackgroundColor(colors.selected);
+            }else if(this.activated){
+                layout.setBackgroundColor(colors.activated);
+            }else{
+                layout.setBackgroundColor(colors.white);
+            }
+        }
+
 
     }
 
@@ -348,14 +310,33 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
 
     public void reloadView(){
+        clearActionMode();
+        getLoaderManager().restartLoader(WORDS_LOADER, null, this);
+        hideLoader();
+
+    }
+
+    private void clearActionMode(){
         if(actinMode != null){
             actinMode.finish();
             actinMode = null;
             multiSelector.clear();
         }
-        getLoaderManager().restartLoader(WORDS_LOADER, null, this);
-        hideLoader();
+    }
 
+
+
+    static class Colors{
+
+        int white;
+        int selected;
+        int activated;
+
+        Colors(Context context){
+            this.selected = ContextCompat.getColor(context, R.color.selected);
+            this.activated = ContextCompat.getColor(context, R.color.activated);
+            this.white = ContextCompat.getColor(context, R.color.md_white_1000);
+        }
     }
 }
 

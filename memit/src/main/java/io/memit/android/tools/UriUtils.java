@@ -62,6 +62,15 @@ public final class UriUtils {
         return removeLastSegment(removeLastSegment(uri));
     }
 
+    public static Uri withAppendedId(Uri contentUri, String id) {
+        return appendId(contentUri.buildUpon(), id).build();
+    }
 
+    public static Uri.Builder appendId(Uri.Builder builder, String id) {
+        return builder.appendEncodedPath(id);
+    }
 
+    public static String parseId(Uri contentUri) {
+        return contentUri.getLastPathSegment();
+    }
 }

@@ -1,5 +1,7 @@
 package io.memit.android.provider;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -24,6 +26,19 @@ public class BaseDatabaseOperations {
             .append(TextUtils.join(",", ids))
             .append(")").toString();
 
+    }
+    protected static String now(SQLiteDatabase db){
+        Cursor c = db.rawQuery("SELECT datetime() as now ", null);
+        try{
+            if(c.moveToNext()){
+                return c.getString(0);
+            }
+        }finally {
+            if(c != null){
+                c.close();
+            }
+        }
+        throw new IllegalStateException("Could not acquire current timestemp");
     }
 
 

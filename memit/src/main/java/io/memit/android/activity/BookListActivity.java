@@ -28,6 +28,7 @@ import java.lang.ref.WeakReference;
 import io.memit.android.R;
 import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.provider.Contract.Book;
+import io.memit.android.tools.UriUtils;
 
 import static io.memit.android.tools.CursorUtils.asInt;
 import static io.memit.android.tools.CursorUtils.asString;
@@ -129,14 +130,14 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
         public void onBindViewHolder(BookViewHolder holder, int position) {
             if (bookCursor != null && bookCursor.moveToPosition(position)) {
                 String name = asString(bookCursor, Book.NAME);
-                int id = asInt(bookCursor, Book._ID);
+                String id = asString(bookCursor, Book._ID);
                 int lectureCount = asInt(bookCursor, Book.LECTURE_COUNT);
                 int wordCount = asInt(bookCursor, Book.WORD_COUNT);
                 int activeWordCount =asInt(bookCursor,Book.ACTIVE_WORD_COUNT);
                 holder.viewName.setText(name);
                 holder.viewInfo.setText(getString(
                         R.string.book_item_info,lectureCount, wordCount, activeWordCount));
-                holder.uri = ContentUris.withAppendedId(Book.CONTENT_URI,  id);
+                holder.uri = UriUtils.withAppendedId(Book.CONTENT_URI,  id);
             }
         }
 
