@@ -46,8 +46,10 @@ public class MemitProvider extends ContentProvider{
         CODE_TABLE_MAP.put(BOOK_ID, Book.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_ID, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOKS, Book.TABLE);
+        CODE_TABLE_MAP.put(BOOK_LECTURES_ID, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS, Word.TABLE);
+        CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS_ID, Word.TABLE);
 
 
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
@@ -68,7 +70,7 @@ public class MemitProvider extends ContentProvider{
     @Nullable
     @Override
     public  Cursor query(@NonNull Uri uri,
-                                String[] projection,
+                                String[] columns,
                                 String selection,
                                 String[] selectionArgs,
                                 String sortOrder) throws IllegalArgumentException {
@@ -104,8 +106,11 @@ public class MemitProvider extends ContentProvider{
                             "be null when specifying ID as part of uri.");
                 }
         }
+        // (String table, String[] columns, String selection,
+        // String[] selectionArgs, String groupBy, String having, String orderBy
+
         return database.query(CODE_TABLE_MAP.get(code),
-                projection,
+                columns,
                 selection,
                 selectionArgs,
                 null,
@@ -187,11 +192,13 @@ public class MemitProvider extends ContentProvider{
 
      public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
          int rowCount;
-
-
          final int code = URI_MATCHER.match(uri);
          final String table = CODE_TABLE_MAP.get(code);
+         SQLiteDatabase db = dbHelper.getWritableDatabase();
+         String now = DatabaseOperations.now(db);
+         values.put(Contract.SyncColumns.CHANGED, now);
          switch (code) {
+             case BOOK_LECTURES_WORDS_ID:
              case BOOK_LECTURES_ID:
              case BOOK_ID:
                  if (selection == null && selectionArgs == null) {
@@ -201,16 +208,13 @@ public class MemitProvider extends ContentProvider{
                      throw new IllegalArgumentException("Selection must be " +
                              "null when specifying ID as part of uri.");
                  }
-                 rowCount = dbHelper
-                         .getWritableDatabase()
-                         .update(CODE_TABLE_MAP.get(code),
+                 rowCount = db.update(CODE_TABLE_MAP.get(code),
                                  values,
                                  selection,
                                  selectionArgs);
                  break;
              case BOOK_LECTURES_WORDS:
-                 return dbHelper.getReadableDatabase()
-                                        .update(table, values, selection, selectionArgs);
+                 return db.update(table, values, selection, selectionArgs);
 
              default:
                  throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -225,10 +229,8 @@ public class MemitProvider extends ContentProvider{
     }
 
     private void notifyUris(Uri affectedUri, Uri rootUri) {
-        Log.i(TAG, "notifyUris");
         final ContentResolver contentResolver = getContext().getContentResolver();
         if (contentResolver != null) {
-            Log.i(TAG, "nofifyUris: " + affectedUri + " root:" + rootUri);
             contentResolver.notifyChange(affectedUri, null);
             if(rootUri != null)
                 contentResolver.notifyChange(rootUri, null);

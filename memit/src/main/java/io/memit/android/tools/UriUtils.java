@@ -26,11 +26,11 @@ public final class UriUtils {
     }
 
     public static String getLectureIdAsString(Uri uri){
-        return String.valueOf( getLectureId(uri) ) ;
+        return  getLectureId(uri);
     }
 
-    public static long getWordId(Uri uri){
-        return Long.valueOf( uri.getLastPathSegment());
+    public static String getWordId(Uri uri){
+        return uri.getLastPathSegment();
     }
 
     public static String getValueAt(Uri uri, int idx){
@@ -63,7 +63,7 @@ public final class UriUtils {
         return appendId(contentUri.buildUpon(), id).build();
     }
 
-    public static Uri.Builder appendId(Uri.Builder builder, String id) {
+    private static Uri.Builder appendId(Uri.Builder builder, String id) {
         return builder.appendEncodedPath(id);
     }
 

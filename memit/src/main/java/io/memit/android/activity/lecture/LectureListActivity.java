@@ -191,8 +191,6 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
         }
     }
 
-
-
     private class LectureViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 

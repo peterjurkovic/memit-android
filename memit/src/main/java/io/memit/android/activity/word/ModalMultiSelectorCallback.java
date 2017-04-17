@@ -60,13 +60,11 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
                     case R.id.activate:
                         activate(ids);
                         break;
-
                     case R.id.deactivate:
                         deactivate(ids);
                         break;
-
                     case R.id.delete:
-
+                        update(ids, Contract.SyncColumns.DELETED, 1);
                         break;
                     default:
                         throw new IllegalArgumentException(
@@ -93,12 +91,13 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
     }
 
     private void toggle(Collection<String> ids, int active){
+        update(ids, Contract.Word.ACTIVE, active);
+    }
+
+    private void update(Collection<String> ids, String column, int val){
         String condition = StringsUtils.joinConditions(ids, "_id", "OR");
-        if(BuildConfig.DEBUG){
-            Log.d(tag, (active == 1 ? "Activating" : "Deactivating ") + " " + condition );
-        }
         ContentValues cv = new ContentValues();
-        cv.put(Contract.Word.ACTIVE, active);
+        cv.put(column, val);
         queryHelper.startUpdate(ACTIVATE, null, activity.get().getUri(), cv, condition, null );
     }
 

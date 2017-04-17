@@ -74,6 +74,11 @@
             android:parentActivityName=".activity.word.WordListActivity"
             />
 
+        <activity android:name=".activity.word.EditWordActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.word.WordListActivity"
+            />
+
 
 
     </application>

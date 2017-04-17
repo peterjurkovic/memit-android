@@ -34,13 +34,15 @@ import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
 import io.memit.android.tools.HashSetMultiSelector;
 
+import static io.memit.android.activity.lecture.EditLectureActivity.BOOK_LECTURE_ID_URI_EXTRA;
 import static io.memit.android.activity.word.BaseWordActivity.BOOK_LECTURE_WORDS_URI_EXTRA;
+import static io.memit.android.activity.word.EditWordActivity.BOOK_LECTURE_WORD_ID_EXTRA;
 import static io.memit.android.tools.CursorUtils.asBool;
-import static io.memit.android.tools.CursorUtils.asInt;
 import static io.memit.android.tools.CursorUtils.asString;
 import static io.memit.android.tools.UriUtils.getLectureIdAsString;
 import static io.memit.android.tools.UriUtils.removeLastSegment;
 import static io.memit.android.tools.UriUtils.removeTwoLastSegment;
+import static io.memit.android.tools.UriUtils.withAppendedId;
 
 /**
  * Created by peter on 2/23/17.
@@ -52,7 +54,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     private static final byte WORDS_LOADER = 1;
     private static final byte LECTURE_LOADER = 2;
     private static final String SELECTION_POSITIONS = "position";
-    public final static String BOOK_LECTURES_URI_EXTRA = "booklecturesWordsUri";
+    public  static final String BOOK_LECTURES_URI_EXTRA = "booklecturesWordsUri";
 
     private Colors colors;
     private RecyclerView recyclerView;
@@ -248,6 +250,12 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
+            if(item.getItemId() == EDIT_ITEM){
+                Intent i = new Intent(WordListActivity.this, EditWordActivity.class);
+                i.putExtra(BOOK_LECTURE_WORD_ID_EXTRA, withAppendedId(bookLecturesWordsUri, id));
+                i.putExtra(BOOK_LECTURE_WORDS_URI_EXTRA, bookLecturesWordsUri);
+                startActivity(i);
+            }
             return false;
         }
 
