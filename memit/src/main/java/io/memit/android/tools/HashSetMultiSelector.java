@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class HashSetMultiSelector {
 
-    private Set<Integer> ids = new HashSet<>(64);
+    private Set<String> ids = new HashSet<>(64);
 
     public boolean isSelectable() {
         return false;
@@ -23,19 +23,19 @@ public class HashSetMultiSelector {
         return ids.size();
     }
 
-    public boolean isSelected(int id) {
-        return ids.contains(Integer.valueOf(id));
+    public boolean isSelected(String id) {
+        return ids.contains(id);
     }
 
-    public void setSelected(int val) {
-        ids.add(Integer.valueOf(val));
+    public void setSelected(String val) {
+        ids.add(val);
     }
 
-    public void removeAt(int id) {
-        ids.remove(Integer.valueOf(id));
+    public void removeAt(String id) {
+        ids.remove(id);
     }
 
-    public ArrayList<Integer> getAllIds() {
+    public ArrayList<String> getAllIds() {
         return new ArrayList<>(ids);
     }
 

@@ -200,7 +200,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         private TextView question;
         private TextView answer;
         private CheckBox checkBox;
-        private int id;
+        private String id;
         private boolean activated;
 
         public WordViewHolder(View itemView) {
@@ -255,7 +255,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         public void bindItem(int position, Cursor wordCursor) {
 
             if (wordCursor != null && wordCursor.moveToPosition(position)) {
-                this.id = asInt(wordCursor, Word._ID);
+                this.id = asString(wordCursor, Word._ID);
                 question.setText( asString(wordCursor, Word.QUESTION) );
                 answer.setText( asString(wordCursor, Word.ANSWER) );
                 boolean isSelected = multiSelector.isSelected(id);
@@ -280,7 +280,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     @Override
     protected void onSaveInstanceState(Bundle information) {
-        information.putIntegerArrayList(SELECTION_POSITIONS, this.multiSelector.getAllIds());
+        information.putStringArrayList(SELECTION_POSITIONS, this.multiSelector.getAllIds());
         // information.putBoolean(SELECTIONS_STATE, isSelectable());
     }
 

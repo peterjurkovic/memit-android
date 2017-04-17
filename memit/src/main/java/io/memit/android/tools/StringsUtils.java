@@ -28,7 +28,7 @@ public final class StringsUtils {
     }
 
 
-    public static String joinConditions(Collection<? extends  Object> list, String column, String orAnd){
+    public static String joinConditions(Collection<String> list, String column, String orAnd){
         if(list == null){
             return null;
         }
@@ -39,7 +39,7 @@ public final class StringsUtils {
             if(i++ > 0 && i <= len ){
                 str.append(" ").append(orAnd).append(" ");
             }
-            str.append(column).append("=").append(obj);
+            str.append(column).append("='").append(obj).append("'");
         }
         return str.toString();
     }

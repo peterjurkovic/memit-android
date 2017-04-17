@@ -54,7 +54,7 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if(selector.get() != null){
-            Collection<Integer> ids = selector.get().getAllIds();
+            Collection<String> ids = selector.get().getAllIds();
             if(ids.size() > 0)
                 switch (item.getItemId()){
                     case R.id.activate:
@@ -78,18 +78,21 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-
+        if( ! isActivityAlive() ){
+            return;
+        }
+        activity.get().reloadView();
     }
 
-    private void activate(Collection<Integer> ids){
+    private void activate(Collection<String> ids){
         toggle(ids, 1);
     }
 
-    private void deactivate(Collection<Integer> ids){
+    private void deactivate(Collection<String> ids){
         toggle(ids, 0);
     }
 
-    private void toggle(Collection<Integer> ids, int active){
+    private void toggle(Collection<String> ids, int active){
         String condition = StringsUtils.joinConditions(ids, "_id", "OR");
         if(BuildConfig.DEBUG){
             Log.d(tag, (active == 1 ? "Activating" : "Deactivating ") + " " + condition );
@@ -100,6 +103,13 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
     }
 
 
+    private boolean isActivityAlive(){
+        WordListActivity context = activity.get();
+        if(context == null || context.isFinishing()){
+            return false;
+        }
+        return true;
+    }
 
     private class QueryHelper extends AsyncQueryHandler {
 
@@ -139,13 +149,6 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
            // Snackbar.make(activity.root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
         }
 
-        private boolean isActivityAlive(){
-            WordListActivity context = activity.get();
-            if(context == null || context.isFinishing()){
-                return false;
-            }
-            return true;
-        }
 
     }
 }
