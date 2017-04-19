@@ -324,6 +324,10 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     }
 
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
     private void clearActionMode(){
         if(actinMode != null){
             actinMode.finish();

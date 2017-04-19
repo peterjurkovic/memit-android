@@ -2,7 +2,6 @@ package io.memit.android.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -106,6 +105,14 @@ public class MemitProvider extends ContentProvider{
                             "be null when specifying ID as part of uri.");
                 }
         }
+
+        if(isSyncableEntity(code)){
+            if(selection == null){
+                selection = "deleted=0";
+            }else if(! selection.contains("deleted")){
+                selection += " AND deleted=0";
+            }
+        }
         // (String table, String[] columns, String selection,
         // String[] selectionArgs, String groupBy, String having, String orderBy
 
@@ -171,20 +178,21 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         switch (code) {
             case BOOK_ID:
-                    rowCount = DatabaseOperations
-                            .getInstance(dbHelper)
-                            .removeBook(uri.getLastPathSegment());
-                break;
+                return DatabaseOperations
+                    .getInstance(dbHelper)
+                    .removeBook(uri.getLastPathSegment());
             case BOOK_LECTURES_ID:
-                rowCount = DatabaseOperations
-                            .getInstance(dbHelper)
-                            .removeLecture(uri.getLastPathSegment());
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid Uri: " + uri);
+                return DatabaseOperations
+                    .getInstance(dbHelper)
+                    .removeLecture(uri.getLastPathSegment());
         }
-//        SQLiteDatabase database = dbHelper.getReadableDatabase();
-//        rowCount = database.delete(CODE_TABLE_MAP.get(code),whereClause, whereArgs);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if(isSyncableEntity(code)){
+            ContentValues cv = DatabaseOperations.deletedContentValues(db);
+            rowCount = db.update(CODE_TABLE_MAP.get(code), cv, whereClause, whereArgs);
+        }else{
+            rowCount = db.delete(CODE_TABLE_MAP.get(code), whereClause, whereArgs);
+        }
         notifyUris(uri);
         return rowCount;
     }
@@ -235,5 +243,10 @@ public class MemitProvider extends ContentProvider{
             if(rootUri != null)
                 contentResolver.notifyChange(rootUri, null);
         }
+    }
+
+
+    private static boolean isSyncableEntity(int code){
+        return code <= BOOK_LECTURES_WORDS_ID;
     }
 }

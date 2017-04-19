@@ -1,5 +1,6 @@
 package io.memit.android.provider;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -39,6 +40,14 @@ public class BaseDatabaseOperations {
             }
         }
         throw new IllegalStateException("Could not acquire current timestemp");
+    }
+
+    protected static ContentValues deletedContentValues(SQLiteDatabase db){
+        String now = now(db);
+        ContentValues cv = new ContentValues();
+        cv.put(Contract.SyncColumns.DELETED, 1);
+        cv.put(Contract.SyncColumns.CHANGED, now);
+        return cv;
     }
 
 

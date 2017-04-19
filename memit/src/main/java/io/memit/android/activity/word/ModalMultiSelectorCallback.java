@@ -3,20 +3,22 @@ package io.memit.android.activity.word;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.net.Uri;
-import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 
-import io.memit.android.BuildConfig;
 import io.memit.android.R;
 import io.memit.android.provider.Contract;
 import io.memit.android.tools.HashSetMultiSelector;
 import io.memit.android.tools.StringsUtils;
+
+import static io.memit.android.provider.Contract.SyncColumns.DELETED;
 
 /**
  * Created by peter on 3/11/17.
@@ -64,7 +66,7 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
                         deactivate(ids);
                         break;
                     case R.id.delete:
-                        update(ids, Contract.SyncColumns.DELETED, 1);
+                        update(ids, DELETED, 1, DELETE);
                         break;
                     default:
                         throw new IllegalArgumentException(
@@ -83,22 +85,22 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
     }
 
     private void activate(Collection<String> ids){
-        toggle(ids, 1);
+        toggle(ids, 1, ACTIVATE);
     }
 
     private void deactivate(Collection<String> ids){
-        toggle(ids, 0);
+        toggle(ids, 0, DEACTIVATE);
     }
 
-    private void toggle(Collection<String> ids, int active){
-        update(ids, Contract.Word.ACTIVE, active);
+    private void toggle(Collection<String> ids, int active, byte action){
+        update(ids, Contract.Word.ACTIVE, active, action);
     }
 
-    private void update(Collection<String> ids, String column, int val){
+    private void update(Collection<String> ids, String column, int val, byte action){
         String condition = StringsUtils.joinConditions(ids, "_id", "OR");
         ContentValues cv = new ContentValues();
         cv.put(column, val);
-        queryHelper.startUpdate(ACTIVATE, null, activity.get().getUri(), cv, condition, null );
+        queryHelper.startUpdate(action, condition, activity.get().getUri(), cv, condition, null );
     }
 
 
@@ -129,23 +131,45 @@ public class ModalMultiSelectorCallback implements ActionMode.Callback  {
         }
 
         @Override
-        protected void onUpdateComplete(int token, Object cookie, int result) {
+        protected void onUpdateComplete(int token, final Object condition, int result) {
             if( ! isActivityAlive()){
                 return;
             }
             activity.get().reloadView();
+            if(token > 0){
+
+                if(token == ACTIVATE){
+                    Snackbar.make(activity.get().getRecyclerView(), R.string.activated, Snackbar.LENGTH_SHORT);
+                }else if(token == DEACTIVATE){
+                    Snackbar.make(activity.get().getRecyclerView(), R.string.deactivated, Snackbar.LENGTH_SHORT);
+                }else if(token == DELETE){
+                    Snackbar.make(activity.get().getRecyclerView(), R.string.book_removed, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.undo, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(condition instanceof  String){
+                                        ContentValues cv = new ContentValues();
+                                        cv.put(DELETED, 0);
+                                        queryHelper
+                                                .startUpdate(-1, condition, activity.get().getUri(), cv, (String)condition, null );
+                                    }
+                                }
+                            }).show();
+                }
+
+            }
         }
 
         @Override
-        protected void onDeleteComplete(int position, Object cookie, int result) {
+        protected void onDeleteComplete(int position, final Object condition, int result) {
             Log.i(tag, "Number of deleted words: " + result);
 
             if( ! isActivityAlive() ){
                 return;
             }
             activity.get().reloadView();
-           // activity.getLoaderManager().restartLoader(LOADER_ID_BOOK, null, activity);
-           // Snackbar.make(activity.root, R.string.book_removed, Snackbar.LENGTH_SHORT).show();
+
+
         }
 
 

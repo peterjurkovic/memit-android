@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class HashSetMultiSelector {
 
-    private Set<String> ids = new HashSet<>(64);
+    private Set<String> ids = new HashSet<>(32);
 
     public boolean isSelectable() {
         return false;
