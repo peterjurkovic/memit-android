@@ -50,7 +50,7 @@ public class LectureListActivity extends AbstractActivity implements LoaderManag
 
     private RecyclerView recyclerView;
     private TextView empty;
-    // books/{id}/lectures
+    /** books/{id}/lectures */
     private Uri bookLecturesUri;
 
     @Override

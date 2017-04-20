@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,17 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
+import io.memit.android.activity.lecture.EditLectureActivity;
 import io.memit.android.activity.lecture.LectureListActivity;
 import io.memit.android.provider.Contract;
 import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
 import io.memit.android.tools.HashSetMultiSelector;
+import io.memit.android.tools.UriUtils;
 
 import static io.memit.android.activity.lecture.EditLectureActivity.BOOK_LECTURE_ID_URI_EXTRA;
 import static io.memit.android.activity.word.BaseWordActivity.BOOK_LECTURE_WORDS_URI_EXTRA;
@@ -66,7 +71,7 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
 
     private final HashSetMultiSelector multiSelector = new HashSetMultiSelector() ;
     ModalMultiSelectorCallback multiSelectorCallback;
-    ActionMode actinMode;
+    ActionMode actionMode;
     private WordListCursorAdapter adatper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,16 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
         getLoaderManager().initLoader(LECTURE_LOADER, null, this);
         getLoaderManager().initLoader(WORDS_LOADER, null, this);
 
+
+        findViewById(R.id.lectureName).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(WordListActivity.this, EditLectureActivity.class);
+                i.putExtra(LectureListActivity.BOOK_LECTURES_URI_EXTRA, removeTwoLastSegment(bookLecturesWordsUri));
+                i.putExtra(EditLectureActivity.BOOK_LECTURE_ID_URI_EXTRA, removeLastSegment(bookLecturesWordsUri));
+                startActivity(i);
+            }
+        });
 
     }
 
@@ -228,13 +243,13 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             checkBox.setChecked(!isChecked);
             updateBackground(!isChecked);
             int selectedCount = multiSelector.getSelectedCount();
-            if (actinMode == null && selectedCount > 0) {
-                actinMode = startSupportActionMode(multiSelectorCallback);
-            }else if(actinMode  != null && selectedCount == 0){
+            if (actionMode == null && selectedCount > 0) {
+                actionMode = startSupportActionMode(multiSelectorCallback);
+            }else if(actionMode != null && selectedCount == 0){
                 clearActionMode();
             }
-            if(actinMode != null && selectedCount > 0){
-                actinMode.setTitle("Selected: " + selectedCount);
+            if(actionMode != null && selectedCount > 0){
+                actionMode.setTitle("Selected: " + selectedCount);
             }
 
         }
@@ -289,7 +304,15 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     @Override
     protected void onSaveInstanceState(Bundle information) {
         information.putStringArrayList(SELECTION_POSITIONS, this.multiSelector.getAllIds());
-        // information.putBoolean(SELECTIONS_STATE, isSelectable());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle information) {
+        ArrayList<String> selectedIds = information.getStringArrayList(SELECTION_POSITIONS);
+        if(selectedIds != null){
+            this.multiSelector.setIds(selectedIds);
+        }
+        super.onRestoreInstanceState(information);
     }
 
     private void initAddNewWordButton() {
@@ -329,13 +352,20 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
     }
 
     private void clearActionMode(){
-        if(actinMode != null){
-            actinMode.finish();
-            actinMode = null;
+        if(actionMode != null){
+            actionMode.finish();
+            actionMode = null;
             multiSelector.clear();
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.word_list_menu, menu);
+        return true;
+    }
 
 
     static class Colors{
