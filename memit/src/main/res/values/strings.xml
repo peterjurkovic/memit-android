@@ -94,8 +94,14 @@
 
     <string name="activate">Activate</string>
     <string name="deactivate">Deactivate</string>
+    <string name="activateAll">Activate all</string>
+    <string name="deactivateAll">Deactivate all</string>
     <string name="activated">Activated</string>
     <string name="deactivated">Deactivated</string>
     <string name="delete">Delete</string>
+    <string name="deleteAll">Delete all</string>
+    <string name="deletedAll">All cards were deleted</string>
     <string name="undo">UNDO</string>
+    <string name="edit">Edit</string>
+    <string name="importWords">Import</string>
 </resources>

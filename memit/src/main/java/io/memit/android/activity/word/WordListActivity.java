@@ -16,6 +16,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -358,6 +359,19 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
             multiSelector.clear();
         }
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.removeAll:
+                Log.i(TAG, "Removing all cards..");
+                new WordListAsyncQueryHelper(this).removeAllInLecture();
+                return true;
+        }
+        return false;
+    }
+
 
 
     @Override

@@ -5,7 +5,7 @@
         android:id="@+id/lectureBookEdit"
         android:icon="@drawable/ic_mode_edit_black_24px"
         app:showAsAction="always"
-        android:title="Edit">
+        android:title="@string/edit">
     </item>
 
 </menu>

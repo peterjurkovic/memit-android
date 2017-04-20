@@ -2,11 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <item
-        android:id="@+id/woodLectureEditBtn"
-        android:icon="@drawable/ic_mode_edit_black_24px"
-        app:showAsAction="always"
-        android:title="Edit">
+        android:id="@+id/activateAll"
+        android:icon="@drawable/ic_play_arrow_black_24px"
+        app:showAsAction="never"
+        android:title="@string/activateAll">
+    </item>
+
+    <item
+        android:id="@+id/deactivateAll"
+        android:icon="@drawable/ic_stop_black_24px"
+        app:showAsAction="never"
+        android:title="@string/deactivateAll">
+    </item>
+
+    <item
+        android:id="@+id/removeAll"
+        android:icon="@drawable/ic_delete_black_24px"
+        app:showAsAction="never"
+        android:title="@string/deleteAll">
+    </item>
+
+    <item
+        android:id="@+id/importWords"
+        android:icon="@drawable/ic_file_upload_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/importWords">
     </item>
 
 </menu>
