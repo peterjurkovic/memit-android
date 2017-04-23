@@ -368,6 +368,14 @@ public class WordListActivity extends AbstractActivity implements LoaderManager.
                 Log.i(TAG, "Removing all cards..");
                 new WordListAsyncQueryHelper(this).removeAllInLecture();
                 return true;
+            case R.id.activateAll:
+                Log.i(TAG, "Activating all cards..");
+                new WordListAsyncQueryHelper(this).activateAll();
+                return true;
+            case R.id.deactivateAll:
+                Log.i(TAG, "Dectivating all cards..");
+                new WordListAsyncQueryHelper(this).deactivateAll();
+                return true;
         }
         return false;
     }

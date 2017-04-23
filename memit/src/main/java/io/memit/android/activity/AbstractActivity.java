@@ -35,17 +35,27 @@ public abstract class AbstractActivity extends AppCompatActivity{
 
     protected void initDrawer(Toolbar toolbar, @Nullable Bundle savedInstanceState) {
         final IProfile profile = new ProfileDrawerItem()
-                .withName("Mike Penz")
+                .withName("Peter Jurkovič")
                 .withEmail("mikepenz@gmail.com")
-                .withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460")
+                .withIcon(FontAwesome.Icon.faw_user_circle)
+                .withTextColorRes(R.color.colorPrimaryLight)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        Snackbar.make(view, "onDrawerItemClickListener", Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                        return false;
+                    }
+                })
+
                 .withIdentifier(100);
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withOnlyMainProfileImageVisible(true)
                 .withTranslucentStatusBar(true)
-                .withHeaderBackground(R.drawable.header)
-                .withAlternativeProfileHeaderSwitching(false)
+                .withHeaderBackground(R.color.colorPrimaryDark)
+                // .withHeaderBackground(R.drawable.header)
                 .addProfiles( profile )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -77,6 +87,7 @@ public abstract class AbstractActivity extends AppCompatActivity{
 
         new DrawerBuilder()
                 .withActivity(this)
+                .withDrawerWidthDp(250)
                 .withTranslucentStatusBar(true)
                 .withHasStableIds(true)
                 .withToolbar(toolbar)

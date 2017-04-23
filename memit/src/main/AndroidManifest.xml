@@ -78,7 +78,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activity.word.WordListActivity"
             />
-
+         
+        <activity android:name=".activity.drill.DrillActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
 
     </application>
