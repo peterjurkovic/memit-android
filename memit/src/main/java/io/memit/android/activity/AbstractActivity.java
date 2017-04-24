@@ -20,6 +20,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import io.memit.android.R;
+import io.memit.android.activity.drill.DrillActivity;
 
 /**
  * Created by peter on 1/31/17.
@@ -33,7 +34,7 @@ public abstract class AbstractActivity extends AppCompatActivity{
     protected Drawer result = null;
 
 
-    protected void initDrawer(Toolbar toolbar, @Nullable Bundle savedInstanceState) {
+    protected void initDrawer(Toolbar toolbar, Bundle savedInstanceState) {
         final IProfile profile = new ProfileDrawerItem()
                 .withName("Peter Jurkovič")
                 .withEmail("mikepenz@gmail.com")
@@ -108,7 +109,7 @@ public abstract class AbstractActivity extends AppCompatActivity{
                         if (drawerItem != null) {
                             Intent intent = null;
                             if (drawerItem.getIdentifier() == 1) {
-
+                                intent = new Intent(getApplicationContext(), DrillActivity.class);
                             } else if (drawerItem.getIdentifier() == 2) {
                                 intent = new Intent(getApplicationContext(), BookListActivity.class);
                             } else if (drawerItem.getIdentifier() == 3) {

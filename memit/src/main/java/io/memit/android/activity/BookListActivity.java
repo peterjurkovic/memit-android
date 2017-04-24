@@ -2,7 +2,6 @@ package io.memit.android.activity;
 
 import android.app.LoaderManager;
 import android.content.AsyncQueryHandler;
-import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -74,7 +73,7 @@ public class BookListActivity extends AbstractActivity implements LoaderManager.
             }
         });
 
-        initDrawer(toolbar,savedInstanceState);
+        initDrawer(toolbar, savedInstanceState);
         showSuccessfulySavedMessage(root);
     }
 
