@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.activity.BookListActivity;
+import io.memit.android.activity.drill.DrillActivity;
 
 public class BaseActivity extends AbstractActivity {
 
@@ -20,7 +21,7 @@ public class BaseActivity extends AbstractActivity {
         setSupportActionBar(toolbar);
 
         initDrawer(toolbar, savedInstanceState);
-        Intent i = new Intent(this, BookListActivity.class);
+        Intent i = new Intent(this, DrillActivity.class);
         startActivity(i);
     }
 

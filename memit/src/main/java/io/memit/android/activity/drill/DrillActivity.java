@@ -19,6 +19,6 @@ public class DrillActivity extends AbstractActivity {
         setContentView(R.layout.activity_drill);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // initDrawer(toolbar, savedInstanceState);
+        initDrawer(toolbar, savedInstanceState);
     }
 }
