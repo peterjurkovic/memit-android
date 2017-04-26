@@ -18,5 +18,6 @@
     <color name="colorSubheader">#EAEAEA</color>
     <color name="activated">#eeffd6</color>
     <color name="selected">#6bfffa</color>
+    <color name="textColor">#000000</color>
 </resources>
 

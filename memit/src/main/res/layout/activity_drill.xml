@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root"
     android:fitsSystemWindows="true"
     tools:context="io.memit.android.activity.drill.DrillActivity">
 
@@ -12,60 +12,97 @@
 
     <RelativeLayout
         android:id="@+id/content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
+        android:background="#EEE"
         android:layout_height="match_parent"
-        >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/meta"
-            android:orientation="horizontal"
-            android:background="@drawable/border_bottom"
             android:layout_width="match_parent"
-            android:weightSum="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bottom"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <TextView
-                android:layout_weight="0.5"
-
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="Left: 10"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="center"
-
-                android:text="Left: 10"
+                android:text="10 cards left"
+                android:textColor="#777" />
             />
 
         </LinearLayout>
 
 
         <RelativeLayout
-            android:layout_below="@id/meta"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/meta"
+            android:id="@+id/questionLayout">
 
             <TextView
+                android:id="@+id/question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#111"
-                android:textSize="20sp"
-                android:paddingTop="10dp"
-                android:paddingLeft="10dp"
+                android:background="@drawable/border_bottom_shaddow"
+                android:minHeight="150dp"
                 android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:minHeight="120dp"
-                android:background="@color/md_white_1000"
-                android:text="What does it men"/>
-        </RelativeLayout>
+                android:paddingTop="45dp"
+                android:shadowColor="@color/textColor"
+                android:text="What does it mean"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/questionSpeaker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/question"
+                android:layout_alignLeft="@id/question"
+                android:layout_alignTop="@id/question"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_volume_up_black_24px"
+                android:drawableStart="@drawable/ic_volume_up_black_24px"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:padding="3dp"
+                android:text="ENGLISH"
+                android:textAlignment="center"
+                android:textColor="@color/md_black_1000"
+                android:textSize="14sp" />
+
 
         </RelativeLayout>
+
+
+        <EditText
+            android:layout_below="@id/questionLayout"
+            style="@style/answerInput"
+            android:layout_marginTop="5dp"
+            android:padding="10dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:hint="Type an answer..."/>
+
+
+
+        <Button
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:padding="35dp"
+            android:layout_margin="2dp"
+            android:text="Show answer"/>
+
+    </RelativeLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>
