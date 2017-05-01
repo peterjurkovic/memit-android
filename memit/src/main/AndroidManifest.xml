@@ -79,7 +79,7 @@
             android:parentActivityName=".activity.word.WordListActivity"
             />
          
-        <activity android:name=".activity.drill.DrillActivity"
+        <activity android:name=".activity.memit.MemitActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
 

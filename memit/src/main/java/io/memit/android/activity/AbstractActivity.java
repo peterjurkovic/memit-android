@@ -2,7 +2,6 @@ package io.memit.android.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +19,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import io.memit.android.R;
-import io.memit.android.activity.drill.DrillActivity;
+import io.memit.android.activity.memit.MemitActivity;
 
 /**
  * Created by peter on 1/31/17.
@@ -109,7 +108,7 @@ public abstract class AbstractActivity extends AppCompatActivity{
                         if (drawerItem != null) {
                             Intent intent = null;
                             if (drawerItem.getIdentifier() == 1) {
-                                intent = new Intent(getApplicationContext(), DrillActivity.class);
+                                intent = new Intent(getApplicationContext(), MemitActivity.class);
                             } else if (drawerItem.getIdentifier() == 2) {
                                 intent = new Intent(getApplicationContext(), BookListActivity.class);
                             } else if (drawerItem.getIdentifier() == 3) {

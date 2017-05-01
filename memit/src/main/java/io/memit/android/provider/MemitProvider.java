@@ -18,6 +18,7 @@ import java.util.UUID;
 import io.memit.android.BuildConfig;
 import io.memit.android.provider.Contract.Book;
 import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.provider.Contract.Session;
 import io.memit.android.provider.Contract.Word;
 import io.memit.android.tools.UriUtils;
 
@@ -31,12 +32,15 @@ public class MemitProvider extends ContentProvider{
 
     private DatabaseOpenHelper dbHelper;
 
+
     private static final byte BOOKS = 1;
     private static final byte BOOK_ID = 2;
     private static final byte BOOK_LECTURES = 3;
     private static final byte BOOK_LECTURES_ID = 4;
     private static final byte BOOK_LECTURES_WORDS = 5;
     private static final byte BOOK_LECTURES_WORDS_ID = 6;
+    private static final byte SESSIONS = 7;
+    private static final byte SESSIONS_INIT = 8;
 
     private static final SparseArray<String> CODE_TABLE_MAP = new SparseArray<>();
     private static final UriMatcher URI_MATCHER =  new UriMatcher(UriMatcher.NO_MATCH);
@@ -49,6 +53,7 @@ public class MemitProvider extends ContentProvider{
         CODE_TABLE_MAP.put(BOOK_LECTURES, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS, Word.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS_ID, Word.TABLE);
+        CODE_TABLE_MAP.put(SESSIONS, Session.TABLE);
 
 
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
@@ -57,6 +62,8 @@ public class MemitProvider extends ContentProvider{
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*", BOOK_LECTURES_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words", BOOK_LECTURES_WORDS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words/*", BOOK_LECTURES_WORDS_ID);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions", SESSIONS);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/activity", SESSIONS_INIT);
     }
 
 
@@ -83,7 +90,11 @@ public class MemitProvider extends ContentProvider{
         final int code = URI_MATCHER.match(uri);
         Log.d(TAG, "code: " + code);
         switch (code) {
-            case BOOKS:
+            case SESSIONS_INIT:
+                return DatabaseOperations
+                        .getInstance(getContext())
+                        .loadSessionMemos();
+           case BOOKS:
                 return DatabaseOperations
                         .getInstance(getContext())
                         .getAllBooks();
@@ -247,6 +258,6 @@ public class MemitProvider extends ContentProvider{
 
 
     private static boolean isSyncableEntity(int code){
-        return code <= BOOK_LECTURES_WORDS_ID;
+        return code <= SESSIONS_INIT;
     }
 }

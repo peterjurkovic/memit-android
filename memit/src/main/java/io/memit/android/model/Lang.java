@@ -54,6 +54,16 @@ public enum Lang implements SpinnerState {
         return drawable;
     }
 
+    public static Lang asLang(String code){
+        if(code != null){
+            try{
+                return Lang.valueOf(code.toUpperCase());
+            }catch (Exception e){}
+        }
+        return null;
+    }
+
+
     public static List<SpinnerState> toList(){
         ArrayList<SpinnerState> list = new ArrayList<>(values().length);
         for(SpinnerState state : values()){

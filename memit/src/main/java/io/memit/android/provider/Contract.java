@@ -66,6 +66,17 @@ public class Contract {
         static final String LECTURE_ID = "lecture_id";
     }
 
+    public interface  Session extends SyncColumns{
+        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "sessions");
+        static final String TABLE = "session";
+    }
+
+    public interface SessionActivity extends SyncColumns{
+        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "sessions/activity");
+        static final String TABLE = "session_word";
+    }
+
+
 
     public static String[] allBookColumns(){
         return new String[]{

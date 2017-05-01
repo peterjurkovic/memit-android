@@ -8,6 +8,12 @@ import android.database.Cursor;
 
 public class CursorUtils {
 
+    public static short asShort(Cursor c, String column){
+        if(c != null){
+            return c.getShort(c.getColumnIndexOrThrow(column));
+        }
+        throw new IllegalArgumentException("Cursor is already closed. [column="+column+"]");
+    }
 
     public static String asString(Cursor c, String column){
         if(c != null){

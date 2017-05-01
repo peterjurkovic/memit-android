@@ -173,4 +173,19 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         db.endTransaction();
         return 1;
     }
+
+
+    public Cursor loadSessionMemos(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+         String sql = "" +
+             " SELECT w._id, w.question, w.answer, l.lang_question, l.lang_answer, ifnull(sw.hits,0) as hits " +
+             "        FROM word w " +
+             "        LEFT JOIN lecture l ON w.lecture_id = l._id " +
+             "        LEFT JOIN session_word sw ON sw.word_id = w._id " +
+             "        WHERE w.active = 1 AND w.deleted = 0 " +
+             "        ORDER BY sw.changed DESC, w.changed DESC " +
+             "        LIMIT 5";
+        return db.rawQuery(sql, null);
+    }
+
 }

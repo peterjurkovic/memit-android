@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="io.memit.android.activity.drill.DrillActivity">
+    tools:context="io.memit.android.activity.memit.MemitActivity">
 
     <include layout="@layout/toolbar_logo" />
 
@@ -78,26 +78,39 @@
                 android:textColor="@color/md_black_1000"
                 android:textSize="14sp" />
 
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/question"
+                android:layout_alignRight="@id/question"
+                android:layout_alignTop="@id/question"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="13dp"
+                android:textSize="12sp"
+                android:text="Seen 2x"
+                />
         </RelativeLayout>
 
 
         <EditText
             android:layout_below="@id/questionLayout"
             style="@style/answerInput"
+            android:maxLines="10"
+            android:minLines="8"
+            android:gravity="start"
             android:layout_marginTop="5dp"
             android:padding="10dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
-            android:hint="Type an answer..."/>
+            android:hint="Type the answer..."/>
 
 
 
         <Button
+            android:id="@+id/showAnswerBtn"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:padding="35dp"
             android:layout_margin="2dp"
             android:text="Show answer"/>

@@ -32,11 +32,9 @@ CREATE  TABLE "word" (
 
 CREATE TABLE "session" (
 	"_id" TEXT      PRIMARY KEY NOT NULL ,
-	"hits"          INTEGER NOT NULL DEFAULT (0),
-	"rate_sum"      INTEGER NOT NULL DEFAULT (0),
-	"learned"       INTEGER NOT NULL DEFAULT (0),
-	"changed"       DATETIME NOT NULL DEFAULT (datetime('now')),
-	"created"       DATETIME NOT NULL DEFAULT (datetime('now'))
+	"deleted"       INTEGER NOT NULL DEFAULT (0),
+	"created"       DATETIME NOT NULL DEFAULT (datetime('now')),
+	"changed"       DATETIME NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE "session_word" (
@@ -45,6 +43,7 @@ CREATE TABLE "session_word" (
 	"hits"          INTEGER NOT NULL DEFAULT (0),
 	"rate_sum"      INTEGER NOT NULL DEFAULT (0),
 	"last_rating"   INTEGER NOT NULL DEFAULT (0),
+	"deleted"       INTEGER NOT NULL DEFAULT (0),
 	"changed"       DATETIME NOT NULL DEFAULT (datetime('now')),
 	PRIMARY KEY (word_id, session_id)
 );
