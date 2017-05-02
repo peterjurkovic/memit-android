@@ -45,9 +45,76 @@
 
             <TextView
                 android:id="@+id/question"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/memitTextStyle"
                 android:background="@drawable/border_bottom_shaddow"
+                android:minHeight="150dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="45dp"
+                android:text="What does it mean asdf asdf asdf asdlorem ipsum is the best free text w"
+                />
+
+
+            <TextView
+                style="@style/speaker"
+                android:id="@+id/questionSpeaker"
+                android:layout_alignStart="@id/question"
+                android:layout_alignLeft="@id/question"
+                android:layout_alignTop="@id/question"
+                android:text="ENGLISH" />
+
+            <TextView
+                style="@style/speakerText"
+                android:layout_alignEnd="@id/question"
+                android:layout_alignRight="@id/question"
+                android:layout_alignTop="@id/question"
+                android:text="Seen 2x"
+                />
+        </RelativeLayout>
+
+
+
+        <EditText
+            android:id="@+id/myAnswer"
+            android:layout_below="@id/questionLayout"
+            style="@style/answerInput"
+            android:gravity="start"
+            android:layout_marginTop="5dp"
+            android:padding="15dp"
+            android:paddingTop="15dp"
+            android:lines="4"
+            android:minLines="3"
+            android:maxLines="5"
+            android:paddingBottom="15dp"
+            android:text="Text for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sdText for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sdText for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sd"
+            android:hint="Type the answer..."
+            android:layout_above="@+id/showAnswerBtn" />
+
+        <Button
+            android:id="@+id/showAnswerBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="35dp"
+            android:layout_margin="2dp"
+            android:text="Show answer"/>
+
+
+
+
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:background="@color/md_red_300"
+            android:layout_below="@id/myAnswer"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:id="@+id/answerLayout">
+
+            <TextView
+                android:id="@+id/answer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/md_orange_50"
                 android:minHeight="150dp"
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
@@ -59,61 +126,59 @@
 
 
             <TextView
-                android:id="@+id/questionSpeaker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/question"
-                android:layout_alignLeft="@id/question"
-                android:layout_alignTop="@id/question"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:drawableLeft="@drawable/ic_volume_up_black_24px"
-                android:drawableStart="@drawable/ic_volume_up_black_24px"
-                android:drawablePadding="3dp"
-                android:gravity="center"
-                android:padding="3dp"
-                android:text="ENGLISH"
-                android:textAlignment="center"
-                android:textColor="@color/md_black_1000"
-                android:textSize="14sp" />
+                style="@style/speaker"
+                android:id="@+id/answerSpeaker"
+                android:layout_alignStart="@id/answer"
+                android:layout_alignLeft="@id/answer"
+                android:layout_alignTop="@id/answer"
+                android:text="ENGLISH" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/question"
-                android:layout_alignRight="@id/question"
-                android:layout_alignTop="@id/question"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="13dp"
-                android:textSize="12sp"
+                style="@style/speakerText"
+                android:layout_alignEnd="@id/answer"
+                android:layout_alignRight="@id/answer"
+                android:layout_alignTop="@id/answer"
                 android:text="Seen 2x"
                 />
+
+            <LinearLayout
+                android:id="@+id/rateBtnWrapp"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:background="@color/colorAccent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    style="@style/rateBtn"
+                    android:id="@+id/btn_1"
+                    android:tag="1"
+                    android:text="Knew it"
+                    />
+
+                <Button
+                    style="@style/rateBtn"
+                    android:id="@+id/btn_3"
+                    android:tag="3"
+                    android:text="Not sure" />
+
+
+                <Button
+                    style="@style/rateBtn"
+                    android:id="@+id/btn_5"
+                    android:tag="5"
+                    android:text="Dont know" />
+            </LinearLayout>
         </RelativeLayout>
 
 
-        <EditText
-            android:layout_below="@id/questionLayout"
-            style="@style/answerInput"
-            android:maxLines="10"
-            android:minLines="8"
-            android:gravity="start"
-            android:layout_marginTop="5dp"
-            android:padding="10dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:hint="Type the answer..."/>
 
 
 
-        <Button
-            android:id="@+id/showAnswerBtn"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="35dp"
-            android:layout_margin="2dp"
-            android:text="Show answer"/>
+
+
+
+
+
 
     </RelativeLayout>
 

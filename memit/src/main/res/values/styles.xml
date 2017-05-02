@@ -146,5 +146,44 @@
 
     </style>
 
+    <style name="memitTextStyle">
+        <item name="android:color">@color/md_black_1000</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="rateBtn">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">@color/colorSubheader</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="speaker">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:drawableLeft">@drawable/ic_volume_up_black_24px</item>
+        <item name="android:drawableStart">@drawable/ic_volume_up_black_24px</item>
+        <item name="android:drawablePadding">3dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/md_black_1000</item>
+    </style>
+
+    <style name="speakerText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">13dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>
