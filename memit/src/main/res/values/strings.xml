@@ -104,4 +104,7 @@
     <string name="undo">UNDO</string>
     <string name="edit">Edit</string>
     <string name="importWords">Import</string>
+
+    <!-- memit -->
+    <string name="answerInputHit">Type the answer...</string>
 </resources>

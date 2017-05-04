@@ -11,6 +11,7 @@
     <include layout="@layout/toolbar_logo" />
 
     <RelativeLayout
+        android:visibility="visible"
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:background="#EEE"
@@ -26,6 +27,7 @@
             android:weightSum="1">
 
             <TextView
+                android:id="@+id/cardsLeft"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/meta"
+            android:layout_margin="5dp"
             android:id="@+id/questionLayout">
 
             <TextView
@@ -50,12 +53,12 @@
                 android:minHeight="150dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="45dp"
-                android:text="What does it mean asdf asdf asdf asdlorem ipsum is the best free text w"
+                android:text="Hello"
                 />
 
 
             <TextView
-                style="@style/speaker"
+                style="@style/speakerBlack"
                 android:id="@+id/questionSpeaker"
                 android:layout_alignStart="@id/question"
                 android:layout_alignLeft="@id/question"
@@ -63,7 +66,8 @@
                 android:text="ENGLISH" />
 
             <TextView
-                style="@style/speakerText"
+                android:id="@+id/seen"
+                style="@style/seenStyle"
                 android:layout_alignEnd="@id/question"
                 android:layout_alignRight="@id/question"
                 android:layout_alignTop="@id/question"
@@ -74,6 +78,7 @@
 
 
         <EditText
+            android:visibility="gone"
             android:id="@+id/myAnswer"
             android:layout_below="@id/questionLayout"
             style="@style/answerInput"
@@ -81,15 +86,15 @@
             android:layout_marginTop="5dp"
             android:padding="15dp"
             android:paddingTop="15dp"
-            android:lines="4"
-            android:minLines="3"
-            android:maxLines="5"
+            android:lines="8"
+            android:minLines="5"
             android:paddingBottom="15dp"
-            android:text="Text for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sdText for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sdText for this is very long an asdfj;lks dfalsdkf ja;lsdkjf alsdk;f ja;sldkfj skdjfalskdjf asldkjf aslkdj fa;sldkf ja;sldkjf alsdkfj sd"
-            android:hint="Type the answer..."
+            android:text=""
+            android:hint="@string/answerInputHit"
             android:layout_above="@+id/showAnswerBtn" />
 
         <Button
+            android:visibility="gone"
             android:id="@+id/showAnswerBtn"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
@@ -99,88 +104,95 @@
             android:text="Show answer"/>
 
 
-
+        <TextView
+            android:id="@+id/myAnswerReadOnly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/myAnswer"
+            android:padding="10dp"
+            android:shadowColor="@color/textColor"
+            android:text="my answer"
+            android:textSize="20sp" />
 
         <RelativeLayout
             android:layout_alignParentBottom="true"
-            android:background="@color/md_red_300"
-            android:layout_below="@id/myAnswer"
+            android:layout_below="@id/myAnswerReadOnly"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:id="@+id/answerLayout">
+
+
 
             <TextView
                 android:id="@+id/answer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/md_orange_50"
+                android:background="@drawable/border_bottom_shadow_accent"
                 android:minHeight="150dp"
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="45dp"
-                android:shadowColor="@color/textColor"
-                android:text="What does it mean"
+                android:layout_margin="5dp"
+                android:textColor="@color/md_white_1000"
+                android:text="Ciao!"
+                android:layout_above="@+id/rateBtnWrapp"
                 android:textSize="20sp" />
 
 
             <TextView
-                style="@style/speaker"
+                style="@style/speakerWhite"
                 android:id="@+id/answerSpeaker"
                 android:layout_alignStart="@id/answer"
                 android:layout_alignLeft="@id/answer"
                 android:layout_alignTop="@id/answer"
-                android:text="ENGLISH" />
-
-            <TextView
-                style="@style/speakerText"
-                android:layout_alignEnd="@id/answer"
-                android:layout_alignRight="@id/answer"
-                android:layout_alignTop="@id/answer"
-                android:text="Seen 2x"
-                />
+                android:textColor="#fafafa"
+                android:text="ITALY" />
 
             <LinearLayout
                 android:id="@+id/rateBtnWrapp"
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                android:background="@color/colorAccent"
                 android:layout_height="wrap_content" >
 
                 <Button
                     style="@style/rateBtn"
                     android:id="@+id/btn_1"
                     android:tag="1"
-                    android:text="Knew it"
+                    android:background="#b2ff59"
+                    android:text="I know it"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="2dp"
                     />
 
                 <Button
                     style="@style/rateBtn"
                     android:id="@+id/btn_3"
                     android:tag="3"
-                    android:text="Not sure" />
+                    android:background="#ffd740"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:text="I'm not sure" />
 
 
                 <Button
                     style="@style/rateBtn"
                     android:id="@+id/btn_5"
                     android:tag="5"
-                    android:text="Dont know" />
+                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="1dp"
+                    android:background="#ff6e40"
+                    android:text="I don't know" />
             </LinearLayout>
         </RelativeLayout>
 
-
-
-
-
-
-
-
-
-
-
     </RelativeLayout>
 
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -20,6 +20,7 @@ public class Memo {
     final Lang questionLang;
     final Lang answerLang;
     final short hits;
+    final short cardsLeft;
 
     public Memo(Cursor c){
         id = asString(c, "_id");

@@ -33,10 +33,26 @@ public class MemitSessionManager extends AsyncQueryHandler {
                 "date(created)=date('now')", null, null);
     }
 
+    public Memo getNext(){
+        Memo memo = session.take();
+        if(memo == null){
+            if(context instanceof  OnSessionEndedListener){
+                ((OnSessionEndedListener)context).onSessionEnded(session);
+                return null;
+            }
+        }
+        return memo;
+    }
+
     public MemitSession getSession(){
         return session;
     }
 
+
+    public interface OnSessionEndedListener{
+
+        void onSessionEnded(MemitSession session);
+    }
 
 
     public interface OnSessionStartedListener{
