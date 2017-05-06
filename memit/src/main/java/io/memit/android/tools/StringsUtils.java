@@ -27,6 +27,23 @@ public final class StringsUtils {
         return str.toString();
     }
 
+    public static String inClause(Collection<String> list){
+        if(list == null || list.isEmpty()){
+            return "";
+        }
+        int len = list.size();
+        int i = 0;
+        StringBuilder str = new StringBuilder(" IN (");
+        for(Object obj : list){
+            if(i++ > 0 && i <= len ){
+                str.append(",");
+            }
+            str.append(obj);
+        }
+        str.append(")");
+        return str.toString();
+    }
+
 
     public static String joinConditions(Collection<String> list, String column, String orAnd){
         if(list == null){
@@ -43,5 +60,10 @@ public final class StringsUtils {
         }
         return str.toString();
     }
+
+    public static boolean isEmpty(String value){
+        return value == null || value.isEmpty();
+    }
+
 
 }

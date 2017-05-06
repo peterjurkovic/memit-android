@@ -22,6 +22,8 @@ import io.memit.android.provider.Contract.Session;
 import io.memit.android.provider.Contract.Word;
 import io.memit.android.tools.UriUtils;
 
+import static io.memit.android.tools.UriUtils.lastSegment;
+
 /**
  * Created by peter on 1/29/17.
  */
@@ -34,6 +36,7 @@ public class MemitProvider extends ContentProvider{
 
 
     private static final byte BOOKS = 1;
+    private static final byte WORDS = 10;
     private static final byte BOOK_ID = 2;
     private static final byte BOOK_LECTURES = 3;
     private static final byte BOOK_LECTURES_ID = 4;
@@ -41,6 +44,7 @@ public class MemitProvider extends ContentProvider{
     private static final byte BOOK_LECTURES_WORDS_ID = 6;
     private static final byte SESSIONS = 7;
     private static final byte SESSIONS_INIT = 8;
+    private static final byte SESSIONS_WORD_NEXT = 9;
 
     private static final SparseArray<String> CODE_TABLE_MAP = new SparseArray<>();
     private static final UriMatcher URI_MATCHER =  new UriMatcher(UriMatcher.NO_MATCH);
@@ -53,10 +57,12 @@ public class MemitProvider extends ContentProvider{
         CODE_TABLE_MAP.put(BOOK_LECTURES, Lecture.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS, Word.TABLE);
         CODE_TABLE_MAP.put(BOOK_LECTURES_WORDS_ID, Word.TABLE);
+        CODE_TABLE_MAP.put(WORDS, Word.TABLE);
         CODE_TABLE_MAP.put(SESSIONS, Session.TABLE);
 
 
         URI_MATCHER.addURI(Contract.AUTHORITY, "books", BOOKS);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "words", WORDS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*", BOOK_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures", BOOK_LECTURES);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*", BOOK_LECTURES_ID);
@@ -64,6 +70,7 @@ public class MemitProvider extends ContentProvider{
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words/*", BOOK_LECTURES_WORDS_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, "sessions", SESSIONS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/activity", SESSIONS_INIT);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/next/*", SESSIONS_WORD_NEXT);
     }
 
 
@@ -94,7 +101,11 @@ public class MemitProvider extends ContentProvider{
                 return DatabaseOperations
                         .getInstance(getContext())
                         .loadSessionMemos();
-           case BOOKS:
+            case SESSIONS_WORD_NEXT:
+                return DatabaseOperations
+                        .getInstance(getContext())
+                        .loadNextMemo(lastSegment(uri), selection);
+            case BOOKS:
                 return DatabaseOperations
                         .getInstance(getContext())
                         .getAllBooks();
@@ -258,6 +269,6 @@ public class MemitProvider extends ContentProvider{
 
 
     private static boolean isSyncableEntity(int code){
-        return code <= SESSIONS_INIT;
+        return  true;
     }
 }

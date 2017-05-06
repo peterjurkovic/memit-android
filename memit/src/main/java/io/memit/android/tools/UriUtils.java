@@ -16,6 +16,9 @@ public final class UriUtils {
 
     private UriUtils(){}
 
+    public static int lastSegment(Uri uri){
+        return Integer.valueOf(uri.getLastPathSegment());
+    }
 
     public static String getBookId(Uri uri){
         return getValueAt(uri, BOOK_ID_IDX);

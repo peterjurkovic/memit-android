@@ -1,5 +1,6 @@
 package io.memit.android.activity.memit;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,9 +18,12 @@ import io.memit.android.activity.AbstractActivity;
  */
 
 public class MemitActivity extends AbstractActivity implements
-        MemitSessionManager.OnSessionStartedListener,
+        MemitSessionManager.OnSessionCreatedListener,
         MemitSessionManager.OnNoMemoActivatedListener,
-        MemitSessionManager.OnSessionEndedListener{
+        MemitSessionManager.OnSessionEndedListener,
+        MemitSessionManager.OnSessionNotStartedListener{
+
+    private final static String TAG = MemitActivity.class.getSimpleName();
 
     private ProgressBar loader;
     private RelativeLayout contentLayout;
@@ -52,10 +56,17 @@ public class MemitActivity extends AbstractActivity implements
     }
 
 
+    @Override
+    public void onSessionCreated(MemitSession session) {
+        Log.i(TAG, "onSessionCreated: " + session.toString());
+        setCardsLeft(session.getActivatedCount());
+        this.memo = sessionManager.getNext();
+        updateMemo();
+    }
 
     @Override
-    public void onSessionStarted() {
-        this.memo = sessionManager.getNext();
+    public void onSessionNotStarted() {
+
     }
 
     @Override
@@ -79,13 +90,25 @@ public class MemitActivity extends AbstractActivity implements
         myAnswerReadOnlyView  = (TextView) findViewById(R.id.myAnswerReadOnly);
         showAnswerBtn = (Button) findViewById(R.id.showAnswerBtn);
         answerLayout = (RelativeLayout) findViewById(R.id.answerLayout);
+        answerView = (TextView) findViewById(R.id.answer);
         answerSpeakerView = (TextView) findViewById(R.id.answerSpeaker);
+
     }
 
 
-    private void setMemo(Memo memo){
-        cardsLeftView.setText(memo.);
+    private void updateMemo(){
+        if(memo != null){
+            questionView.setText(memo.question);
+            answerView.setText(memo.answer);
+            seenView.setText(getResources().getString(R.string.seen, memo.hits));
+        }
     }
+
+    public void setCardsLeft(int value){
+        Resources res = getResources();
+        cardsLeftView.setText(res.getQuantityString(R.plurals.cardsLeft, value, value));
+    }
+
 
 
 }

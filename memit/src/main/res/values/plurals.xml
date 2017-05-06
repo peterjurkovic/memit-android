@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="cardsLeft">
+        <item quantity="zero">No card left</item>
+        <item quantity="one">The last one!</item>
+        <item quantity="other">%d cards left</item>
+    </plurals>
+</resources>

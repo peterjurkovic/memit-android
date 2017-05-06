@@ -14,13 +14,13 @@ import static io.memit.android.tools.CursorUtils.asString;
 
 public class Memo {
 
+
     final String id;
     final String question;
     final String answer;
     final Lang questionLang;
     final Lang answerLang;
     final short hits;
-    final short cardsLeft;
 
     public Memo(Cursor c){
         id = asString(c, "_id");

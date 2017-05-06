@@ -58,6 +58,7 @@ public class Contract {
     }
 
     public interface Word extends SyncColumns{
+        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "words");
         static final String TABLE = "word";
 
         static final String QUESTION = "question";
@@ -107,7 +108,11 @@ public class Contract {
     }
 
 
-
+    public  interface MemiStrategy{
+        static byte SEQUENCE = 1;
+        static byte RANDOM = 2;
+        static byte PROBLEMATIC = 3;
+    }
 
 
 }

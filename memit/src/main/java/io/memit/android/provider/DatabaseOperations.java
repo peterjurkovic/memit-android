@@ -11,10 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.memit.android.BuildConfig;
+import io.memit.android.activity.memit.Memo;
 import io.memit.android.provider.Contract.Lecture;
 import io.memit.android.provider.Contract.Word;
+import io.memit.android.tools.StringsUtils;
 
-import static java.lang.String.valueOf;
+import static io.memit.android.provider.Contract.MemiStrategy.SEQUENCE;
+import static io.memit.android.tools.CursorUtils.asInt;
+import static io.memit.android.tools.StringsUtils.isEmpty;
 
 /**
  * Created by peter on 1/30/17.
@@ -27,6 +31,7 @@ public class DatabaseOperations extends BaseDatabaseOperations {
 
     private static final Object LOCK = new Object();
     private static DatabaseOperations OPERATIONS;
+
 
 
     private DatabaseOperations(final DatabaseOpenHelper helper){
@@ -177,15 +182,65 @@ public class DatabaseOperations extends BaseDatabaseOperations {
 
     public Cursor loadSessionMemos(){
         SQLiteDatabase db = helper.getReadableDatabase();
-         String sql = "" +
-             " SELECT w._id, w.question, w.answer, l.lang_question, l.lang_answer, ifnull(sw.hits,0) as hits " +
-             "        FROM word w " +
-             "        LEFT JOIN lecture l ON w.lecture_id = l._id " +
-             "        LEFT JOIN session_word sw ON sw.word_id = w._id " +
-             "        WHERE w.active = 1 AND w.deleted = 0 " +
-             "        ORDER BY sw.changed DESC, w.changed DESC " +
-             "        LIMIT 5";
+        String sql = "" +
+                " SELECT w._id, w.question, w.answer, l.lang_question, l.lang_answer, ifnull(sw.hits,0) as hits " +
+                "        FROM word w " +
+                "        LEFT JOIN lecture l ON w.lecture_id = l._id " +
+                "        LEFT JOIN session_word sw ON sw.word_id = w._id " +
+                "        WHERE w.active = 1 AND w.deleted = 0 " +
+                "        ORDER BY sw.changed DESC, w.changed DESC " +
+                "        LIMIT 5";
         return db.rawQuery(sql, null);
     }
+
+    public Cursor loadNextMemo(int strategy, String excludeWordsClause){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+
+        StringBuilder sql = new StringBuilder()
+            .append(" SELECT w._id, w.question, w.answer, l.lang_question, l.lang_answer, ifnull(sw.hits,0) as hits " )
+            .append("FROM word w " )
+            .append("LEFT JOIN lecture l ON w.lecture_id = l._id " )
+            .append("LEFT JOIN session_word sw ON sw.word_id = w._id " );
+
+        switch (strategy){
+            case SEQUENCE :
+                sql.append("WHERE w.active = 1 AND w.deleted = 0 ")
+                   .append(excludeWordsClause)
+                   .append("ORDER BY sw.changed DESC, w.changed DESC ")
+                   .append("LIMIT 1 ");
+                break;
+        }
+
+
+        return db.rawQuery(sql.toString(), null);
+    }
+/*
+
+
+    private Memo updateAndGetNext(Memo memo, int rating){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.beginTransaction();
+        String now =  now(db);
+        db.up
+
+        db.setTransactionSuccessful();
+
+    }
+
+
+    public int getNumberOfActiveCards(SQLiteDatabase db){
+        Cursor c = db.rawQuery("SELECT count(*) as active FROM word WHERE active=1 AND deleted=0", null);
+        try{
+            if(c.moveToNext()){
+                return asInt(c, "active");
+            }
+        }finally {
+            c.close();
+        }
+        return 0;
+    }
+
+*/
 
 }
