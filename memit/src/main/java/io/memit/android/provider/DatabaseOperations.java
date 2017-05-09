@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.memit.android.BuildConfig;
-import io.memit.android.activity.memit.Memo;
+import io.memit.android.activity.memit.MemitSession;
+import io.memit.android.activity.memit.Rating;
 import io.memit.android.provider.Contract.Lecture;
+import io.memit.android.provider.Contract.SessionWord;
 import io.memit.android.provider.Contract.Word;
-import io.memit.android.tools.StringsUtils;
 
 import static io.memit.android.provider.Contract.MemiStrategy.SEQUENCE;
 import static io.memit.android.tools.CursorUtils.asInt;
-import static io.memit.android.tools.StringsUtils.isEmpty;
 
 /**
  * Created by peter on 1/30/17.
@@ -128,7 +128,11 @@ public class DatabaseOperations extends BaseDatabaseOperations {
         }
         db.setTransactionSuccessful();
         db.endTransaction();
-        return updatedCount;
+        try {
+            return updatedCount;
+        }finally {
+            db.close();
+        }
     }
 
     private List<Long> getLecturesId(SQLiteDatabase db, String[] selectionArgs ){
@@ -189,7 +193,7 @@ public class DatabaseOperations extends BaseDatabaseOperations {
                 "        LEFT JOIN session_word sw ON sw.word_id = w._id " +
                 "        WHERE w.active = 1 AND w.deleted = 0 " +
                 "        ORDER BY sw.changed DESC, w.changed DESC " +
-                "        LIMIT 5";
+                "        LIMIT " + (MemitSession.QUEUE_SIZE_LIMIT + 1);
         return db.rawQuery(sql, null);
     }
 
@@ -207,13 +211,74 @@ public class DatabaseOperations extends BaseDatabaseOperations {
             case SEQUENCE :
                 sql.append("WHERE w.active = 1 AND w.deleted = 0 ")
                    .append(excludeWordsClause)
-                   .append("ORDER BY sw.changed DESC, w.changed DESC ")
-                   .append("LIMIT 1 ");
+                   .append(" ORDER BY sw.changed DESC, w.changed DESC ")
+                   .append(" LIMIT 1 ");
                 break;
         }
 
 
         return db.rawQuery(sql.toString(), null);
+    }
+
+    public int createOrUpdateSessionWord(ContentValues cv){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        db.beginTransaction();
+        deactivate(db, cv);
+        updateSessionWord(db, cv);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return 0;
+    }
+
+    private void deactivate(SQLiteDatabase db, ContentValues cv){
+        int lastRating = cv.getAsInteger(SessionWord.LAST_RATING);
+        if(lastRating == Rating.KNOW.value()){
+            String wordId = cv.getAsString(SessionWord.WORD_ID);
+            ContentValues vals = new ContentValues();
+            vals.put(Word.ACTIVE, 0);
+            vals.put(Word.CHANGED, cv.getAsString(Word.CHANGED));
+            db.update(Word.TABLE, vals , Word._ID + " = ?" , new String[]{wordId});
+            Log.i("Sessionmanager", "Deactivated: " + wordId);
+        }
+    }
+
+    private void updateSessionWord(SQLiteDatabase db, ContentValues cv){
+        String sessionId = cv.getAsString(SessionWord.SESSION_ID);
+        String wordId = cv.getAsString(SessionWord.WORD_ID);
+        String now = cv.getAsString(Contract.SyncColumns.CHANGED);
+        int lastRating = cv.getAsInteger(SessionWord.LAST_RATING);
+        Cursor cursor = db.rawQuery(
+                "SELECT count(*) as c "+
+                "FROM session_word "+
+                "WHERE word_id = '"+wordId+"' AND session_id = '"+sessionId+"' ", null);
+
+        boolean exists = false;
+        if(cursor.moveToNext()){
+            exists = asInt(cursor, "c") > 0;
+        }
+
+        if(exists){
+            ContentValues insertCv = new ContentValues();
+            insertCv.put(SessionWord.WORD_ID, wordId);
+            insertCv.put(SessionWord.SESSION_ID, sessionId);
+            insertCv.put(SessionWord.CHANGED, now);
+            insertCv.put(SessionWord.CREATED, now);
+            insertCv.put(SessionWord.LAST_RATING, lastRating);
+            insertCv.put(SessionWord.RATE_SUM, lastRating);
+            db.insert(SessionWord.TABLE, null, insertCv);
+            Log.i("Sessionmanager", "sessionWord created");
+        }else{
+            StringBuilder sql = new StringBuilder("UPDATE session_word SET ")
+                .append( "hits = hits+1, ")
+                .append( "rate_sum = rate_sum + ").append(lastRating).append(", ")
+                .append( "changed = '").append(now).append("' ")
+                .append( "WHERE word_id = '").append(wordId).append("' AND session_id = '")
+                .append(sessionId).append("'");
+
+            db.execSQL(sql.toString());
+            Log.i("Sessionmanager", "sessionWord updated" + sql);
+        }
+
     }
 /*
 

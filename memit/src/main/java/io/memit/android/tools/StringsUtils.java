@@ -38,7 +38,7 @@ public final class StringsUtils {
             if(i++ > 0 && i <= len ){
                 str.append(",");
             }
-            str.append(obj);
+            str.append("'").append(obj).append("'");
         }
         str.append(")");
         return str.toString();

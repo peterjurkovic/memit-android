@@ -20,7 +20,7 @@ public class Memo {
     final String answer;
     final Lang questionLang;
     final Lang answerLang;
-    final short hits;
+    final int hits;
 
     public Memo(Cursor c){
         id = asString(c, "_id");
@@ -29,6 +29,19 @@ public class Memo {
         questionLang = Lang.asLang( asString(c, "lang_question") );
         answerLang = Lang.asLang( asString(c, "lang_answer") );
         hits = asShort(c, "hits");
+    }
+
+    private Memo(Memo memo){
+        id = memo.id;
+        question = memo.question;
+        answer = memo.answer;
+        questionLang = memo.questionLang;
+        answerLang = memo.answerLang;
+        hits =  1 + memo.hits;
+    }
+
+    public Memo incrementHits(){
+        return new Memo(this);
     }
 
     public static Memo map(Cursor cursor){
@@ -45,5 +58,19 @@ public class Memo {
                 ", answerLang=" + answerLang +
                 ", hits=" + hits +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Memo memo = (Memo) o;
+        return id.equals(memo.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

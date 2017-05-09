@@ -6,6 +6,8 @@ import android.provider.BaseColumns;
 
 import io.memit.android.BuildConfig;
 
+import static android.net.Uri.withAppendedPath;
+
 /**
  * Created by peter on 1/29/17.
  */
@@ -22,59 +24,63 @@ public class Contract {
 
 
     public interface SyncColumns extends BaseColumns {
-        static final String DELETED = "deleted";
-        static final String CHANGED = "changed";
-        static final String CREATED = "created";
+        String DELETED = "deleted";
+        String CHANGED = "changed";
+        String CREATED = "created";
 
-        static final String LECTURE_COUNT = "lecture_count";
-        static final String WORD_COUNT = "word_count";
-        static final String ACTIVE_WORD_COUNT = "active_word_count";
+        String LECTURE_COUNT = "lecture_count";
+        String WORD_COUNT = "word_count";
+        String ACTIVE_WORD_COUNT = "active_word_count";
     }
 
     public interface Book extends SyncColumns {
-        static final String TABLE = "book";
-        static final String PATH = "books";
+        String TABLE = "book";
+        String PATH = "books";
 
-        static final String NAME = "name";
-        static final String LANG_QUESTION = "lang_question";
-        static final String LANG_ANSWER = "lang_answer";
-        static final String LEVEL = "level";
-        // static final String PUBLISHED = "pulished";
+        String NAME = "name";
+        String LANG_QUESTION = "lang_question";
+        String LANG_ANSWER = "lang_answer";
+        String LEVEL = "level";
 
-
-        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
+        Uri CONTENT_URI =  withAppendedPath(AUTHORITY_URI, PATH);
 
     }
 
     public interface Lecture extends SyncColumns{
-        static final String TABLE = "lecture";
-        static final String PATH = "lectures";
+        String TABLE = "lecture";
+        String PATH = "lectures";
 
-        static final String NAME = "name";
-        static final String LANG_QUESTION = "lang_question";
-        static final String LANG_ANSWER = "lang_answer";
-        static final String BOOK_ID = "book_id";
+        String NAME = "name";
+        String LANG_QUESTION = "lang_question";
+        String LANG_ANSWER = "lang_answer";
+        String BOOK_ID = "book_id";
         // static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, PATH);
     }
 
     public interface Word extends SyncColumns{
-        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "words");
-        static final String TABLE = "word";
+        Uri CONTENT_URI =  withAppendedPath(AUTHORITY_URI, "words");
+        String TABLE = "word";
 
-        static final String QUESTION = "question";
-        static final String ANSWER = "answer";
-        static final String ACTIVE = "active";
-        static final String LECTURE_ID = "lecture_id";
+        String QUESTION = "question";
+        String ANSWER = "answer";
+        String ACTIVE = "active";
+        String LECTURE_ID = "lecture_id";
     }
 
     public interface  Session extends SyncColumns{
-        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "sessions");
-        static final String TABLE = "session";
+        final Uri INIT_URI =  withAppendedPath(AUTHORITY_URI, "sessions/init");
+        final Uri CONTENT_URI =  withAppendedPath(AUTHORITY_URI, "sessions");
+        final String TABLE = "session";
     }
 
-    public interface SessionActivity extends SyncColumns{
-        static final Uri CONTENT_URI =  Uri.withAppendedPath(AUTHORITY_URI, "sessions/activity");
-        static final String TABLE = "session_word";
+    public interface SessionWord extends SyncColumns{
+        final Uri URI =  withAppendedPath(AUTHORITY_URI, "sessions");
+        final Uri RATE_URI =  withAppendedPath(URI, "rate");
+        String TABLE = "session_word";
+        String SESSION_ID = "session_id";
+        String WORD_ID = "word_id";
+        String LAST_RATING = "last_rating";
+        String RATE_SUM = "rate_sum";
     }
 
 
@@ -109,9 +115,13 @@ public class Contract {
 
 
     public  interface MemiStrategy{
-        static byte SEQUENCE = 1;
-        static byte RANDOM = 2;
-        static byte PROBLEMATIC = 3;
+        byte SEQUENCE = 1;
+        byte RANDOM = 2;
+        byte PROBLEMATIC = 3;
+
+
+        Uri SEQUENCE_STRATEGY_URI =  withAppendedPath(AUTHORITY_URI, "sessions/next/" + SEQUENCE);
+
     }
 
 

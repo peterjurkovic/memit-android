@@ -8,6 +8,7 @@ import android.database.Cursor;
 import io.memit.android.BaseActivity;
 import io.memit.android.R;
 import io.memit.android.activity.lecture.LectureListActivity;
+import io.memit.android.provider.Contract;
 
 /**
  * Created by peter on 3/5/17.
@@ -37,8 +38,10 @@ public class AddWordActivity extends BaseWordActivity {
     protected void onSaveButtonClicked() {
         ContentValues cv = getConentValues();
         if(isFormValid(cv)){
-            for(int i = 0; i < 250;i++ )
+            for(int i = 0; i < 500;i++ ){
+                cv.put(Contract.Word.QUESTION, i +" question");
                 getContentResolver().insert(bookLecturesWordsUri, cv);
+            }
             goBack();
         }
     }

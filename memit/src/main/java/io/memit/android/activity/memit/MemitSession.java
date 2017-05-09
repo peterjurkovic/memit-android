@@ -1,6 +1,7 @@
 package io.memit.android.activity.memit;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.memit.android.BuildConfig;
 import io.memit.android.provider.Contract;
-import io.memit.android.tools.CursorUtils;
 
 import static io.memit.android.provider.Contract.SyncColumns.ACTIVE_WORD_COUNT;
 import static io.memit.android.tools.CursorUtils.asShort;
@@ -23,14 +24,17 @@ import static io.memit.android.tools.CursorUtils.asString;
 
 public class MemitSession {
 
+    private final static String TAG = MemitSession.class.getSimpleName();
 
-    private final byte queueSize = 5;
+    public final static byte QUEUE_SIZE_LIMIT = 5;
 
-    private final String id;
-    private final Deque<Memo> queue = new ArrayDeque<Memo>(queueSize);
-    private final AtomicInteger activated;
+    final String id;
+    private final Deque<Memo> queue = new ArrayDeque<Memo>(QUEUE_SIZE_LIMIT + 1);
+    final AtomicInteger activated;
+    final AtomicBoolean persited;
 
     private MemitSession(SessionBuilder builder){
+        this.persited = new AtomicBoolean(builder.sessionPersited);
         this.id = builder.sessionId;
         this.activated  = new AtomicInteger(builder.activated);
         queue.addAll(builder.list);
@@ -43,18 +47,17 @@ public class MemitSession {
 
     public void add(Cursor cursor) {
         if(cursor.moveToNext()){
-            queue.add( Memo.map(cursor) );
+            add( Memo.map(cursor) );
         }
     }
 
     public synchronized void add(Memo memo) {
-        if(memo != null){
+        if(BuildConfig.DEBUG){
+            Log.d(TAG, "Adding new memo to the queue: " + memo);
+        }
+        if(memo != null && ! queue.contains(memo) ){
             queue.add(memo);
         }
-    }
-
-    public String getSessionId(){
-        return id;
     }
 
     public boolean hasEnded(){
@@ -69,7 +72,6 @@ public class MemitSession {
         return ids;
     }
 
-
     public boolean hasNoWordActivated(){
         return activated.get() == 0;
     }
@@ -78,22 +80,26 @@ public class MemitSession {
         return activated.get();
     }
 
-
-    public void setActivated(int count){
-        activated.set(count);
-    }
-
-    public boolean hasNext(){
-        return queue.size() >= (queueSize -1);
+    public int queueSize(){
+        return queue.size();
     }
 
 
+    public boolean isLoadableFromDatabase(){
+        return getActivatedCount() >= QUEUE_SIZE_LIMIT;
+    }
+
+
+    public int decrementAndGet(){
+        return this.activated.decrementAndGet();
+    }
 
     @Override
     public String toString() {
         return "MemitSession{" +
                 ", id='" + id + '\'' +
                 ", activatedCount=" + activated +
+                ", QUEUE_SIZE_LIMIT=" + queueSize() +
                 '}';
     }
 
@@ -101,13 +107,15 @@ public class MemitSession {
         String sessionId;
         int activated  = -1;
         List<Memo> list;
+        boolean sessionPersited;
 
         public static SessionBuilder create(){
             return new SessionBuilder();
         }
 
         public synchronized void setSession(Cursor cursor){
-            if(cursor.moveToNext()){
+            this.sessionPersited = cursor.moveToNext();
+            if( sessionPersited ){
                 this.sessionId = asString(cursor, Contract.Session._ID );
             }else{
                 this.sessionId = UUID.randomUUID().toString();

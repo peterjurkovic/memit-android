@@ -44,7 +44,8 @@ public class MemitProvider extends ContentProvider{
     private static final byte BOOK_LECTURES_WORDS_ID = 6;
     private static final byte SESSIONS = 7;
     private static final byte SESSIONS_INIT = 8;
-    private static final byte SESSIONS_WORD_NEXT = 9;
+    private static final byte SESSION_NEXT_MEMO = 9;
+    private static final byte SESSION_RATE_MEMO = 11;
 
     private static final SparseArray<String> CODE_TABLE_MAP = new SparseArray<>();
     private static final UriMatcher URI_MATCHER =  new UriMatcher(UriMatcher.NO_MATCH);
@@ -69,8 +70,9 @@ public class MemitProvider extends ContentProvider{
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words", BOOK_LECTURES_WORDS);
         URI_MATCHER.addURI(Contract.AUTHORITY, "books/*/lectures/*/words/*", BOOK_LECTURES_WORDS_ID);
         URI_MATCHER.addURI(Contract.AUTHORITY, "sessions", SESSIONS);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/activity", SESSIONS_INIT);
-        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/next/*", SESSIONS_WORD_NEXT);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/init", SESSIONS_INIT);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/next/*", SESSION_NEXT_MEMO);
+        URI_MATCHER.addURI(Contract.AUTHORITY, "sessions/rate", SESSION_RATE_MEMO);
     }
 
 
@@ -101,7 +103,7 @@ public class MemitProvider extends ContentProvider{
                 return DatabaseOperations
                         .getInstance(getContext())
                         .loadSessionMemos();
-            case SESSIONS_WORD_NEXT:
+            case SESSION_NEXT_MEMO:
                 return DatabaseOperations
                         .getInstance(getContext())
                         .loadNextMemo(lastSegment(uri), selection);
@@ -135,8 +137,6 @@ public class MemitProvider extends ContentProvider{
                 selection += " AND deleted=0";
             }
         }
-        // (String table, String[] columns, String selection,
-        // String[] selectionArgs, String groupBy, String having, String orderBy
 
         return database.query(CODE_TABLE_MAP.get(code),
                 columns,
@@ -186,7 +186,8 @@ public class MemitProvider extends ContentProvider{
                 Log.i(TAG, "New ID: " + id+ " generated");
                 break;
             default:
-                throw new IllegalArgumentException("Invalid Uri: " + uri);
+                dbHelper.getWritableDatabase()
+                        .insert(CODE_TABLE_MAP.get(code), null, values);
         }
 
         notifyUris(uri);
@@ -243,11 +244,13 @@ public class MemitProvider extends ContentProvider{
                                  selection,
                                  selectionArgs);
                  break;
-             case BOOK_LECTURES_WORDS:
-                 return db.update(table, values, selection, selectionArgs);
-
+             case SESSION_RATE_MEMO:
+                    rowCount = DatabaseOperations
+                                .getInstance(getContext())
+                                .createOrUpdateSessionWord(values);
+                 break;
              default:
-                 throw new IllegalArgumentException("Invalid Uri: " + uri);
+                 rowCount = db.update(table, values, selection, selectionArgs);
          }
 
          notifyUris(uri);

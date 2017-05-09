@@ -108,4 +108,5 @@
     <!-- memit -->
     <string name="answerInputHit">Type the answer...</string>
     <string name="seen">Seen %dx</string>
+    <string name="showAnswer">Show answer</string>
 </resources>

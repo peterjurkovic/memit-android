@@ -40,7 +40,7 @@ CREATE TABLE "session" (
 CREATE TABLE "session_word" (
 	"word_id"       TEXT NOT NULL,
 	"session_id"    TEXT NOT NULL,
-	"hits"          INTEGER NOT NULL DEFAULT (0),
+	"hits"          INTEGER NOT NULL DEFAULT (1),
 	"rate_sum"      INTEGER NOT NULL DEFAULT (0),
 	"last_rating"   INTEGER NOT NULL DEFAULT (0),
 	"deleted"       INTEGER NOT NULL DEFAULT (0),
