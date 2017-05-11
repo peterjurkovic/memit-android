@@ -72,23 +72,30 @@ public class MemitSessionManager extends AsyncQueryHandler {
         ensurePersistedSession();
         switch (rating){
             case KNOW:
+                updateRating(memo, rating);
                 context.onNumberOfActiveCardsChanged(session.decrementAndGet());
+                break;
             case NEUTRAL:
             case DONT_KNOW:
                 updateRating(memo, rating);
+                addToQueue(memo);
+                break;
         }
         return getNext();
     }
 
     private void addToQueue(Memo memo){
-
+        if( ! session.isLoadableFromDatabase()){
+            Log.i(TAG, "isLoadableFromDatabase => false, recycled " + memo);
+            session.add(memo.incrementHits());
+        }
     }
 
 
 
     public Memo getNext(){
         Memo memo = session.poll();
-        Log.i("SessionManager", "Next: "+memo + " left:" + session.queueSize());
+        Log.i(TAG, "getNext: "+memo + " left:" + session.queueSize());
         if(memo == null){
             context.onSessionEnded(session);
             return null;
@@ -100,7 +107,7 @@ public class MemitSessionManager extends AsyncQueryHandler {
 
     private void loadNextAsync(){
         if(  session.isLoadableFromDatabase() ){
-            Log.i(TAG, "Loading next memo");
+            Log.i(TAG, "loadNextAsync() from database");
 
             String where = null;
             List<String> ids = session.getIdInQueue();
@@ -146,12 +153,15 @@ public class MemitSessionManager extends AsyncQueryHandler {
     protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
         switch (token){
             case INIT_SESSION_ACTION:
+                Log.d(TAG, "INIT_SESSION_ACTION loaded" );
                 ((SessionBuilder)cookie).setSession(cursor);
                 break;
             case LOAD_MEMOS_ACTION:
+                Log.d(TAG, "LOAD_MEMOS_ACTION loaded" );
                 ((SessionBuilder)cookie).setMemos(cursor);
                 break;
             case LOAD_ACTIVATED_COUNT_ACTION:
+                Log.d(TAG, "LOAD_ACTIVATED_COUNT_ACTION loaded" );
                 ((SessionBuilder)cookie).setActivated(cursor);
                 break;
             case LOAD_NEXT_ACTION:
@@ -178,7 +188,7 @@ public class MemitSessionManager extends AsyncQueryHandler {
             ContentValues cv = new ContentValues();
             cv.put(Session._ID, session.id);
             startInsert(INIT_SESSION_ACTION, null, Session.CONTENT_URI, cv);
-            Log.i(TAG, "Session has been persisted");
+            Log.i(TAG, "Session created in database");
         }else {
             Log.d(TAG, "Session already persisted");
         }
@@ -194,6 +204,7 @@ public class MemitSessionManager extends AsyncQueryHandler {
     }
 
     protected void updateRating(Memo memo, Rating rating){
+        Log.i(TAG, "updateRating: " + memo);
         ContentValues cv = new ContentValues();
         cv.put(SessionWord.LAST_RATING, rating.value());
         cv.put(SessionWord.SESSION_ID, session.id);

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import io.memit.android.R;
 import io.memit.android.activity.AbstractActivity;
 import io.memit.android.model.Lang;
+import io.memit.android.tools.SlideAnimationUtil;
 
 /**
  * Created by peter on 4/23/17.
@@ -71,7 +72,7 @@ public class MemitActivity extends AbstractActivity implements
         loader.setVisibility(View.GONE);
         Log.i(TAG, "onSessionCreated: " + session.toString());
         this.memo = sessionManager.getNext();
-        refresh();
+        resetViews();
         TransitionManager.beginDelayedTransition(contentLayout);
         contentLayout.setVisibility(View.VISIBLE);
 
@@ -98,7 +99,8 @@ public class MemitActivity extends AbstractActivity implements
             Rating rating = Rating.valueOf((String)view.getTag());
             Log.i(TAG, rating.toString());
             this.memo = sessionManager.rateAndGetNext(memo, rating);
-            refresh();
+            resetViews();
+            SlideAnimationUtil.slideInFromRight(this, contentLayout);
         }else{
             Log.i(TAG, "onRateClicked bug the memo is null");
         }
@@ -122,7 +124,7 @@ public class MemitActivity extends AbstractActivity implements
     }
 
 
-    private void refresh(){
+    private void resetViews(){
         if(memo != null){
             questionView.setText(memo.question);
             answerView.setText(memo.answer);
